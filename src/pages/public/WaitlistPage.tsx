@@ -34,37 +34,37 @@ export function WaitlistPage() {
                 <KeyIcon className="w-8 h-8" style={{ color: '#8B3A2A' }} />
               </div>
               <h1 className="font-display text-heading-xl font-bold mb-3" style={{ color: '#2C1810' }}>
-                Sei nella lista.
+                You're on the list.
               </h1>
               <p className="text-body-sm mb-2" style={{ color: '#8A7560' }}>
-                Grazie, <strong style={{ color: '#2C1810' }}>{firstName}</strong>. Ti contatteremo su{' '}
-                <strong style={{ color: '#2C1810' }}>{email}</strong> non appena avremo posti disponibili.
+                Thank you, <strong style={{ color: '#2C1810' }}>{firstName}</strong>. We'll reach out to{' '}
+                <strong style={{ color: '#2C1810' }}>{email}</strong> as soon as we have a place for you.
               </p>
               <p className="text-caption" style={{ color: '#8A7560' }}>
-                Nel frattempo, scopri{' '}
-                <a href="/how-it-works" style={{ color: '#8B3A2A', textDecoration: 'underline' }}>come funziona il Club</a>.
+                In the meantime, learn{' '}
+                <a href="/how-it-works" style={{ color: '#8B3A2A', textDecoration: 'underline' }}>how the Club works</a>.
               </p>
             </div>
           ) : (
             <>
               <div className="text-center mb-8">
                 <p className="text-caption font-semibold uppercase tracking-widest mb-3" style={{ color: '#C4882F' }}>
-                  Puglia · Lancio Fondatori
+                  Puglia · Founding Members
                 </p>
                 <h1 className="font-display text-display-lg font-bold mb-3" style={{ color: '#2C1810' }}>
-                  Entra per primo.
+                  Be first in.
                 </h1>
                 <p className="text-body-sm" style={{ color: '#8A7560' }}>
-                  Le membership del Club sono limitate e selettive. Lascia i tuoi dati — ti contatteremo noi quando sarà il tuo momento.
+                  Club memberships are limited and selective. Leave your details — we'll reach out when it's your moment.
                 </p>
               </div>
 
               <form onSubmit={handleSubmit} className="space-y-4">
-                <FormField label="Nome" required>
+                <FormField label="First name" required>
                   <Input
                     value={firstName}
                     onChange={(e) => setFirstName(e.target.value)}
-                    placeholder="Mario"
+                    placeholder="Your name"
                     autoFocus
                   />
                 </FormField>
@@ -73,14 +73,14 @@ export function WaitlistPage() {
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="mario@esempio.it"
+                    placeholder="you@example.com"
                   />
                 </FormField>
-                <FormField label="Mi interessa come…">
+                <FormField label="I'm interested as a…">
                   <div className="grid grid-cols-2 gap-3 mt-1">
                     {[
-                      { value: 'member', label: 'Socio', sub: 'Voglio accedere alle case' },
-                      { value: 'owner', label: 'Proprietario', sub: 'Ho una casa in Puglia' },
+                      { value: 'member', label: 'Club Member', sub: 'I want to access homes' },
+                      { value: 'owner', label: 'Property Owner', sub: 'I have a home in Puglia' },
                     ].map((opt) => (
                       <button
                         type="button"
@@ -106,12 +106,12 @@ export function WaitlistPage() {
                   loading={loading}
                   style={{ background: '#8B3A2A', color: '#FDFAF5', border: 'none', fontWeight: 700, marginTop: '0.5rem' }}
                 >
-                  Metti il mio nome
+                  Add my name
                 </Button>
               </form>
 
               <p className="text-caption text-center mt-4" style={{ color: '#8A7560' }}>
-                Nessuna email commerciale. Nessuna condivisione con terzi. Solo noi, quando è il momento giusto.
+                No marketing emails. No sharing with third parties. Just us, when the time is right.
               </p>
             </>
           )}

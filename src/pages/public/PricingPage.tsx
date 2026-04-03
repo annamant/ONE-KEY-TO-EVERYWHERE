@@ -7,7 +7,7 @@ import { cn } from '@/utils/classNames'
 
 const PLANS = [
   {
-    name: 'Socio Curioso',
+    name: 'Explorer Member',
     keys: 50,
     price: 499,
     perKey: 9.98,
@@ -15,16 +15,16 @@ const PLANS = [
     accent: '#8B3A2A',
     bg: '#FDFAF5',
     perks: [
-      '50 chiavi incluse',
-      'Accesso a tutte le case del Club',
-      'Nucleo familiare (fino a 3 persone)',
-      'Le chiavi non scadono mai',
-      'Disdetta gratuita fino a 48h prima',
-      'Assistenza Club via email',
+      '50 keys included',
+      'Access to all Club homes',
+      'Household (up to 3 people)',
+      'Keys never expire',
+      'Free cancellation up to 48h before',
+      'Club support via email',
     ],
   },
   {
-    name: 'Socio Pugliese',
+    name: 'Puglia Member',
     keys: 150,
     price: 1299,
     perKey: 8.66,
@@ -32,18 +32,18 @@ const PLANS = [
     accent: '#C4882F',
     bg: '#2C1810',
     perks: [
-      '150 chiavi incluse',
-      'Accesso a tutte le case del Club',
-      'Nucleo familiare (fino a 5 persone)',
-      'Le chiavi non scadono mai',
-      'Disdetta gratuita fino a 48h prima',
-      'Assistenza Club prioritaria',
-      'Sconto soggiorni lunghi (7+ notti)',
-      'Accesso anticipato alle nuove case',
+      '150 keys included',
+      'Access to all Club homes',
+      'Household (up to 5 people)',
+      'Keys never expire',
+      'Free cancellation up to 48h before',
+      'Priority Club support',
+      'Long-stay discount (7+ nights)',
+      'Early access to new homes',
     ],
   },
   {
-    name: 'Socio Fondatore',
+    name: 'Founding Member',
     keys: 500,
     price: 3999,
     perKey: 7.99,
@@ -51,24 +51,24 @@ const PLANS = [
     accent: '#4A5C28',
     bg: '#FDFAF5',
     perks: [
-      '500 chiavi incluse',
-      'Accesso a tutte le case del Club',
-      'Nucleo familiare illimitato',
-      'Le chiavi non scadono mai',
-      'Disdetta gratuita fino a 48h prima',
-      'Assistenza Club dedicata',
-      'Sconto soggiorni lunghi (7+ notti)',
-      'Accesso anticipato alle nuove case',
-      'Badge "Fondatore" permanente',
-      'Voce nella crescita del Club',
+      '500 keys included',
+      'Access to all Club homes',
+      'Unlimited household members',
+      'Keys never expire',
+      'Free cancellation up to 48h before',
+      'Dedicated Club concierge',
+      'Long-stay discount (7+ nights)',
+      'Early access to new homes',
+      'Permanent "Founder" badge',
+      'A voice in how the Club grows',
     ],
   },
 ]
 
 const HOMES_TABLE = [
-  { tier: 'Club Standard', keys: '2–4', examples: 'Dammusi, casali, appartamenti nel centro storico' },
-  { tier: 'Club Premium', keys: '4–6', examples: 'Trulli, masserie medie, case sul mare' },
-  { tier: 'Club Luxury', keys: '6–10', examples: 'Masserie grandi, torri costiere, palazzi barocchi' },
+  { tier: 'Club Standard', keys: '2–4', examples: 'Dammusi, farmhouses, historic centre apartments' },
+  { tier: 'Club Premium', keys: '4–6', examples: 'Trulli, mid-size masserie, sea-view homes' },
+  { tier: 'Club Luxury', keys: '6–10', examples: 'Grand masserie, coastal towers, baroque palazzos' },
 ]
 
 export function PricingPage() {
@@ -81,10 +81,10 @@ export function PricingPage() {
       {/* Hero */}
       <section style={{ background: '#F7F0E3', borderBottom: '1px solid #E8DCCF' }} className="py-16 text-center">
         <div className="max-w-2xl mx-auto px-6">
-          <p className="text-caption font-semibold uppercase tracking-widest mb-4" style={{ color: '#C4882F' }}>Piani di membership</p>
-          <h1 className="font-display text-display-lg font-bold mb-4" style={{ color: '#2C1810' }}>Semplice. Trasparente. Giusto.</h1>
+          <p className="text-caption font-semibold uppercase tracking-widest mb-4" style={{ color: '#C4882F' }}>Membership plans</p>
+          <h1 className="font-display text-display-lg font-bold mb-4" style={{ color: '#2C1810' }}>Simple. Transparent. Fair.</h1>
           <p className="text-body-lg" style={{ color: '#8A7560' }}>
-            Paghi una volta. Le chiavi sono tue per sempre. Nessun abbonamento annuale, nessuna sorpresa.
+            Pay once. Your keys are yours forever. No annual subscription, no surprises.
           </p>
         </div>
       </section>
@@ -106,20 +106,20 @@ export function PricingPage() {
             >
               {p.highlight && (
                 <div className="self-start text-caption font-bold px-3 py-1 rounded-full mb-4" style={{ background: '#C4882F', color: '#2C1810' }}>
-                  Più scelto
+                  Most popular
                 </div>
               )}
               <h3 className="font-display text-heading-md font-bold mb-1" style={{ color: p.highlight ? '#FDFAF5' : '#2C1810' }}>
                 {p.name}
               </h3>
               <p className="text-body-sm mb-6" style={{ color: p.highlight ? '#C4A882' : '#8A7560' }}>
-                {p.keys} chiavi · {p.perKey.toFixed(2)}€ / chiave
+                {p.keys} keys · €{p.perKey.toFixed(2)} / key
               </p>
               <p className="font-display text-display-lg font-bold mb-1" style={{ color: p.highlight ? '#C4882F' : p.accent }}>
-                €{p.price.toLocaleString('it-IT')}
+                €{p.price.toLocaleString('en-EU')}
               </p>
               <p className="text-caption mb-8" style={{ color: p.highlight ? '#C4A882' : '#8A7560' }}>
-                pagamento unico
+                one-time payment
               </p>
               <ul className="space-y-3 mb-8 flex-1">
                 {p.perks.map((perk) => (
@@ -139,7 +139,7 @@ export function PricingPage() {
                     : { background: 'transparent', color: p.accent, border: `1.5px solid ${p.accent}` }
                 }
               >
-                Scegli questo piano
+                Choose this plan
               </Button>
             </div>
           ))}
@@ -150,18 +150,18 @@ export function PricingPage() {
       <section style={{ background: '#F7F0E3', borderTop: '1px solid #E8DCCF' }} className="py-16">
         <div className="max-w-3xl mx-auto px-6">
           <h2 className="font-display text-heading-xl font-bold text-center mb-3" style={{ color: '#2C1810' }}>
-            Quante chiavi per ogni casa?
+            How many keys per home?
           </h2>
           <p className="text-body-sm text-center mb-8" style={{ color: '#8A7560' }}>
-            Ogni casa ha un numero fisso di chiavi per notte — uguale tutto l'anno.
+            Each home has a fixed key cost per night — the same all year round.
           </p>
           <div className="rounded-2xl overflow-hidden" style={{ border: '1px solid #E8DCCF' }}>
             <table className="w-full">
               <thead>
                 <tr style={{ background: '#FAE6DA', borderBottom: '1px solid #E8DCCF' }}>
-                  <th className="text-left px-6 py-4 text-body-sm font-semibold" style={{ color: '#2C1810' }}>Livello</th>
-                  <th className="text-left px-6 py-4 text-body-sm font-semibold" style={{ color: '#2C1810' }}>Chiavi / notte</th>
-                  <th className="text-left px-6 py-4 text-body-sm font-semibold" style={{ color: '#2C1810' }}>Esempi</th>
+                  <th className="text-left px-6 py-4 text-body-sm font-semibold" style={{ color: '#2C1810' }}>Tier</th>
+                  <th className="text-left px-6 py-4 text-body-sm font-semibold" style={{ color: '#2C1810' }}>Keys / night</th>
+                  <th className="text-left px-6 py-4 text-body-sm font-semibold" style={{ color: '#2C1810' }}>Examples</th>
                 </tr>
               </thead>
               <tbody>
@@ -177,7 +177,7 @@ export function PricingPage() {
           </div>
           <div className="mt-4 p-4 rounded-xl" style={{ background: '#F5F7F0', border: '1px solid #CDD8B0' }}>
             <p className="text-body-sm" style={{ color: '#4A5C28' }}>
-              <strong>Stagionalità:</strong> i soggiorni da novembre a febbraio costano il 20% in meno in chiavi. Per soggiorni di 7+ notti c'è uno sconto ulteriore del 10–15%. Mai prezzi dinamici opportunistici.
+              <strong>Seasonality:</strong> Visits from November through February cost 20% fewer keys. Stays of 7+ nights receive an additional 10–15% discount. Never opportunistic dynamic pricing.
             </p>
           </div>
         </div>
@@ -187,14 +187,14 @@ export function PricingPage() {
       <section className="py-16 text-center" style={{ background: '#2C1810' }}>
         <div className="max-w-xl mx-auto px-6">
           <h2 className="font-display text-heading-xl font-bold mb-6" style={{ color: '#FDFAF5' }}>
-            Fai parte di qualcosa di diverso.
+            Be part of something different.
           </h2>
           <Button
             size="lg"
             onClick={() => navigate('/auth/signup')}
             style={{ background: '#C4882F', color: '#2C1810', border: 'none', fontWeight: 700 }}
           >
-            Crea il tuo account
+            Create your account
           </Button>
         </div>
       </section>

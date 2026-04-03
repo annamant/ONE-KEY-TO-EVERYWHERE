@@ -7,77 +7,77 @@ import { KeyIcon, HomeModernIcon, UserPlusIcon, SparklesIcon, ShieldCheckIcon, A
 const MEMBER_STEPS = [
   {
     icon: <UserPlusIcon className="w-6 h-6" />,
-    title: 'Fai richiesta e vieni accettato',
-    desc: 'Il Club è selettivo. Compili un profilo, ci presenti la tua storia e aspetti il via libera. Non si entra per caso — e questo è il punto.',
+    title: 'Apply and be accepted',
+    desc: 'The Club is selective. You submit a profile, share your story, and wait for approval. You don\'t join by accident — that\'s the point.',
   },
   {
     icon: <KeyIcon className="w-6 h-6" />,
-    title: 'Ricevi le tue chiavi',
-    desc: 'Con la membership ricevi un pacchetto di chiavi. Le chiavi sono il tuo credito all\'interno del Club. Non scadono. Non cambiano valore tra agosto e febbraio.',
+    title: 'Receive your keys',
+    desc: 'Your membership comes with a bundle of keys. Keys are your credit inside the Club. They don\'t expire. They don\'t change in value between August and February.',
   },
   {
     icon: <HomeModernIcon className="w-6 h-6" />,
-    title: 'Accedi a qualsiasi casa del Club',
-    desc: 'Scegli la casa. Usa le tue chiavi per accedervi. Non esiste un "prezzo" stagionale — ogni casa richiede un numero fisso di chiavi per notte. Meno chiavi in inverno, le stesse in estate.',
+    title: 'Access any home in the Club',
+    desc: 'Choose a home. Use your keys to access it. There is no seasonal "price" — each home has a fixed key cost per night. The same in winter as in summer.',
   },
   {
     icon: <SparklesIcon className="w-6 h-6" />,
-    title: 'Porta con te chi ami',
-    desc: 'Aggiungi familiari o persone care al tuo nucleo e condividi le chiavi. Ognuno può accedere alle case del Club in modo autonomo.',
+    title: 'Bring those you love',
+    desc: 'Add family members or close ones to your household and share keys. Each member of your household can access Club homes independently.',
   },
 ]
 
 const OWNER_STEPS = [
   {
     icon: <HomeModernIcon className="w-6 h-6" />,
-    title: 'Apri le porte al Club',
-    desc: 'Non metti casa "su una piattaforma". La proponi al Club. Il processo è guidato e curioso: vogliamo sapere la storia della casa, non solo le foto.',
+    title: 'Open your doors to the Club',
+    desc: 'You\'re not putting your home "on a platform". You\'re proposing it to the Club. The process is guided and curious — we want to know your home\'s story, not just the photos.',
   },
   {
     icon: <ShieldCheckIcon className="w-6 h-6" />,
-    title: 'Passa la selezione',
-    desc: 'Il nostro team visiona ogni proposta. Non tutte vengono accettate — e chi viene accettato lo sa: la sua casa è in buona compagnia.',
+    title: 'Pass the selection',
+    desc: 'Our team reviews every proposal. Not all are accepted — and those who are accepted know it: their home is in good company.',
   },
   {
     icon: <KeyIcon className="w-6 h-6" />,
-    title: 'Guadagna chiavi',
-    desc: 'Ogni volta che un socio accede alla tua casa, guadagni chiavi. Puoi usarle per accedere alle case degli altri membri. Il Club si nutre di questa reciprocità.',
+    title: 'Earn keys',
+    desc: 'Every time a Club member accesses your home, you earn keys. You use those keys to access other members\' homes. The Club is nourished by this reciprocity.',
   },
   {
     icon: <ArrowPathIcon className="w-6 h-6" />,
-    title: 'Gestisci in totale autonomia',
-    desc: 'Blocchi le date che vuoi. Aggiorna le informazioni quando cambia qualcosa. Il Club non ti detta i termini: sei tu il custode della tua casa.',
+    title: 'Manage on your own terms',
+    desc: 'Block the dates you want. Update details when something changes. The Club doesn\'t dictate your terms — you are the guardian of your home.',
   },
 ]
 
 const FAQS = [
   {
-    q: 'Le chiavi scadono?',
-    a: 'No. Le chiavi che ricevi con la membership sono tue. Non c\'è data di scadenza, non c\'è penale per chi non viaggia ogni mese. Puoi aspettare il momento giusto.',
+    q: 'Do keys expire?',
+    a: 'No. The keys you receive with your membership are yours. There is no expiry date, no penalty for not travelling every month. You can wait for the right moment.',
   },
   {
-    q: 'Quanto costano le chiavi per accedere a una casa?',
-    a: 'Ogni casa del Club ha un numero fisso di chiavi per notte — stabilito dal proprietario in accordo con noi. Non esistono rincari stagionali: il valore di una chiave è lo stesso in alta e bassa stagione.',
+    q: 'How many keys does it cost to access a home?',
+    a: 'Each Club home has a fixed key cost per night — set by the owner in agreement with us. There are no seasonal price hikes: the value of a key is the same in high and low season.',
   },
   {
-    q: 'Posso condividere le mie chiavi con la famiglia?',
-    a: 'Sì. Crei un nucleo familiare e inviti chi vuoi. Il saldo di chiavi è condiviso e ogni membro del nucleo può accedere alle case in modo indipendente.',
+    q: 'Can I share my keys with family?',
+    a: 'Yes. Create a household and invite whoever you wish. The key balance is shared and each household member can access Club homes independently.',
   },
   {
-    q: 'Come funziona il rimborso se non posso più andare?',
-    a: 'Puoi disdire con rimborso completo delle chiavi fino a 48 ore prima dell\'accesso. Dopo le 48 ore si applica un rimborso parziale.',
+    q: 'How does a cancellation work?',
+    a: 'You can cancel with a full key refund up to 48 hours before access. After 48 hours a partial refund applies.',
   },
   {
-    q: 'Il Club è solo per la Puglia?',
-    a: 'Per ora sì — e lo diciamo con orgoglio. Prima di espanderci vogliamo fare una cosa sola nel modo migliore possibile. La Puglia è il cuore del Club.',
+    q: 'Is the Club only for Puglia?',
+    a: 'For now, yes — and we say that with pride. Before expanding, we want to do one thing as well as it can possibly be done. Puglia is the heart of the Club.',
   },
   {
-    q: 'Come mai i prezzi non cambiano tra estate e inverno?',
-    a: 'Perché crediamo che la Puglia sia bellissima tutto l\'anno e che i proprietari meritino di accogliere ospiti anche in bassa stagione. Il modello a chiavi elimina l\'incentivo opportunistico del prezzo dinamico.',
+    q: 'Why don\'t key costs change between summer and winter?',
+    a: 'Because we believe Puglia is beautiful all year round, and that owners deserve to welcome guests in the off-season too. The key model removes the opportunistic incentive of dynamic pricing.',
   },
   {
-    q: 'Sono un proprietario. Devo essere anche membro?',
-    a: 'Sì. Tutti i proprietari sono soci del Club. Non c\'è distinzione tra chi ospita e chi viene ospitato — tutti fanno parte dello stesso cerchio.',
+    q: 'I\'m a property owner. Do I have to be a Club member too?',
+    a: 'Yes. All owners are Club members. There is no distinction between those who welcome and those who are welcomed — everyone is part of the same circle.',
   },
 ]
 
@@ -91,12 +91,12 @@ export function HowItWorksPage() {
       {/* Hero */}
       <section style={{ background: '#F7F0E3', borderBottom: '1px solid #E8DCCF' }} className="py-16 text-center">
         <div className="max-w-2xl mx-auto px-6">
-          <p className="text-caption font-semibold uppercase tracking-widest mb-4" style={{ color: '#C4882F' }}>Come funziona</p>
+          <p className="text-caption font-semibold uppercase tracking-widest mb-4" style={{ color: '#C4882F' }}>How it works</p>
           <h1 className="font-display text-display-lg font-bold mb-4" style={{ color: '#2C1810' }}>
-            Non una piattaforma.<br />Un Club.
+            Not a platform.<br />A Club.
           </h1>
           <p className="text-body-lg" style={{ color: '#8A7560' }}>
-            Capisci la differenza e non torni più indietro.
+            Understand the difference and you won't look back.
           </p>
         </div>
       </section>
@@ -104,8 +104,8 @@ export function HowItWorksPage() {
       {/* For members */}
       <section className="max-w-5xl mx-auto px-6 py-20">
         <div className="text-center mb-12">
-          <span className="text-caption font-semibold uppercase tracking-widest" style={{ color: '#C4882F' }}>Per i soci</span>
-          <h2 className="font-display text-heading-xl font-bold mt-2" style={{ color: '#2C1810' }}>Accedi. Non prenotare.</h2>
+          <span className="text-caption font-semibold uppercase tracking-widest" style={{ color: '#C4882F' }}>For members</span>
+          <h2 className="font-display text-heading-xl font-bold mt-2" style={{ color: '#2C1810' }}>Access. Don't book.</h2>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
           {MEMBER_STEPS.map(({ icon, title, desc }, i) => (
@@ -129,10 +129,10 @@ export function HowItWorksPage() {
       <section style={{ background: '#F5F7F0', borderTop: '1px solid #CDD8B0' }} className="py-20">
         <div className="max-w-5xl mx-auto px-6">
           <div className="text-center mb-12">
-            <span className="text-caption font-semibold uppercase tracking-widest" style={{ color: '#4A5C28' }}>Per i proprietari</span>
-            <h2 className="font-display text-heading-xl font-bold mt-2" style={{ color: '#2C1810' }}>Sei un socio. Anche tu.</h2>
+            <span className="text-caption font-semibold uppercase tracking-widest" style={{ color: '#4A5C28' }}>For property owners</span>
+            <h2 className="font-display text-heading-xl font-bold mt-2" style={{ color: '#2C1810' }}>You're a member too.</h2>
             <p className="text-body-md mt-3 max-w-xl mx-auto" style={{ color: '#637A38' }}>
-              Non sei un "host". Non "affitti". Fai parte del Club esattamente come gli altri membri — e la tua casa è la tua quota.
+              You're not a "host". You're not "renting". You're part of the Club exactly like every other member — and your home is your contribution.
             </p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
@@ -157,13 +157,13 @@ export function HowItWorksPage() {
       {/* Key currency explainer */}
       <section className="max-w-3xl mx-auto px-6 py-20 text-center">
         <h2 className="font-display text-heading-xl font-bold mb-6" style={{ color: '#2C1810' }}>
-          Le chiavi, spiegate in tre righe.
+          Keys, explained in three steps.
         </h2>
         <div className="space-y-4">
           {[
-            { n: '1', text: 'Con la membership ricevi un numero di chiavi. Sono tue, non scadono.' },
-            { n: '2', text: 'Ogni casa del Club ha un costo fisso in chiavi per notte. Scegli la casa, usi le tue chiavi per accedervi.' },
-            { n: '3', text: 'Se possiedi una casa e la metti nel Club, guadagni chiavi ogni volta che un socio vi accede. Usi quelle chiavi per accedere ad altre case.' },
+            { n: '1', text: 'With your membership you receive a number of keys. They are yours — they never expire.' },
+            { n: '2', text: 'Each Club home has a fixed key cost per night. Choose the home, use your keys to access it.' },
+            { n: '3', text: 'If you own a home and open it to the Club, you earn keys whenever a member accesses it. Use those keys to access other homes.' },
           ].map(({ n, text }) => (
             <div key={n} className="flex gap-4 p-5 rounded-card text-left" style={{ background: '#F7F0E3', border: '1px solid #E8DCCF' }}>
               <span className="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-caption font-bold" style={{ background: '#8B3A2A', color: '#FDFAF5' }}>{n}</span>
@@ -176,7 +176,7 @@ export function HowItWorksPage() {
       {/* FAQ */}
       <section style={{ background: '#F7F0E3', borderTop: '1px solid #E8DCCF' }} className="py-16">
         <div className="max-w-3xl mx-auto px-6">
-          <h2 className="font-display text-heading-xl font-bold text-center mb-10" style={{ color: '#2C1810' }}>Domande frequenti</h2>
+          <h2 className="font-display text-heading-xl font-bold text-center mb-10" style={{ color: '#2C1810' }}>Frequently asked questions</h2>
           <div className="space-y-4">
             {FAQS.map(({ q, a }) => (
               <div key={q} className="p-5 rounded-xl" style={{ border: '1px solid #E8DCCF', background: '#FDFAF5' }}>
@@ -191,14 +191,14 @@ export function HowItWorksPage() {
       {/* CTA */}
       <section className="py-16 text-center" style={{ background: '#2C1810' }}>
         <div className="max-w-xl mx-auto px-6">
-          <h2 className="font-display text-heading-xl font-bold mb-6" style={{ color: '#FDFAF5' }}>Pronti a far parte del Club?</h2>
+          <h2 className="font-display text-heading-xl font-bold mb-6" style={{ color: '#FDFAF5' }}>Ready to join the Club?</h2>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button
               size="lg"
               onClick={() => navigate('/auth/signup')}
               style={{ background: '#C4882F', color: '#2C1810', border: 'none', fontWeight: 700 }}
             >
-              Richiedi la membership
+              Request membership
             </Button>
             <Button
               variant="outline"
@@ -206,7 +206,7 @@ export function HowItWorksPage() {
               onClick={() => navigate('/pricing')}
               style={{ borderColor: '#8A7560', color: '#C4A882' }}
             >
-              Vedi i piani
+              View membership plans
             </Button>
           </div>
         </div>
