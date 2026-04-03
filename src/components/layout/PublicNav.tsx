@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/Button'
 const links = [
   { label: 'How It Works', path: '/how-it-works' },
   { label: 'Membership', path: '/pricing' },
+  { label: 'Open Your Doors', path: '/open-doors' },
   { label: 'Apply', path: '/waitlist' },
 ]
 

@@ -1,0 +1,205 @@
+import { useState } from 'react'
+import { Button } from '@/components/ui/Button'
+import { Input } from '@/components/ui/Input'
+import { FormField } from '@/components/forms/FormField'
+import { PublicNav } from '@/components/layout/PublicNav'
+import { PublicFooter } from '@/components/layout/PublicFooter'
+import { HomeModernIcon, ShieldCheckIcon, KeyIcon, ArrowPathIcon } from '@heroicons/react/24/outline'
+
+const WHAT_WE_LOOK_FOR = [
+  {
+    icon: <HomeModernIcon className="w-6 h-6" />,
+    title: 'Character, not category',
+    desc: 'A trullo, a masseria, a baroque palazzo, a coastal tower. We look for homes with a soul — places that tell a story.',
+  },
+  {
+    icon: <ShieldCheckIcon className="w-6 h-6" />,
+    title: 'Curated, not crowded',
+    desc: 'The Club is intentionally small. Every home is reviewed individually. Being accepted means something.',
+  },
+  {
+    icon: <KeyIcon className="w-6 h-6" />,
+    title: 'Your terms',
+    desc: 'You decide which dates are available. You set the minimum visit length. The Club doesn\'t override your preferences.',
+  },
+  {
+    icon: <ArrowPathIcon className="w-6 h-6" />,
+    title: 'Off-season matters',
+    desc: 'The Club\'s key model is designed to encourage visits in autumn and winter, not just peak summer. Your home stays alive all year.',
+  },
+]
+
+export function OpenDoorsPage() {
+  const [submitted, setSubmitted] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [form, setForm] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    phone: '',
+    city: '',
+    propertyType: '',
+    message: '',
+  })
+
+  const set = (field: string) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) =>
+    setForm((f) => ({ ...f, [field]: e.target.value }))
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!form.firstName || !form.email || !form.city) return
+    setLoading(true)
+    await new Promise((r) => setTimeout(r, 900))
+    setLoading(false)
+    setSubmitted(true)
+  }
+
+  return (
+    <div className="min-h-screen flex flex-col" style={{ background: '#FDFAF5' }}>
+      <PublicNav />
+
+      {/* Hero */}
+      <section style={{ background: '#F7F0E3', borderBottom: '1px solid #E8DCCF' }} className="py-16 text-center">
+        <div className="max-w-2xl mx-auto px-6">
+          <p className="text-caption font-semibold uppercase tracking-widest mb-4" style={{ color: '#C4882F' }}>
+            For property owners · Puglia
+          </p>
+          <h1 className="font-display text-display-lg font-bold mb-4" style={{ color: '#2C1810' }}>
+            Open your doors<br />to the Club.
+          </h1>
+          <p className="text-body-lg" style={{ color: '#8A7560' }}>
+            If you own an exceptional home in Puglia and believe it belongs in a curated circle, we'd like to hear from you.
+          </p>
+        </div>
+      </section>
+
+      {/* What we look for */}
+      <section className="max-w-5xl mx-auto px-6 py-20">
+        <div className="text-center mb-12">
+          <h2 className="font-display text-heading-xl font-bold" style={{ color: '#2C1810' }}>What we look for</h2>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+          {WHAT_WE_LOOK_FOR.map(({ icon, title, desc }) => (
+            <div key={title} className="flex gap-5">
+              <div className="flex-shrink-0 w-12 h-12 rounded-2xl flex items-center justify-center" style={{ background: '#8B3A2A', color: '#FDFAF5' }}>
+                {icon}
+              </div>
+              <div>
+                <h3 className="text-body-md font-semibold mb-1" style={{ color: '#2C1810' }}>{title}</h3>
+                <p className="text-body-sm" style={{ color: '#8A7560' }}>{desc}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Enquiry form */}
+      <section style={{ background: '#F7F0E3', borderTop: '1px solid #E8DCCF' }} className="py-20">
+        <div className="max-w-2xl mx-auto px-6">
+          {submitted ? (
+            <div className="text-center py-12">
+              <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6" style={{ background: '#FAE6DA' }}>
+                <HomeModernIcon className="w-8 h-8" style={{ color: '#8B3A2A' }} />
+              </div>
+              <h2 className="font-display text-heading-xl font-bold mb-3" style={{ color: '#2C1810' }}>
+                Thank you, {form.firstName}.
+              </h2>
+              <p className="text-body-sm" style={{ color: '#8A7560' }}>
+                We've received your enquiry. Someone from our team will be in touch at{' '}
+                <strong style={{ color: '#2C1810' }}>{form.email}</strong> within a few days.
+              </p>
+            </div>
+          ) : (
+            <>
+              <div className="text-center mb-10">
+                <h2 className="font-display text-heading-xl font-bold mb-3" style={{ color: '#2C1810' }}>
+                  Tell us about your home
+                </h2>
+                <p className="text-body-sm" style={{ color: '#8A7560' }}>
+                  This is not an application form — it's the beginning of a conversation. Fill in what you can and we'll take it from there.
+                </p>
+              </div>
+
+              <form onSubmit={handleSubmit} className="space-y-5">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                  <FormField label="First name" required>
+                    <Input value={form.firstName} onChange={set('firstName')} placeholder="Your first name" />
+                  </FormField>
+                  <FormField label="Last name">
+                    <Input value={form.lastName} onChange={set('lastName')} placeholder="Your last name" />
+                  </FormField>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                  <FormField label="Email" required>
+                    <Input type="email" value={form.email} onChange={set('email')} placeholder="you@example.com" />
+                  </FormField>
+                  <FormField label="Phone">
+                    <Input type="tel" value={form.phone} onChange={set('phone')} placeholder="+39 …" />
+                  </FormField>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                  <FormField label="Property location" required>
+                    <Input value={form.city} onChange={set('city')} placeholder="e.g. Ostuni, Lecce, Alberobello" />
+                  </FormField>
+                  <FormField label="Property type">
+                    <select
+                      value={form.propertyType}
+                      onChange={set('propertyType')}
+                      className="w-full rounded-input px-4 py-2 text-body-sm"
+                      style={{
+                        border: '1.5px solid #E8DCCF',
+                        background: '#FDFAF5',
+                        color: form.propertyType ? '#2C1810' : '#8A7560',
+                        outline: 'none',
+                      }}
+                    >
+                      <option value="">Select…</option>
+                      <option>Trullo</option>
+                      <option>Masseria</option>
+                      <option>Palazzo / Historic building</option>
+                      <option>Villa</option>
+                      <option>Coastal tower</option>
+                      <option>Farmhouse / Dammuso</option>
+                      <option>Other</option>
+                    </select>
+                  </FormField>
+                </div>
+                <FormField label="Tell us about your home">
+                  <textarea
+                    value={form.message}
+                    onChange={set('message')}
+                    rows={5}
+                    placeholder="A few words about the property — its history, what makes it special, what kind of guests you imagine…"
+                    className="w-full rounded-input px-4 py-3 text-body-sm resize-none"
+                    style={{
+                      border: '1.5px solid #E8DCCF',
+                      background: '#FDFAF5',
+                      color: '#2C1810',
+                      outline: 'none',
+                    }}
+                  />
+                </FormField>
+
+                <Button
+                  type="submit"
+                  fullWidth
+                  size="lg"
+                  loading={loading}
+                  style={{ background: '#8B3A2A', color: '#FDFAF5', border: 'none', fontWeight: 700 }}
+                >
+                  Send enquiry
+                </Button>
+              </form>
+
+              <p className="text-caption text-center mt-4" style={{ color: '#8A7560' }}>
+                We respond to every enquiry personally. No automated replies.
+              </p>
+            </>
+          )}
+        </div>
+      </section>
+
+      <PublicFooter />
+    </div>
+  )
+}

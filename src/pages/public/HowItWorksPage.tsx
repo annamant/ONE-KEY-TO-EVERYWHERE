@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router-dom'
 import { Button } from '@/components/ui/Button'
 import { PublicNav } from '@/components/layout/PublicNav'
 import { PublicFooter } from '@/components/layout/PublicFooter'
-import { KeyIcon, HomeModernIcon, UserPlusIcon, SparklesIcon, ShieldCheckIcon, ArrowPathIcon } from '@heroicons/react/24/outline'
+import { KeyIcon, HomeModernIcon, UserPlusIcon, SparklesIcon } from '@heroicons/react/24/outline'
 
 const MEMBER_STEPS = [
   {
@@ -24,29 +24,6 @@ const MEMBER_STEPS = [
     icon: <SparklesIcon className="w-6 h-6" />,
     title: 'Bring those you love',
     desc: 'Add family members or close ones to your household and share keys. Each member of your household can access Club homes independently.',
-  },
-]
-
-const OWNER_STEPS = [
-  {
-    icon: <HomeModernIcon className="w-6 h-6" />,
-    title: 'Open your doors to the Club',
-    desc: 'You\'re not putting your home "on a platform". You\'re proposing it to the Club. The process is guided and curious — we want to know your home\'s story, not just the photos.',
-  },
-  {
-    icon: <ShieldCheckIcon className="w-6 h-6" />,
-    title: 'Pass the selection',
-    desc: 'Our team reviews every proposal. Not all are accepted — and those who are accepted know it: their home is in good company.',
-  },
-  {
-    icon: <KeyIcon className="w-6 h-6" />,
-    title: 'Earn keys',
-    desc: 'Every time a Club member accesses your home, you earn keys. You use those keys to access other members\' homes. The Club is nourished by this reciprocity.',
-  },
-  {
-    icon: <ArrowPathIcon className="w-6 h-6" />,
-    title: 'Manage on your own terms',
-    desc: 'Block the dates you want. Update details when something changes. The Club doesn\'t dictate your terms — you are the guardian of your home.',
   },
 ]
 
@@ -125,35 +102,6 @@ export function HowItWorksPage() {
         </div>
       </section>
 
-      {/* For owners */}
-      <section style={{ background: '#F5F7F0', borderTop: '1px solid #CDD8B0' }} className="py-20">
-        <div className="max-w-5xl mx-auto px-6">
-          <div className="text-center mb-12">
-            <span className="text-caption font-semibold uppercase tracking-widest" style={{ color: '#4A5C28' }}>For property owners</span>
-            <h2 className="font-display text-heading-xl font-bold mt-2" style={{ color: '#2C1810' }}>You're a member too.</h2>
-            <p className="text-body-md mt-3 max-w-xl mx-auto" style={{ color: '#637A38' }}>
-              You're not a "host". You're not "renting". You're part of the Club exactly like every other member — and your home is your contribution.
-            </p>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
-            {OWNER_STEPS.map(({ icon, title, desc }, i) => (
-              <div key={title} className="flex gap-5">
-                <div className="flex-shrink-0 w-12 h-12 rounded-2xl flex items-center justify-center" style={{ background: '#4A5C28', color: '#FDFAF5' }}>
-                  {icon}
-                </div>
-                <div>
-                  <div className="flex items-center gap-2 mb-1">
-                    <span className="text-caption font-bold" style={{ color: '#637A38' }}>0{i + 1}</span>
-                  </div>
-                  <h3 className="text-body-md font-semibold mb-1" style={{ color: '#2C1810' }}>{title}</h3>
-                  <p className="text-body-sm" style={{ color: '#8A7560' }}>{desc}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* Key currency explainer */}
       <section className="max-w-3xl mx-auto px-6 py-20 text-center">
         <h2 className="font-display text-heading-xl font-bold mb-6" style={{ color: '#2C1810' }}>
@@ -162,8 +110,8 @@ export function HowItWorksPage() {
         <div className="space-y-4">
           {[
             { n: '1', text: 'With your membership you receive a number of keys. They are yours — they never expire.' },
-            { n: '2', text: 'Each Club home has a fixed key cost per night. Choose the home, use your keys to access it.' },
-            { n: '3', text: 'If you own a home and open it to the Club, you earn keys whenever a member accesses it. Use those keys to access other homes.' },
+            { n: '2', text: 'Each Club home has a fixed key cost per night. The same in January as in August. No dynamic pricing, ever.' },
+            { n: '3', text: 'Choose a home, use your keys to access it. The longer the visit, the more you save. The Club rewards those who stay, not those who rush.' },
           ].map(({ n, text }) => (
             <div key={n} className="flex gap-4 p-5 rounded-card text-left" style={{ background: '#F7F0E3', border: '1px solid #E8DCCF' }}>
               <span className="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-caption font-bold" style={{ background: '#8B3A2A', color: '#FDFAF5' }}>{n}</span>

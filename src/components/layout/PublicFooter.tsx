@@ -34,7 +34,7 @@ export function PublicFooter() {
           <div>
             <h4 className="font-semibold text-body-sm mb-4" style={{ color: '#FDFAF5' }}>Property Owners</h4>
             <ul className="space-y-2 text-body-sm">
-              <li><Link to="/auth/signup" className="transition-colors hover:text-white">Open Your Doors</Link></li>
+              <li><Link to="/open-doors" className="transition-colors hover:text-white">Open Your Doors</Link></li>
             </ul>
           </div>
         </div>

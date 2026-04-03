@@ -13,6 +13,7 @@ import { LandingPage } from '@/pages/public/LandingPage'
 import { HowItWorksPage } from '@/pages/public/HowItWorksPage'
 import { PricingPage } from '@/pages/public/PricingPage'
 import { WaitlistPage } from '@/pages/public/WaitlistPage'
+import { OpenDoorsPage } from '@/pages/public/OpenDoorsPage'
 import { NotFoundPage } from '@/pages/public/NotFoundPage'
 
 // Auth pages
@@ -61,6 +62,7 @@ export const router = createBrowserRouter([
   { path: '/how-it-works', element: <HowItWorksPage /> },
   { path: '/pricing', element: <PricingPage /> },
   { path: '/waitlist', element: <WaitlistPage /> },
+  { path: '/open-doors', element: <OpenDoorsPage /> },
   {
     path: '/auth',
     element: <Outlet />,
