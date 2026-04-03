@@ -62,17 +62,17 @@ export function HowItWorksPage() {
   const navigate = useNavigate()
 
   return (
-    <div className="min-h-screen flex flex-col" style={{ background: '#FDFAF5' }}>
+    <div className="min-h-screen flex flex-col" style={{ background: '#FFFFFF' }}>
       <PublicNav />
 
       {/* Hero */}
-      <section style={{ background: '#F7F0E3', borderBottom: '1px solid #E8DCCF' }} className="py-16 text-center">
+      <section style={{ background: '#F5F5F5', borderBottom: '1px solid #E5E5E5' }} className="py-16 text-center">
         <div className="max-w-2xl mx-auto px-6">
           <p className="text-caption font-semibold uppercase tracking-widest mb-4" style={{ color: '#C4882F' }}>How it works</p>
-          <h1 className="font-display text-display-lg font-bold mb-4" style={{ color: '#2C1810' }}>
+          <h1 className="font-display text-display-lg font-bold mb-4" style={{ color: '#0A0A0A' }}>
             Not a platform.<br />A Club.
           </h1>
-          <p className="text-body-lg" style={{ color: '#8A7560' }}>
+          <p className="text-body-lg" style={{ color: '#6B6B6B' }}>
             Understand the difference and you won't look back.
           </p>
         </div>
@@ -82,20 +82,20 @@ export function HowItWorksPage() {
       <section className="max-w-5xl mx-auto px-6 py-20">
         <div className="text-center mb-12">
           <span className="text-caption font-semibold uppercase tracking-widest" style={{ color: '#C4882F' }}>For members</span>
-          <h2 className="font-display text-heading-xl font-bold mt-2" style={{ color: '#2C1810' }}>Access. Don't book.</h2>
+          <h2 className="font-display text-heading-xl font-bold mt-2" style={{ color: '#0A0A0A' }}>Access. Don't book.</h2>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
           {MEMBER_STEPS.map(({ icon, title, desc }, i) => (
             <div key={title} className="flex gap-5">
-              <div className="flex-shrink-0 w-12 h-12 rounded-2xl flex items-center justify-center" style={{ background: '#8B3A2A', color: '#FDFAF5' }}>
+              <div className="flex-shrink-0 w-12 h-12 rounded-2xl flex items-center justify-center" style={{ background: '#0A0A0A', color: '#FFFFFF' }}>
                 {icon}
               </div>
               <div>
                 <div className="flex items-center gap-2 mb-1">
                   <span className="text-caption font-bold" style={{ color: '#C4882F' }}>0{i + 1}</span>
                 </div>
-                <h3 className="text-body-md font-semibold mb-1" style={{ color: '#2C1810' }}>{title}</h3>
-                <p className="text-body-sm" style={{ color: '#8A7560' }}>{desc}</p>
+                <h3 className="text-body-md font-semibold mb-1" style={{ color: '#0A0A0A' }}>{title}</h3>
+                <p className="text-body-sm" style={{ color: '#6B6B6B' }}>{desc}</p>
               </div>
             </div>
           ))}
@@ -104,7 +104,7 @@ export function HowItWorksPage() {
 
       {/* Key currency explainer */}
       <section className="max-w-3xl mx-auto px-6 py-20 text-center">
-        <h2 className="font-display text-heading-xl font-bold mb-6" style={{ color: '#2C1810' }}>
+        <h2 className="font-display text-heading-xl font-bold mb-6" style={{ color: '#0A0A0A' }}>
           Keys, explained in three steps.
         </h2>
         <div className="space-y-4">
@@ -113,23 +113,23 @@ export function HowItWorksPage() {
             { n: '2', text: 'Each Club home has a fixed key cost per night. The same in January as in August. No dynamic pricing, ever.' },
             { n: '3', text: 'Choose a home, use your keys to access it. The longer the visit, the more you save. The Club rewards those who stay, not those who rush.' },
           ].map(({ n, text }) => (
-            <div key={n} className="flex gap-4 p-5 rounded-card text-left" style={{ background: '#F7F0E3', border: '1px solid #E8DCCF' }}>
-              <span className="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-caption font-bold" style={{ background: '#8B3A2A', color: '#FDFAF5' }}>{n}</span>
-              <p className="text-body-sm" style={{ color: '#2C1810' }}>{text}</p>
+            <div key={n} className="flex gap-4 p-5 rounded-card text-left" style={{ background: '#F5F5F5', border: '1px solid #E5E5E5' }}>
+              <span className="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-caption font-bold" style={{ background: '#0A0A0A', color: '#FFFFFF' }}>{n}</span>
+              <p className="text-body-sm" style={{ color: '#0A0A0A' }}>{text}</p>
             </div>
           ))}
         </div>
       </section>
 
       {/* FAQ */}
-      <section style={{ background: '#F7F0E3', borderTop: '1px solid #E8DCCF' }} className="py-16">
+      <section style={{ background: '#F5F5F5', borderTop: '1px solid #E5E5E5' }} className="py-16">
         <div className="max-w-3xl mx-auto px-6">
-          <h2 className="font-display text-heading-xl font-bold text-center mb-10" style={{ color: '#2C1810' }}>Frequently asked questions</h2>
+          <h2 className="font-display text-heading-xl font-bold text-center mb-10" style={{ color: '#0A0A0A' }}>Frequently asked questions</h2>
           <div className="space-y-4">
             {FAQS.map(({ q, a }) => (
-              <div key={q} className="p-5 rounded-xl" style={{ border: '1px solid #E8DCCF', background: '#FDFAF5' }}>
-                <h3 className="text-body-md font-semibold mb-2" style={{ color: '#2C1810' }}>{q}</h3>
-                <p className="text-body-sm" style={{ color: '#8A7560' }}>{a}</p>
+              <div key={q} className="p-5 rounded-xl" style={{ border: '1px solid #E5E5E5', background: '#FFFFFF' }}>
+                <h3 className="text-body-md font-semibold mb-2" style={{ color: '#0A0A0A' }}>{q}</h3>
+                <p className="text-body-sm" style={{ color: '#6B6B6B' }}>{a}</p>
               </div>
             ))}
           </div>
@@ -137,14 +137,14 @@ export function HowItWorksPage() {
       </section>
 
       {/* CTA */}
-      <section className="py-16 text-center" style={{ background: '#2C1810' }}>
+      <section className="py-16 text-center" style={{ background: '#0A0A0A' }}>
         <div className="max-w-xl mx-auto px-6">
-          <h2 className="font-display text-heading-xl font-bold mb-6" style={{ color: '#FDFAF5' }}>Ready to join the Club?</h2>
+          <h2 className="font-display text-heading-xl font-bold mb-6" style={{ color: '#FFFFFF' }}>Ready to join the Club?</h2>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button
               size="lg"
               onClick={() => navigate('/auth/signup')}
-              style={{ background: '#C4882F', color: '#2C1810', border: 'none', fontWeight: 700 }}
+              style={{ background: '#C4882F', color: '#0A0A0A', border: 'none', fontWeight: 700 }}
             >
               Request membership
             </Button>
@@ -152,7 +152,7 @@ export function HowItWorksPage() {
               variant="outline"
               size="lg"
               onClick={() => navigate('/pricing')}
-              style={{ borderColor: '#8A7560', color: '#C4A882' }}
+              style={{ borderColor: '#6B6B6B', color: '#FFFFFF' }}
             >
               View membership plans
             </Button>

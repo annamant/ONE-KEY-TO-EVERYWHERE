@@ -5,46 +5,20 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // Terracotta — the primary brand colour
-        'okte-terra': {
-          50:  '#FDF5F0',
-          100: '#FAE6DA',
-          200: '#F4C9B0',
-          300: '#EDA47E',
-          400: '#E07A4E',
-          500: '#C4562A',
-          600: '#8B3A2A',
-          700: '#6B2D1A',
-          800: '#4E1F10',
-          900: '#311208',
+        // Neutral grayscale — replaces terracotta/olive/sand
+        'okte-gray': {
+          50:  '#FAFAFA',
+          100: '#F5F5F5',
+          200: '#EFEFEF',
+          300: '#E5E5E5',
+          400: '#CCCCCC',
+          500: '#999999',
+          600: '#6B6B6B',
+          700: '#444444',
+          800: '#1A1A1A',
+          900: '#0A0A0A',
         },
-        // Olive / sage — secondary natural tone
-        'okte-olive': {
-          50:  '#F5F7F0',
-          100: '#E8EDD9',
-          200: '#CDD8B0',
-          300: '#ABBE82',
-          400: '#87A055',
-          500: '#637A38',
-          600: '#4A5C28',
-          700: '#354219',
-          800: '#232C0F',
-          900: '#141A08',
-        },
-        // Sand / linen — warm neutral
-        'okte-sand': {
-          50:  '#FDFAF5',
-          100: '#F7F0E3',
-          200: '#EDDDBE',
-          300: '#DEC594',
-          400: '#CCAA68',
-          500: '#B48E45',
-          600: '#8A6C2F',
-          700: '#6B5020',
-          800: '#4E3914',
-          900: '#32240B',
-        },
-        // Keep gold scale for key-token accent (shifted warmer)
+        // Gold — the only brand accent colour (key icon, CTAs)
         'okte-gold': {
           50:  '#FDF8ED',
           100: '#FAEECF',
@@ -57,30 +31,30 @@ const config: Config = {
           800: '#58390A',
           900: '#362204',
         },
-        // Semantic aliases → Mediterranean palette
-        primary:       '#8B3A2A',   // terracotta-600
-        'primary-dark':'#6B2D1A',   // terracotta-700
-        accent:        '#C4882F',   // warm honey gold
-        danger:        '#C0392B',
-        'danger-light':'#FDECEA',
-        success:       '#2E7D52',
+        // Semantic aliases — black / white / gold
+        primary:        '#0A0A0A',
+        'primary-dark': '#000000',
+        accent:         '#C4882F',
+        danger:         '#C0392B',
+        'danger-light': '#FDECEA',
+        success:        '#2E7D52',
         'success-light':'#E8F5EE',
-        warning:       '#C4882F',
-        'warning-light':'#FDF3E0',
-        surface:       '#FDFAF5',   // warm linen (not stark white)
-        'surface-alt': '#F7F0E3',   // sand-100
-        border:        '#E8DCCF',   // warm sand border
-        'text-primary':'#2C1810',   // deep warm brown
-        'text-muted':  '#8A7560',   // warm stone
-        'text-subtle': '#B5A090',   // lightest warm tone
+        warning:        '#C4882F',
+        'warning-light':'#FFF8ED',
+        surface:        '#FFFFFF',
+        'surface-alt':  '#F5F5F5',
+        border:         '#E5E5E5',
+        'text-primary': '#0A0A0A',
+        'text-muted':   '#6B6B6B',
+        'text-subtle':  '#999999',
       },
       fontFamily: {
         sans:    ['Inter', 'system-ui', 'sans-serif'],
         display: ['"Playfair Display"', 'Georgia', 'serif'],
       },
       fontSize: {
-        'display-xl': ['3.5rem', { lineHeight: '1.15', fontWeight: '700' }],
-        'display-lg': ['2.5rem', { lineHeight: '1.2',  fontWeight: '700' }],
+        'display-xl': ['3.5rem',   { lineHeight: '1.15', fontWeight: '700' }],
+        'display-lg': ['2.5rem',   { lineHeight: '1.2',  fontWeight: '700' }],
         'heading-xl': ['1.875rem', { lineHeight: '1.25', fontWeight: '600' }],
         'heading-lg': ['1.5rem',   { lineHeight: '1.3',  fontWeight: '600' }],
         'heading-md': ['1.25rem',  { lineHeight: '1.4',  fontWeight: '600' }],
@@ -90,9 +64,9 @@ const config: Config = {
         caption:      ['0.75rem',  { lineHeight: '1.4' }],
       },
       spacing: {
-        sidebar:    '16rem',
+        sidebar:      '16rem',
         'sidebar-sm': '4rem',
-        topbar:     '4rem',
+        topbar:       '4rem',
       },
       borderRadius: {
         card:  '0.75rem',
@@ -100,10 +74,10 @@ const config: Config = {
         pill:  '9999px',
       },
       boxShadow: {
-        card:       '0 1px 3px 0 rgba(44,24,16,.08), 0 1px 2px -1px rgba(44,24,16,.06)',
-        'card-hover':'0 4px 16px 0 rgba(44,24,16,.14)',
-        modal:      '0 20px 60px -10px rgba(44,24,16,.28)',
-        topbar:     '0 1px 0 0 #E8DCCF',
+        card:        '0 1px 3px 0 rgba(0,0,0,.08), 0 1px 2px -1px rgba(0,0,0,.06)',
+        'card-hover':'0 4px 16px 0 rgba(0,0,0,.12)',
+        modal:       '0 20px 60px -10px rgba(0,0,0,.25)',
+        topbar:      '0 1px 0 0 #E5E5E5',
       },
       keyframes: {
         'slide-in-right': {

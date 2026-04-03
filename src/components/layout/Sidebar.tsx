@@ -24,7 +24,7 @@ export function Sidebar({ navItems, collapsed, header, footer, className }: Side
         collapsed ? 'w-sidebar-sm' : 'w-sidebar',
         className
       )}
-      style={{ background: '#2C1810', color: '#FDFAF5' }}
+      style={{ background: '#0A0A0A', color: '#FFFFFF' }}
     >
       {/* Logo/Brand */}
       <div
@@ -32,27 +32,27 @@ export function Sidebar({ navItems, collapsed, header, footer, className }: Side
           'h-topbar flex items-center flex-shrink-0',
           collapsed ? 'justify-center px-2' : 'px-5'
         )}
-        style={{ borderBottom: '1px solid rgba(196,136,47,0.2)' }}
+        style={{ borderBottom: '1px solid rgba(196,136,47,0.25)' }}
       >
         {collapsed ? (
           <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0" style={{ background: '#C4882F' }}>
-            <span className="font-bold text-body-sm" style={{ color: '#2C1810' }}>K</span>
+            <span className="font-bold text-body-sm" style={{ color: '#0A0A0A' }}>K</span>
           </div>
         ) : (
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0" style={{ background: '#C4882F' }}>
-              <span className="font-bold text-body-sm" style={{ color: '#2C1810' }}>K</span>
+              <span className="font-bold text-body-sm" style={{ color: '#0A0A0A' }}>K</span>
             </div>
             <div>
-              <p className="text-body-sm font-bold leading-tight" style={{ color: '#FDFAF5' }}>One Key</p>
-              <p className="text-[10px] leading-tight" style={{ color: '#C4A882' }}>to Everywhere · Club</p>
+              <p className="text-body-sm font-bold leading-tight" style={{ color: '#FFFFFF' }}>One Key</p>
+              <p className="text-[10px] leading-tight" style={{ color: '#CCCCCC' }}>to Everywhere · Club</p>
             </div>
           </div>
         )}
       </div>
 
       {header && !collapsed && (
-        <div className="px-4 py-3" style={{ borderBottom: '1px solid rgba(196,136,47,0.15)' }}>{header}</div>
+        <div className="px-4 py-3" style={{ borderBottom: '1px solid rgba(255,255,255,0.08)' }}>{header}</div>
       )}
 
       <nav className="flex-1 overflow-y-auto py-4 px-2 space-y-0.5">
@@ -66,14 +66,12 @@ export function Sidebar({ navItems, collapsed, header, footer, className }: Side
                 cn(
                   'flex items-center gap-3 rounded-lg transition-colors duration-150 font-medium text-body-sm',
                   collapsed ? 'justify-center p-2.5' : 'px-3 py-2.5',
-                  isActive
-                    ? 'text-[#2C1810]'
-                    : 'hover:text-white'
+                  isActive ? 'text-[#0A0A0A]' : 'hover:text-white'
                 )
               }
               style={({ isActive }) => isActive
-                ? { background: '#C4882F', color: '#2C1810' }
-                : { color: '#C4A882' }
+                ? { background: '#C4882F', color: '#0A0A0A' }
+                : { color: '#CCCCCC' }
               }
               title={collapsed ? item.label : undefined}
             >
@@ -94,7 +92,7 @@ export function Sidebar({ navItems, collapsed, header, footer, className }: Side
       </nav>
 
       {footer && !collapsed && (
-        <div className="px-4 py-3" style={{ borderTop: '1px solid rgba(196,136,47,0.15)' }}>{footer}</div>
+        <div className="px-4 py-3" style={{ borderTop: '1px solid rgba(255,255,255,0.08)' }}>{footer}</div>
       )}
     </aside>
   )
