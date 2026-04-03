@@ -3,12 +3,11 @@ import { Link, useNavigate } from 'react-router-dom'
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
 import { useAuth } from '@/contexts/AuthContext'
 import { Button } from '@/components/ui/Button'
-import { cn } from '@/utils/classNames'
 
 const links = [
-  { label: 'How It Works', path: '/how-it-works' },
-  { label: 'Pricing', path: '/pricing' },
-  { label: 'Waitlist', path: '/waitlist' },
+  { label: 'Come funziona', path: '/how-it-works' },
+  { label: 'Membership', path: '/pricing' },
+  { label: 'Lista d\'attesa', path: '/waitlist' },
 ]
 
 export function PublicNav() {
@@ -21,15 +20,15 @@ export function PublicNav() {
     : '/auth/login'
 
   return (
-    <header className="sticky top-0 z-30 bg-white/95 backdrop-blur border-b border-border">
+    <header className="sticky top-0 z-30 backdrop-blur" style={{ background: 'rgba(253,250,245,0.96)', borderBottom: '1px solid #E8DCCF' }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-okte-navy-900 flex items-center justify-center">
-              <span className="text-accent font-bold text-body-sm">K</span>
+            <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: '#2C1810' }}>
+              <span className="font-bold text-body-sm" style={{ color: '#C4882F' }}>K</span>
             </div>
-            <span className="font-bold text-okte-navy-900">One Key to Everywhere</span>
+            <span className="font-bold text-body-sm" style={{ color: '#2C1810' }}>One Key to Everywhere</span>
           </Link>
 
           {/* Desktop nav */}
@@ -38,7 +37,10 @@ export function PublicNav() {
               <Link
                 key={l.path}
                 to={l.path}
-                className="text-body-sm font-medium text-text-muted hover:text-text-primary transition-colors"
+                className="text-body-sm font-medium transition-colors"
+                style={{ color: '#8A7560' }}
+                onMouseEnter={(e) => (e.currentTarget.style.color = '#2C1810')}
+                onMouseLeave={(e) => (e.currentTarget.style.color = '#8A7560')}
               >
                 {l.label}
               </Link>
@@ -48,16 +50,25 @@ export function PublicNav() {
           {/* CTA */}
           <div className="hidden md:flex items-center gap-3">
             {currentUser ? (
-              <Button onClick={() => navigate(dashboardPath)} size="sm">
-                Go to Dashboard
+              <Button onClick={() => navigate(dashboardPath)} size="sm" style={{ background: '#8B3A2A', color: '#FDFAF5', border: 'none' }}>
+                Vai alla dashboard
               </Button>
             ) : (
               <>
-                <Button variant="ghost" size="sm" onClick={() => navigate('/auth/login')}>
-                  Sign In
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => navigate('/auth/login')}
+                  style={{ color: '#8A7560' }}
+                >
+                  Accedi
                 </Button>
-                <Button size="sm" onClick={() => navigate('/auth/signup')}>
-                  Get Started
+                <Button
+                  size="sm"
+                  onClick={() => navigate('/auth/signup')}
+                  style={{ background: '#8B3A2A', color: '#FDFAF5', border: 'none' }}
+                >
+                  Entra nel Club
                 </Button>
               </>
             )}
@@ -66,7 +77,8 @@ export function PublicNav() {
           {/* Mobile toggle */}
           <button
             onClick={() => setMobileOpen(!mobileOpen)}
-            className="md:hidden p-2 text-text-muted hover:text-text-primary rounded-lg"
+            className="md:hidden p-2 rounded-lg"
+            style={{ color: '#8A7560' }}
           >
             {mobileOpen ? <XMarkIcon className="w-5 h-5" /> : <Bars3Icon className="w-5 h-5" />}
           </button>
@@ -75,30 +87,32 @@ export function PublicNav() {
 
       {/* Mobile menu */}
       {mobileOpen && (
-        <div className="md:hidden border-t border-border bg-surface px-4 pb-4 space-y-1">
+        <div className="md:hidden px-4 pb-4 space-y-1" style={{ borderTop: '1px solid #E8DCCF', background: '#FDFAF5' }}>
           {links.map((l) => (
             <Link
               key={l.path}
               to={l.path}
               onClick={() => setMobileOpen(false)}
-              className="block px-3 py-2 text-body-sm font-medium text-text-primary rounded-lg hover:bg-okte-slate-100"
+              className="block px-3 py-2 text-body-sm font-medium rounded-lg"
+              style={{ color: '#2C1810' }}
             >
               {l.label}
             </Link>
           ))}
-          <div className="pt-2 border-t border-border space-y-2">
+          <div className="pt-2 space-y-2" style={{ borderTop: '1px solid #E8DCCF' }}>
             <Button
               variant="outline"
               fullWidth
               onClick={() => { navigate('/auth/login'); setMobileOpen(false) }}
             >
-              Sign In
+              Accedi
             </Button>
             <Button
               fullWidth
               onClick={() => { navigate('/auth/signup'); setMobileOpen(false) }}
+              style={{ background: '#8B3A2A', color: '#FDFAF5', border: 'none' }}
             >
-              Get Started
+              Entra nel Club
             </Button>
           </div>
         </div>

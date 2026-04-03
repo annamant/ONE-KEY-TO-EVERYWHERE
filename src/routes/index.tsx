@@ -43,6 +43,7 @@ import { PropertyCalendarPage } from '@/pages/owner/PropertyCalendarPage'
 import { OwnerReservationsPage } from '@/pages/owner/ReservationsPage'
 import { OwnerReservationDetailPage } from '@/pages/owner/ReservationDetailPage'
 import { OwnerAnalyticsPage } from '@/pages/owner/AnalyticsPage'
+import { OwnerProfilePage } from '@/pages/owner/ProfilePage'
 
 // Admin pages
 import { AdminDashboardPage } from '@/pages/admin/DashboardPage'
@@ -53,6 +54,7 @@ import { AdminPropertyReviewPage } from '@/pages/admin/PropertyReviewPage'
 import { AdminBookingsPage } from '@/pages/admin/BookingsPage'
 import { AdminLedgerPage } from '@/pages/admin/LedgerPage'
 import { AdminSettingsPage } from '@/pages/admin/SettingsPage'
+import { AdminProfilePage } from '@/pages/admin/ProfilePage'
 
 export const router = createBrowserRouter([
   { path: '/', element: <LandingPage /> },
@@ -133,6 +135,7 @@ export const router = createBrowserRouter([
       { path: 'reservations', element: <OwnerReservationsPage /> },
       { path: 'reservations/:id', element: <OwnerReservationDetailPage /> },
       { path: 'analytics', element: <OwnerAnalyticsPage /> },
+      { path: 'profile', element: <OwnerProfilePage /> },
     ],
   },
   {
@@ -154,6 +157,7 @@ export const router = createBrowserRouter([
       { path: 'bookings', element: <AdminBookingsPage /> },
       { path: 'ledger', element: <AdminLedgerPage /> },
       { path: 'settings', element: <AdminSettingsPage /> },
+      { path: 'profile', element: <AdminProfilePage /> },
     ],
   },
   { path: '*', element: <NotFoundPage /> },

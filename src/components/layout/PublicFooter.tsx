@@ -2,48 +2,48 @@ import { Link } from 'react-router-dom'
 
 export function PublicFooter() {
   return (
-    <footer className="bg-okte-navy-900 text-okte-navy-300">
+    <footer style={{ background: '#2C1810', color: '#C4A882' }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-10">
           <div>
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-8 h-8 rounded-lg bg-accent flex items-center justify-center">
-                <span className="text-okte-navy-900 font-bold text-body-sm">K</span>
+              <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: '#C4882F' }}>
+                <span className="font-bold text-body-sm" style={{ color: '#2C1810' }}>K</span>
               </div>
-              <span className="font-bold text-white">One Key to Everywhere</span>
+              <span className="font-bold" style={{ color: '#FDFAF5' }}>One Key to Everywhere</span>
             </div>
             <p className="text-body-sm leading-relaxed">
-              Unlock extraordinary homes worldwide with one simple membership.
+              Il Club privato per le case più belle della Puglia. Non una piattaforma — una comunità di persone che si fidano l'una dell'altra.
             </p>
           </div>
           <div>
-            <h4 className="text-white font-semibold text-body-sm mb-4">Product</h4>
+            <h4 className="font-semibold text-body-sm mb-4" style={{ color: '#FDFAF5' }}>Il Club</h4>
             <ul className="space-y-2 text-body-sm">
-              <li><Link to="/how-it-works" className="hover:text-white transition-colors">How It Works</Link></li>
-              <li><Link to="/pricing" className="hover:text-white transition-colors">Pricing</Link></li>
-              <li><Link to="/waitlist" className="hover:text-white transition-colors">Join Waitlist</Link></li>
+              <li><Link to="/how-it-works" className="transition-colors hover:text-white">Come funziona</Link></li>
+              <li><Link to="/pricing" className="transition-colors hover:text-white">Piani di membership</Link></li>
+              <li><Link to="/waitlist" className="transition-colors hover:text-white">Lista d'attesa</Link></li>
             </ul>
           </div>
           <div>
-            <h4 className="text-white font-semibold text-body-sm mb-4">Members</h4>
+            <h4 className="font-semibold text-body-sm mb-4" style={{ color: '#FDFAF5' }}>Soci</h4>
             <ul className="space-y-2 text-body-sm">
-              <li><Link to="/auth/signup" className="hover:text-white transition-colors">Sign Up</Link></li>
-              <li><Link to="/auth/login" className="hover:text-white transition-colors">Sign In</Link></li>
+              <li><Link to="/auth/signup" className="transition-colors hover:text-white">Entra nel Club</Link></li>
+              <li><Link to="/auth/login" className="transition-colors hover:text-white">Accedi</Link></li>
             </ul>
           </div>
           <div>
-            <h4 className="text-white font-semibold text-body-sm mb-4">Owners</h4>
+            <h4 className="font-semibold text-body-sm mb-4" style={{ color: '#FDFAF5' }}>Proprietari</h4>
             <ul className="space-y-2 text-body-sm">
-              <li><Link to="/auth/signup" className="hover:text-white transition-colors">List Your Property</Link></li>
+              <li><Link to="/auth/signup" className="transition-colors hover:text-white">Apri le porte al Club</Link></li>
             </ul>
           </div>
         </div>
-        <div className="border-t border-okte-navy-800 pt-6 flex flex-col sm:flex-row justify-between items-center gap-3">
-          <p className="text-caption">© 2026 One Key to Everywhere. All rights reserved.</p>
+        <div className="flex flex-col sm:flex-row justify-between items-center gap-3 pt-6" style={{ borderTop: '1px solid rgba(196,136,47,0.2)' }}>
+          <p className="text-caption">© 2026 One Key to Everywhere · Puglia, Italia</p>
           <div className="flex gap-4 text-caption">
-            <a href="#" className="hover:text-white transition-colors">Privacy</a>
-            <a href="#" className="hover:text-white transition-colors">Terms</a>
-            <a href="#" className="hover:text-white transition-colors">Cookie Policy</a>
+            <a href="#" className="transition-colors hover:text-white">Privacy</a>
+            <a href="#" className="transition-colors hover:text-white">Termini</a>
+            <a href="#" className="transition-colors hover:text-white">Cookie</a>
           </div>
         </div>
       </div>
