@@ -13,37 +13,37 @@ export function PublicFooter() {
               <span className="font-bold" style={{ color: '#FDFAF5' }}>One Key to Everywhere</span>
             </div>
             <p className="text-body-sm leading-relaxed">
-              Il Club privato per le case più belle della Puglia. Non una piattaforma — una comunità di persone che si fidano l'una dell'altra.
+              A private Club for the finest homes in Puglia, Italy. Not a platform — a community built on trust.
             </p>
           </div>
           <div>
-            <h4 className="font-semibold text-body-sm mb-4" style={{ color: '#FDFAF5' }}>Il Club</h4>
+            <h4 className="font-semibold text-body-sm mb-4" style={{ color: '#FDFAF5' }}>The Club</h4>
             <ul className="space-y-2 text-body-sm">
-              <li><Link to="/how-it-works" className="transition-colors hover:text-white">Come funziona</Link></li>
-              <li><Link to="/pricing" className="transition-colors hover:text-white">Piani di membership</Link></li>
-              <li><Link to="/waitlist" className="transition-colors hover:text-white">Lista d'attesa</Link></li>
+              <li><Link to="/how-it-works" className="transition-colors hover:text-white">How It Works</Link></li>
+              <li><Link to="/pricing" className="transition-colors hover:text-white">Membership Plans</Link></li>
+              <li><Link to="/waitlist" className="transition-colors hover:text-white">Apply to Join</Link></li>
             </ul>
           </div>
           <div>
-            <h4 className="font-semibold text-body-sm mb-4" style={{ color: '#FDFAF5' }}>Soci</h4>
+            <h4 className="font-semibold text-body-sm mb-4" style={{ color: '#FDFAF5' }}>Members</h4>
             <ul className="space-y-2 text-body-sm">
-              <li><Link to="/auth/signup" className="transition-colors hover:text-white">Entra nel Club</Link></li>
-              <li><Link to="/auth/login" className="transition-colors hover:text-white">Accedi</Link></li>
+              <li><Link to="/auth/signup" className="transition-colors hover:text-white">Create Account</Link></li>
+              <li><Link to="/auth/login" className="transition-colors hover:text-white">Sign In</Link></li>
             </ul>
           </div>
           <div>
-            <h4 className="font-semibold text-body-sm mb-4" style={{ color: '#FDFAF5' }}>Proprietari</h4>
+            <h4 className="font-semibold text-body-sm mb-4" style={{ color: '#FDFAF5' }}>Property Owners</h4>
             <ul className="space-y-2 text-body-sm">
-              <li><Link to="/auth/signup" className="transition-colors hover:text-white">Apri le porte al Club</Link></li>
+              <li><Link to="/auth/signup" className="transition-colors hover:text-white">Open Your Doors</Link></li>
             </ul>
           </div>
         </div>
         <div className="flex flex-col sm:flex-row justify-between items-center gap-3 pt-6" style={{ borderTop: '1px solid rgba(196,136,47,0.2)' }}>
-          <p className="text-caption">© 2026 One Key to Everywhere · Puglia, Italia</p>
+          <p className="text-caption">© 2026 One Key to Everywhere · Puglia, Italy</p>
           <div className="flex gap-4 text-caption">
             <a href="#" className="transition-colors hover:text-white">Privacy</a>
-            <a href="#" className="transition-colors hover:text-white">Termini</a>
-            <a href="#" className="transition-colors hover:text-white">Cookie</a>
+            <a href="#" className="transition-colors hover:text-white">Terms</a>
+            <a href="#" className="transition-colors hover:text-white">Cookies</a>
           </div>
         </div>
       </div>

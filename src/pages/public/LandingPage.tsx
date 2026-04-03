@@ -5,40 +5,40 @@ import { PublicFooter } from '@/components/layout/PublicFooter'
 import { KeyIcon, HomeModernIcon, UsersIcon, ShieldCheckIcon } from '@heroicons/react/24/outline'
 
 const HOMES = [
-  { title: 'Trullo — Valle d\'Itria', area: 'Alberobello, Puglia', tier: 'Club Premium', img: 'https://picsum.photos/seed/trullo-itria/800/600' },
+  { title: "Trullo — Valle d'Itria", area: 'Alberobello, Puglia', tier: 'Club Premium', img: 'https://picsum.photos/seed/trullo-itria/800/600' },
   { title: 'Masseria Bianca', area: 'Ostuni, Puglia', tier: 'Club Luxury', img: 'https://picsum.photos/seed/masseria-ostuni/800/600' },
-  { title: 'Casa sul Mare', area: 'Polignano a Mare, Puglia', tier: 'Club Premium', img: 'https://picsum.photos/seed/polignano-mare/800/600' },
-  { title: 'Torre Costiera', area: 'Otranto, Puglia', tier: 'Club Luxury', img: 'https://picsum.photos/seed/torre-otranto/800/600' },
+  { title: 'House on the Sea', area: 'Polignano a Mare, Puglia', tier: 'Club Premium', img: 'https://picsum.photos/seed/polignano-mare/800/600' },
+  { title: 'Coastal Tower', area: 'Otranto, Puglia', tier: 'Club Luxury', img: 'https://picsum.photos/seed/torre-otranto/800/600' },
 ]
 
 const PILLARS = [
   {
     icon: <KeyIcon className="w-6 h-6" />,
-    title: 'Una chiave. Tutte le case.',
-    desc: 'Quando entri nel Club ricevi le tue chiavi. Non prezzi. Non aste. Non stagioni care. Le chiavi funzionano a gennaio come ad agosto.',
+    title: 'One key. Every home.',
+    desc: 'When you join the Club you receive your keys. No prices. No bidding. No surge in August. A key in January is worth exactly the same as a key in July.',
   },
   {
     icon: <HomeModernIcon className="w-6 h-6" />,
-    title: 'Case vere. Proprietari veri.',
-    desc: 'Non noleggi una camera. Accedi a una casa curata da chi la ama. Ogni proprietario è anche membro del Club — ha aperto le sue porte perché crede in questo modo di vivere.',
+    title: 'Real homes. Real owners.',
+    desc: "You don't rent a room. You access a home that someone loves. Every owner is also a Club Member — they opened their doors because they believe in this way of travelling.",
   },
   {
     icon: <UsersIcon className="w-6 h-6" />,
-    title: 'Un cerchio ristretto.',
-    desc: 'Non si entra per caso. Ogni membro è selezionato. Ogni casa è approvata. Il Club esiste perché la fiducia si costruisce con cura, non con algoritmi.',
+    title: 'A carefully curated circle.',
+    desc: "You don't join by accident. Every member is vetted. Every home is approved. The Club exists because trust is built with care — not with algorithms.",
   },
   {
     icon: <ShieldCheckIcon className="w-6 h-6" />,
-    title: 'La via europea.',
-    desc: 'Nessun prezzo dinamico opportunistico. Nessuna penale per chi sceglie gennaio o marzo. OKTE nasce in Europa con valori europei: giustizia, continuità, rispetto del territorio.',
+    title: 'The European way.',
+    desc: "No opportunistic dynamic pricing. No penalty for choosing January or March. OKTE was born in Europe with European values: fairness, continuity, respect for the territory.",
   },
 ]
 
 const STATS = [
-  { value: '50+', label: 'Case in Puglia' },
-  { value: '1', label: 'Regione, fatta bene' },
-  { value: 'Zero', label: 'Prezzi dinamici' },
-  { value: 'Soli', label: 'Soci selezionati' },
+  { value: '50+', label: 'Homes in Puglia' },
+  { value: '1', label: 'Region, done right' },
+  { value: 'Zero', label: 'Dynamic pricing' },
+  { value: 'Vetted', label: 'Members only' },
 ]
 
 export function LandingPage() {
@@ -50,23 +50,22 @@ export function LandingPage() {
 
       {/* Hero */}
       <section className="relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #2C1810 0%, #6B2D1A 50%, #8B3A2A 100%)' }}>
-        {/* Warm texture overlay */}
         <div className="absolute inset-0 opacity-10">
           <img src="https://picsum.photos/seed/puglia-ulivi/1600/900" alt="" className="w-full h-full object-cover" />
         </div>
         <div className="relative max-w-5xl mx-auto px-6 py-28 lg:py-40 text-center">
           <p className="text-caption font-semibold uppercase tracking-[0.25em] mb-6" style={{ color: '#C4882F' }}>
-            Puglia, Italia · Club privato
+            Puglia, Italy · Private Club
           </p>
           <h1 className="font-display text-display-xl font-bold mb-6 leading-tight" style={{ color: '#FDFAF5' }}>
-            Una chiave.<br />
-            <span style={{ color: '#C4882F' }}>Ogni casa.</span>
+            One Key.<br />
+            <span style={{ color: '#C4882F' }}>Every Home.</span>
           </h1>
           <p className="text-body-lg max-w-2xl mx-auto mb-3" style={{ color: '#EDC59A' }}>
-            One Key to Everywhere è un Club privato per chi possiede — o desidera vivere — le case più belle della Puglia.
+            One Key to Everywhere is a private Club for those who own — or wish to experience — the finest homes in Puglia.
           </p>
           <p className="text-body-md max-w-xl mx-auto mb-12" style={{ color: '#C4A882' }}>
-            Non una piattaforma. Non un aggregatore. Un circolo di persone che si fidano l'una dell'altra e aprono le proprie porte.
+            Not a platform. Not an aggregator. A circle of people who trust one another and open their own doors.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button
@@ -75,7 +74,7 @@ export function LandingPage() {
               className="font-bold"
               style={{ background: '#C4882F', color: '#2C1810', border: 'none' }}
             >
-              Richiedi la tua membership
+              Request your membership
             </Button>
             <Button
               variant="outline"
@@ -83,7 +82,7 @@ export function LandingPage() {
               onClick={() => navigate('/how-it-works')}
               style={{ borderColor: '#C4A882', color: '#FDFAF5' }}
             >
-              Come funziona il Club
+              How the Club works
             </Button>
           </div>
         </div>
@@ -105,10 +104,10 @@ export function LandingPage() {
       <section className="max-w-5xl mx-auto px-6 py-20">
         <div className="text-center mb-14">
           <h2 className="font-display text-display-lg font-bold mb-3" style={{ color: '#2C1810' }}>
-            Non è una prenotazione.<br />È un accesso.
+            Not a booking.<br />An access.
           </h2>
           <p className="text-body-lg max-w-xl mx-auto" style={{ color: '#8A7560' }}>
-            Il Club funziona come nessun altro servizio di viaggi che hai mai visto.
+            The Club works unlike anything you've seen in travel.
           </p>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
@@ -131,11 +130,13 @@ export function LandingPage() {
         <div className="max-w-6xl mx-auto px-6 py-20">
           <div className="flex items-end justify-between mb-10">
             <div>
-              <p className="text-caption font-semibold uppercase tracking-widest mb-2" style={{ color: '#C4882F' }}>Le case del Club</p>
-              <h2 className="font-display text-heading-xl font-bold" style={{ color: '#2C1810' }}>Costruite sulla fiducia,<br />aperte ai soci.</h2>
+              <p className="text-caption font-semibold uppercase tracking-widest mb-2" style={{ color: '#C4882F' }}>Club homes</p>
+              <h2 className="font-display text-heading-xl font-bold" style={{ color: '#2C1810' }}>
+                Built on trust.<br />Open to members.
+              </h2>
             </div>
             <Button variant="outline" onClick={() => navigate('/auth/login')} style={{ borderColor: '#8B3A2A', color: '#8B3A2A' }}>
-              Vedi tutte
+              Browse all
             </Button>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
@@ -161,22 +162,22 @@ export function LandingPage() {
       {/* Owner CTA */}
       <section className="py-20 px-6" style={{ background: '#F5F7F0', borderTop: '1px solid #CDD8B0' }}>
         <div className="max-w-3xl mx-auto text-center">
-          <p className="text-caption font-semibold uppercase tracking-widest mb-3" style={{ color: '#4A5C28' }}>Per i proprietari</p>
+          <p className="text-caption font-semibold uppercase tracking-widest mb-3" style={{ color: '#4A5C28' }}>For property owners</p>
           <h2 className="font-display text-display-lg font-bold mb-4" style={{ color: '#2C1810' }}>
-            Anche tu sei membro del Club.
+            You're a member too.
           </h2>
           <p className="text-body-lg mb-3" style={{ color: '#637A38' }}>
-            Non metti la tua casa "su una piattaforma". La apri ai tuoi pari. In cambio, guadagni chiavi per accedere alle case degli altri membri — in Puglia e dove il Club si espanderà.
+            You're not putting your home "on a platform". You're opening it to your peers. In return, you earn keys to access other members' homes — in Puglia and wherever the Club grows next.
           </p>
           <p className="text-body-md mb-10" style={{ color: '#8A7560' }}>
-            Nessun prezzo dinamico che penalizza chi vuole venire in bassa stagione. Nessuna commissione gonfiata. Un modello costruito per restare.
+            No dynamic pricing that punishes guests for choosing low season. No inflated commissions. A model built to last.
           </p>
           <Button
             size="lg"
             onClick={() => navigate('/auth/signup')}
             style={{ background: '#4A5C28', color: '#FDFAF5', border: 'none' }}
           >
-            Apri le tue porte al Club
+            Open your doors to the Club
           </Button>
         </div>
       </section>
@@ -185,26 +186,17 @@ export function LandingPage() {
       <section className="py-20 text-center" style={{ background: '#2C1810' }}>
         <div className="max-w-xl mx-auto px-6">
           <h2 className="font-display text-display-lg font-bold mb-4" style={{ color: '#FDFAF5' }}>
-            Pronti a entrare?
+            Ready to join?
           </h2>
           <p className="text-body-lg mb-8" style={{ color: '#C4A882' }}>
-            Le membership sono limitate. Puglia, fatta nel modo giusto.
+            Memberships are limited. Puglia, done the right way.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button
-              size="lg"
-              onClick={() => navigate('/auth/signup')}
-              style={{ background: '#C4882F', color: '#2C1810', border: 'none', fontWeight: 700 }}
-            >
-              Richiedi la membership
+            <Button size="lg" onClick={() => navigate('/auth/signup')} style={{ background: '#C4882F', color: '#2C1810', border: 'none', fontWeight: 700 }}>
+              Request membership
             </Button>
-            <Button
-              variant="outline"
-              size="lg"
-              onClick={() => navigate('/waitlist')}
-              style={{ borderColor: '#8A7560', color: '#C4A882' }}
-            >
-              Lista d'attesa
+            <Button variant="outline" size="lg" onClick={() => navigate('/waitlist')} style={{ borderColor: '#8A7560', color: '#C4A882' }}>
+              Join the waitlist
             </Button>
           </div>
         </div>

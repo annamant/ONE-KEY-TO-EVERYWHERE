@@ -5,9 +5,9 @@ import { useAuth } from '@/contexts/AuthContext'
 import { Button } from '@/components/ui/Button'
 
 const links = [
-  { label: 'Come funziona', path: '/how-it-works' },
+  { label: 'How It Works', path: '/how-it-works' },
   { label: 'Membership', path: '/pricing' },
-  { label: 'Lista d\'attesa', path: '/waitlist' },
+  { label: 'Apply', path: '/waitlist' },
 ]
 
 export function PublicNav() {
@@ -51,35 +51,22 @@ export function PublicNav() {
           <div className="hidden md:flex items-center gap-3">
             {currentUser ? (
               <Button onClick={() => navigate(dashboardPath)} size="sm" style={{ background: '#8B3A2A', color: '#FDFAF5', border: 'none' }}>
-                Vai alla dashboard
+                Go to Dashboard
               </Button>
             ) : (
               <>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => navigate('/auth/login')}
-                  style={{ color: '#8A7560' }}
-                >
-                  Accedi
+                <Button variant="ghost" size="sm" onClick={() => navigate('/auth/login')} style={{ color: '#8A7560' }}>
+                  Sign In
                 </Button>
-                <Button
-                  size="sm"
-                  onClick={() => navigate('/auth/signup')}
-                  style={{ background: '#8B3A2A', color: '#FDFAF5', border: 'none' }}
-                >
-                  Entra nel Club
+                <Button size="sm" onClick={() => navigate('/auth/signup')} style={{ background: '#8B3A2A', color: '#FDFAF5', border: 'none' }}>
+                  Join the Club
                 </Button>
               </>
             )}
           </div>
 
           {/* Mobile toggle */}
-          <button
-            onClick={() => setMobileOpen(!mobileOpen)}
-            className="md:hidden p-2 rounded-lg"
-            style={{ color: '#8A7560' }}
-          >
+          <button onClick={() => setMobileOpen(!mobileOpen)} className="md:hidden p-2 rounded-lg" style={{ color: '#8A7560' }}>
             {mobileOpen ? <XMarkIcon className="w-5 h-5" /> : <Bars3Icon className="w-5 h-5" />}
           </button>
         </div>
@@ -100,19 +87,9 @@ export function PublicNav() {
             </Link>
           ))}
           <div className="pt-2 space-y-2" style={{ borderTop: '1px solid #E8DCCF' }}>
-            <Button
-              variant="outline"
-              fullWidth
-              onClick={() => { navigate('/auth/login'); setMobileOpen(false) }}
-            >
-              Accedi
-            </Button>
-            <Button
-              fullWidth
-              onClick={() => { navigate('/auth/signup'); setMobileOpen(false) }}
-              style={{ background: '#8B3A2A', color: '#FDFAF5', border: 'none' }}
-            >
-              Entra nel Club
+            <Button variant="outline" fullWidth onClick={() => { navigate('/auth/login'); setMobileOpen(false) }}>Sign In</Button>
+            <Button fullWidth onClick={() => { navigate('/auth/signup'); setMobileOpen(false) }} style={{ background: '#8B3A2A', color: '#FDFAF5', border: 'none' }}>
+              Join the Club
             </Button>
           </div>
         </div>
