@@ -1,0 +1,60 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    @apply font-sans text-body-md text-text-primary bg-surface;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-okte-slate-300 rounded-pill;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-okte-slate-400;
+  }
+}
+
+@layer components {
+  /* react-day-picker custom styles for okte theme */
+  .rdp-okte .rdp-day_selected:not(.rdp-day_range_middle) {
+    @apply bg-primary text-white;
+  }
+  .rdp-okte .rdp-day_range_middle {
+    @apply bg-okte-navy-50 text-primary;
+  }
+  .rdp-okte .rdp-day:hover:not([disabled]) {
+    @apply bg-okte-slate-100;
+  }
+  .rdp-okte .rdp-nav_button:hover {
+    @apply bg-okte-slate-100;
+  }
+  .rdp-okte {
+    @apply font-sans;
+  }
+
+  /* Page padding utility */
+  .page-content {
+    @apply px-4 sm:px-6 lg:px-8 py-6 max-w-7xl mx-auto;
+  }
+  .page-content-wide {
+    @apply px-4 sm:px-6 lg:px-8 py-6;
+  }
+}
