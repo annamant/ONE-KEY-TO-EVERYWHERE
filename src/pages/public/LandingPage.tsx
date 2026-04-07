@@ -8,7 +8,6 @@ const HERO_IMG = '/images/landing/jose-jovena-dgj88Fece5c-unsplash.jpg';
 const OSTUNI_IMG = '/images/landing/freysteinn-g-jonsson-DqFMDsdQhXc-unsplash.jpg';
 const FINAL_CTA_IMG = '/images/landing/mathilde-ro-CWwYdFYKIw0-unsplash.jpg';
 
-// ... rest of your LandingPage.tsx ...
 const HOMES = [
   {
     title: "Trullo — Valle d'Itria",
