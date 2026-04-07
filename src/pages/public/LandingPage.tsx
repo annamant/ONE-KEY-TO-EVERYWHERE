@@ -79,8 +79,8 @@ export function LandingPage() {
           className="absolute inset-0"
           style={{
             background:
-              'linear-gradient(to right, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.45) 55%, rgba(0,0,0,0.15) 100%), ' +
-              'linear-gradient(to top, rgba(0,0,0,0.65) 0%, transparent 55%)',
+              'linear-gradient(to right, rgba(0,0,0,0.50) 0%, rgba(0,0,0,0.28) 55%, rgba(0,0,0,0.08) 100%), ' +
+              'linear-gradient(to top, rgba(0,0,0,0.45) 0%, transparent 55%)',
           }}
         />
 
@@ -170,7 +170,7 @@ export function LandingPage() {
         />
         <div
           className="absolute inset-0 flex items-center"
-          style={{ background: 'linear-gradient(to right, rgba(0,0,0,0.65) 0%, transparent 60%)' }}
+          style={{ background: 'linear-gradient(to right, rgba(0,0,0,0.40) 0%, transparent 60%)' }}
         >
           <div className="px-10 sm:px-16">
             <p className="text-caption font-semibold uppercase tracking-[0.2em] mb-2" style={{ color: '#C4882F' }}>
