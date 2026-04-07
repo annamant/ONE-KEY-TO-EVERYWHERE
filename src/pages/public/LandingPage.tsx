@@ -285,7 +285,7 @@ export function LandingPage() {
       {/* ── FINAL CTA ────────────────────────────────────────────────────────── */}
       <section className="py-24 text-center relative overflow-hidden" style={{ background: '#0A0A0A' }}>
         <div
-          className="absolute inset-0 opacity-20"
+          className="absolute inset-0 opacity-50"
           style={{
             backgroundImage: `url(${FINAL_CTA_IMG})`,
             backgroundSize: 'cover',
