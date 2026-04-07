@@ -4,10 +4,11 @@ import { PublicFooter } from '@/components/layout/PublicFooter'
 import { KeyIcon, HomeModernIcon, UsersIcon, ShieldCheckIcon } from '@heroicons/react/24/outline'
 
 // Verified Unsplash images — Puglia, Italy
-const HERO_IMG     = 'https://images.unsplash.com/photo-DqFMDsdQhXc?w=1920&auto=format&fit=crop&q=85'
-const OSTUNI_IMG   = 'https://images.unsplash.com/photo-bWcPrHXuCHk?w=1600&auto=format&fit=crop&q=80'
-const FINAL_CTA_IMG = 'https://images.unsplash.com/photo-ED4K_zy_TbY?w=1200&auto=format&fit=crop&q=60'
+const HERO_IMG = '/images/landing/jose-jovena-dgj88Fece5c-unsplash.jpg';
+const OSTUNI_IMG = '/images/landing/freysteinn-g-jonsson-DqFMDsdQhXc-unsplash.jpg';
+const FINAL_CTA_IMG = '/images/landing/mathilde-ro-CWwYdFYKIw0-unsplash.jpg';
 
+// ... rest of your LandingPage.tsx ...
 const HOMES = [
   {
     title: "Trullo — Valle d'Itria",
