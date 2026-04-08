@@ -11,26 +11,26 @@ const FINAL_CTA_IMG = '/images/landing/mathilde-ro-CWwYdFYKIw0-unsplash.jpg';
 // ... rest of your LandingPage.tsx ...
 const HOMES = [
   {
-    title: "Trullo — Valle d'Itria",
-    area: 'Alberobello, Puglia',
+    title: "Trullo — Peppe",
+    area: 'Ostuni, Puglia',
     tier: 'Club Premium',
     img: 'https://images.unsplash.com/photo-sc6X5YIuxq8?w=800&auto=format&fit=crop&q=80',
   },
   {
-    title: 'Masseria Bianca',
+    title: 'Blue House',
     area: 'Ostuni, Puglia',
     tier: 'Club Luxury',
     img: 'https://images.unsplash.com/photo-tplY9UrKtV4?w=800&auto=format&fit=crop&q=80',
   },
   {
-    title: 'House on the Sea',
-    area: 'Polignano a Mare, Puglia',
+    title: 'Yellow House',
+    area: 'Ostuni, Puglia',
     tier: 'Club Premium',
     img: 'https://images.unsplash.com/photo-eKl9Ync7t8Y?w=800&auto=format&fit=crop&q=80',
   },
   {
-    title: 'Coastal Tower',
-    area: 'Otranto, Puglia',
+    title: 'Trullo Family House',
+    area: 'Ostuni, Puglia',
     tier: 'Club Luxury',
     img: 'https://images.unsplash.com/photo-GWHkstcGkFM?w=800&auto=format&fit=crop&q=80',
   },
@@ -40,7 +40,7 @@ const PILLARS = [
   {
     icon: <KeyIcon className="w-6 h-6" />,
     title: 'One key. Every home.',
-    desc: 'When you join the Club you receive your keys. No prices. No bidding. No surge in August. A key in January is worth exactly the same as a key in July.',
+    desc: 'When you join the Club you receive gain access to everyehere. No prices. No bidding. No surge in August. A key in January is worth exactly the same as a key in July.',
   },
   {
     icon: <HomeModernIcon className="w-6 h-6" />,
@@ -152,7 +152,7 @@ export function LandingPage() {
             className="font-display font-bold"
             style={{ color: '#FFFFFF', fontSize: 'clamp(1.5rem, 3.5vw, 2.2rem)', lineHeight: 1.35 }}
           >
-            "Not a platform. Not a rental. A circle of people who trust one another — and open their doors."
+            "Not a platform. Not a rental. A membership club for experiences — a key to everywhere."
           </p>
           <p className="text-caption uppercase tracking-widest mt-5" style={{ color: '#C4882F', letterSpacing: '0.18em' }}>
             One Key to Everywhere · Est. Puglia
