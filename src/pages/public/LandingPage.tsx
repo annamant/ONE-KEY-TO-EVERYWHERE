@@ -170,7 +170,7 @@ export function LandingPage() {
         />
         <div
           className="absolute inset-0 flex items-center"
-          style={{ background: 'linear-gradient(to right, rgba(0,0,0,0.40) 0%, transparent 60%)' }}
+          style={{ background: 'linear-gradient(to right, rgba(0,0,0,0.10) 0%, transparent 60%)' }}
         >
           <div className="px-10 sm:px-16">
             <p className="text-caption font-semibold uppercase tracking-[0.2em] mb-2" style={{ color: '#C4882F' }}>
@@ -285,7 +285,7 @@ export function LandingPage() {
       {/* ── FINAL CTA ────────────────────────────────────────────────────────── */}
       <section className="py-24 text-center relative overflow-hidden" style={{ background: '#0A0A0A' }}>
         <div
-          className="absolute inset-0 opacity-50"
+          className="absolute inset-0 opacity-80"
           style={{
             backgroundImage: `url(${FINAL_CTA_IMG})`,
             backgroundSize: 'cover',
