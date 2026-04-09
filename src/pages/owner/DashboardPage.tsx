@@ -3,7 +3,7 @@ import { BuildingOfficeIcon, CalendarDaysIcon, KeyIcon, ChartBarIcon } from '@he
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts'
 import { useAuth } from '@/contexts/AuthContext'
 import { useMockApi } from '@/hooks/useMockApi'
-import { mockProperties, mockBookings } from '@/mock'
+import { mockProperties, mockBookings } from '@/services'
 import { formatDateRange } from '@/utils/format'
 import { StatCard } from '@/components/data-display/StatCard'
 import { Card } from '@/components/ui/Card'

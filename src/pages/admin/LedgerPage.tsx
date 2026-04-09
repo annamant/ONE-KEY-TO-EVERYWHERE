@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useMockApi } from '@/hooks/useMockApi'
 import { useToast } from '@/contexts/ToastContext'
-import { mockLedger, mockUsers } from '@/mock'
+import { mockLedger, mockUsers } from '@/services'
 import { Badge } from '@/components/ui/Badge'
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'

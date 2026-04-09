@@ -2,7 +2,7 @@ import { ArrowDownIcon, ArrowUpIcon, ArrowDownTrayIcon } from '@heroicons/react/
 import { KeyIcon } from '@heroicons/react/24/solid'
 import { useAuth } from '@/contexts/AuthContext'
 import { useMockApi } from '@/hooks/useMockApi'
-import { mockLedger } from '@/mock'
+import { mockLedger } from '@/services'
 import { formatDate, formatKeys } from '@/utils/format'
 import { Card } from '@/components/ui/Card'
 import { Badge } from '@/components/ui/Badge'

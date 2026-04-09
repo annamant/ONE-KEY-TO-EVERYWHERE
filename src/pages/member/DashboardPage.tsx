@@ -8,7 +8,7 @@ import {
 import { KeyIcon as KeySolid } from '@heroicons/react/24/solid'
 import { useAuth } from '@/contexts/AuthContext'
 import { useMockApi } from '@/hooks/useMockApi'
-import { mockLedger, mockBookings, mockProperties } from '@/mock'
+import { mockLedger, mockBookings, mockProperties } from '@/services'
 import { formatDateRange } from '@/utils/format'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'

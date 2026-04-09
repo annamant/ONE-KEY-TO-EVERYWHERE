@@ -1,0 +1,16 @@
+import jwt from 'jsonwebtoken'
+
+const SECRET = process.env.JWT_SECRET ?? 'okte-dev-secret-change-in-production'
+const EXPIRES_IN = '30d'
+
+export function signToken(payload: { userId: string; role: string }): string {
+  return jwt.sign(payload, SECRET, { expiresIn: EXPIRES_IN })
+}
+
+export function verifyToken(token: string): { userId: string; role: string } | null {
+  try {
+    return jwt.verify(token, SECRET) as { userId: string; role: string }
+  } catch {
+    return null
+  }
+}

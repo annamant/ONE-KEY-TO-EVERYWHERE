@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useMockApi } from '@/hooks/useMockApi'
-import { mockUsers } from '@/mock'
+import { mockUsers } from '@/services'
 import { Badge } from '@/components/ui/Badge'
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'

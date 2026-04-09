@@ -7,7 +7,7 @@ import {
   type ReactNode,
 } from 'react'
 import type { Notification } from '@/types'
-import { mockNotifications } from '@/mock'
+import { mockNotifications } from '@/services'
 import { useAuth } from './AuthContext'
 
 interface NotificationContextValue {

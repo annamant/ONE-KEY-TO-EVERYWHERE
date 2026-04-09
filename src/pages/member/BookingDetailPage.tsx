@@ -10,7 +10,7 @@ import {
 } from '@heroicons/react/24/outline'
 import type { DateRange } from 'react-day-picker'
 import { useMockApi } from '@/hooks/useMockApi'
-import { mockBookings, mockProperties } from '@/mock'
+import { mockBookings, mockProperties } from '@/services'
 import { useToast } from '@/contexts/ToastContext'
 import { formatDateRange, formatDate, formatKeys } from '@/utils/format'
 import { Badge } from '@/components/ui/Badge'

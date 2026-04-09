@@ -7,7 +7,7 @@ import {
   type ReactNode,
 } from 'react'
 import type { User, UserRole } from '@/types'
-import { mockUsers } from '@/mock'
+import { api } from '@/services/apiClient'
 
 const SESSION_KEY = 'okte_session'
 
@@ -40,7 +40,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<SessionData | null>(null)
   const [loading, setLoading] = useState(true)
 
-  // Restore session on mount
+  // Restore session on mount via GET /api/auth/me
   useEffect(() => {
     const raw = localStorage.getItem(SESSION_KEY)
     if (!raw) {
@@ -49,15 +49,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
     try {
       const s: SessionData = JSON.parse(raw)
-      mockUsers.getById(s.userId).then((user) => {
-        if (user) {
+      api.get<User>('/auth/me')
+        .then((user) => {
           setCurrentUser(user)
           setSession(s)
-        } else {
+          setLoading(false)
+        })
+        .catch(() => {
           localStorage.removeItem(SESSION_KEY)
-        }
-        setLoading(false)
-      })
+          setLoading(false)
+        })
     } catch {
       localStorage.removeItem(SESSION_KEY)
       setLoading(false)
@@ -65,15 +66,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [])
 
   const login = useCallback(async (email: string, password: string): Promise<User> => {
-    const user = await mockUsers.verifyPassword(email, password)
-    if (!user) throw new Error('Invalid email or password')
-    if (user.status === 'suspended') throw new Error('Your account has been suspended')
-
-    const s: SessionData = {
-      userId: user.id,
-      role: user.role,
-      token: `token-${user.id}-${Date.now()}`,
-    }
+    const { user, token } = await api.post<{ user: User; token: string }>('/auth/login', { email, password })
+    const s: SessionData = { userId: user.id, role: user.role, token }
     localStorage.setItem(SESSION_KEY, JSON.stringify(s))
     setSession(s)
     setCurrentUser(user)
@@ -88,18 +82,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       lastName: string
       role: 'member' | 'owner'
     }): Promise<User> => {
-      const user = await mockUsers.create({
-        email: data.email,
-        passwordHash: data.password,
-        firstName: data.firstName,
-        lastName: data.lastName,
-        role: data.role,
-      })
-      const s: SessionData = {
-        userId: user.id,
-        role: user.role,
-        token: `token-${user.id}-${Date.now()}`,
-      }
+      const { user, token } = await api.post<{ user: User; token: string }>('/auth/signup', data)
+      const s: SessionData = { userId: user.id, role: user.role, token }
       localStorage.setItem(SESSION_KEY, JSON.stringify(s))
       setSession(s)
       setCurrentUser(user)
