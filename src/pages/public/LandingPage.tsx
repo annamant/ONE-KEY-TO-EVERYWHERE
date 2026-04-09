@@ -50,7 +50,7 @@ const PILLARS = [
   {
     icon: <UsersIcon className="w-6 h-6" />,
     title: 'A carefully curated circle.',
-    desc: "You don't join by accident. Every member is vetted. Every home is approved. The Club exists because trust is built with care — not with algorithms.",
+    desc: "You don't join by accident. Every member is vetted.The Club exists because trust is built with care — not with algorithms.",
   },
   {
     icon: <ShieldCheckIcon className="w-6 h-6" />,
@@ -152,7 +152,7 @@ export function LandingPage() {
             className="font-display font-bold"
             style={{ color: '#FFFFFF', fontSize: 'clamp(1.5rem, 3.5vw, 2.2rem)', lineHeight: 1.35 }}
           >
-            "Not a platform. Not a rental. A membership club for experiences — a key to everywhere."
+            "A membership club for experiences — a key to everywhere."
           </p>
           <p className="text-caption uppercase tracking-widest mt-5" style={{ color: '#C4882F', letterSpacing: '0.18em' }}>
             One Key to Everywhere · Est. Puglia
