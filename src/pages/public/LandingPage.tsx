@@ -40,7 +40,7 @@ const PILLARS = [
   {
     icon: <KeyIcon className="w-6 h-6" />,
     title: 'One key. Every home.',
-    desc: 'When you join the Club you receive gain access to everyehere. No prices. No bidding. No surge in August. A key in January is worth exactly the same as a key in July.',
+    desc: 'When you join the Club you gain access to everyehere throughout the year for you, our friends and family',
   },
   {
     icon: <HomeModernIcon className="w-6 h-6" />,
