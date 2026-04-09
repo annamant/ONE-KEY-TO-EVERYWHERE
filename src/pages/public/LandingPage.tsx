@@ -293,8 +293,11 @@ export function LandingPage() {
           }}
         />
         <div className="relative max-w-xl mx-auto px-6">
-          <p className="text-caption font-semibold uppercase tracking-[0.22em] mb-4" style={{ color: 'rgba(196,136,47,0.95)', textShadow: '0 2px 10px rgba(0,0,0,0.55)' }}
-            Membership is limited
+          <p
+           className="text-caption font-semibold uppercase tracking-[0.22em] mb-4"
+           style={{ color: 'rgba(196,136,47,0.95)', textShadow: '0 2px 10px rgba(0,0,0,0.55)' }} 
+        >
+           Membership is limited   
           </p>
           <h2 className="font-display font-bold mb-4" style={{ color: '#FFFFFF', fontSize: 'clamp(2rem, 5vw, 3.5rem)', lineHeight: 1.1 }}>
             Puglia.<br />Done right.
