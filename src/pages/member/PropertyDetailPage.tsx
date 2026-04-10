@@ -12,7 +12,7 @@ import {
 import { KeyIcon } from '@heroicons/react/24/solid'
 import type { DateRange } from 'react-day-picker'
 import { useMockApi } from '@/hooks/useMockApi'
-import { mockProperties } from '@/mock'
+import { mockProperties } from '@/services'
 import { useAuth } from '@/contexts/AuthContext'
 import { calculateKeyCost } from '@/utils/keyCalc'
 import { formatDate } from '@/utils/format'

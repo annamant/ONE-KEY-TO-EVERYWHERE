@@ -9,7 +9,7 @@ import {
 import { useAuth } from '@/contexts/AuthContext'
 import { useToast } from '@/contexts/ToastContext'
 import { useMockApi } from '@/hooks/useMockApi'
-import { mockHouseholds, mockUsers } from '@/mock'
+import { mockHouseholds, mockUsers } from '@/services'
 import { formatRelative } from '@/utils/format'
 import { Avatar } from '@/components/ui/Avatar'
 import { Badge } from '@/components/ui/Badge'

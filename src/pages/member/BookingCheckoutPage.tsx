@@ -4,7 +4,7 @@ import { MapPinIcon, CalendarDaysIcon, UserGroupIcon, KeyIcon } from '@heroicons
 import { useAuth } from '@/contexts/AuthContext'
 import { useToast } from '@/contexts/ToastContext'
 import { useMockApi } from '@/hooks/useMockApi'
-import { mockProperties, mockLedger, mockBookings } from '@/mock'
+import { mockProperties, mockLedger, mockBookings } from '@/services'
 import { formatDateRange } from '@/utils/format'
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'

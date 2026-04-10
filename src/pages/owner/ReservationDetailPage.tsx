@@ -1,7 +1,7 @@
 import { useParams, useNavigate } from 'react-router-dom'
 import { useToast } from '@/contexts/ToastContext'
 import { useMockApi } from '@/hooks/useMockApi'
-import { mockBookings, mockProperties, mockUsers } from '@/mock'
+import { mockBookings, mockProperties, mockUsers } from '@/services'
 import { Badge } from '@/components/ui/Badge'
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'

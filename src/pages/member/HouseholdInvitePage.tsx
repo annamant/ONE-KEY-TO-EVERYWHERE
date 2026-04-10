@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { CheckCircleIcon, XCircleIcon } from '@heroicons/react/24/solid'
 import { useAuth } from '@/contexts/AuthContext'
 import { useToast } from '@/contexts/ToastContext'
-import { mockHouseholds } from '@/mock'
+import { mockHouseholds } from '@/services'
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
 

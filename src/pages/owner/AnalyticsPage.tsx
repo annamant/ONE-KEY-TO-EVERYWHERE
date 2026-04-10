@@ -1,6 +1,6 @@
 import { useAuth } from '@/contexts/AuthContext'
 import { useMockApi } from '@/hooks/useMockApi'
-import { mockProperties, mockBookings } from '@/mock'
+import { mockProperties, mockBookings } from '@/services'
 import { Card } from '@/components/ui/Card'
 import { StatCard } from '@/components/data-display/StatCard'
 import { PageSpinner } from '@/components/ui/Spinner'
