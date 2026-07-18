@@ -28,7 +28,10 @@ app.use(express.json())
 // Initialize DB on startup
 const db = getDb()
 const userCount = db.prepare('SELECT COUNT(*) as count FROM users').get() as { count: number }
-if (userCount.count === 0) {
+if (process.env.RESET_SEED === 'true') {
+  console.log('⚠ RESET_SEED=true — wiping and re-seeding the database')
+  seedDatabase(true)
+} else if (userCount.count === 0) {
   seedDatabase()
 }
 

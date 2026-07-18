@@ -18,7 +18,6 @@ export const SEED_USERS: User[] = [
   {
     id: 'user-alice',
     email: 'alice@demo.com',
-    passwordHash: 'demo',
     firstName: 'Alice',
     lastName: 'Moretti',
     role: 'member',
@@ -31,7 +30,6 @@ export const SEED_USERS: User[] = [
   {
     id: 'user-bob',
     email: 'bob@demo.com',
-    passwordHash: 'demo',
     firstName: 'Roberto',
     lastName: 'De Luca',
     role: 'member',
@@ -44,7 +42,6 @@ export const SEED_USERS: User[] = [
   {
     id: 'user-carol',
     email: 'carol@demo.com',
-    passwordHash: 'demo',
     firstName: 'Carolina',
     lastName: 'Venezia',
     role: 'owner',
@@ -57,7 +54,6 @@ export const SEED_USERS: User[] = [
   {
     id: 'user-dave',
     email: 'dave@demo.com',
-    passwordHash: 'demo',
     firstName: 'Davide',
     lastName: 'Santoro',
     role: 'owner',
@@ -70,7 +66,6 @@ export const SEED_USERS: User[] = [
   {
     id: 'user-eve',
     email: 'eve@demo.com',
-    passwordHash: 'demo',
     firstName: 'Eva',
     lastName: 'Romano',
     role: 'admin',

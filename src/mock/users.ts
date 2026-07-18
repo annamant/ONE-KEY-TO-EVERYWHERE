@@ -1,6 +1,15 @@
 import type { User, UserStatus } from '@/types'
 import { db, delay, generateId } from './db'
 
+/** Demo-only password store (not part of the public User type). */
+const passwords = new Map<string, string>([
+  ['alice@demo.com', 'demo'],
+  ['bob@demo.com', 'demo'],
+  ['carol@demo.com', 'demo'],
+  ['dave@demo.com', 'demo'],
+  ['eve@demo.com', 'demo'],
+])
+
 const mockUsers = {
   async getById(id: string): Promise<User | null> {
     await delay()
@@ -40,13 +49,15 @@ const mockUsers = {
     const existing = db.users.find((u) => u.email.toLowerCase() === data.email.toLowerCase())
     if (existing) throw new Error('Email already in use')
     const now = new Date().toISOString()
+    const { passwordHash, ...rest } = data
     const user: User = {
       id: generateId('user'),
-      ...data,
+      ...rest,
       status: 'pending_verification',
       createdAt: now,
       updatedAt: now,
     }
+    passwords.set(data.email.toLowerCase(), passwordHash)
     db.users.push(user)
     return user
   },
@@ -76,7 +87,7 @@ const mockUsers = {
   async verifyPassword(email: string, password: string): Promise<User | null> {
     await delay(100, 200)
     const user = db.users.find((u) => u.email.toLowerCase() === email.toLowerCase())
-    if (!user || user.passwordHash !== password) return null
+    if (!user || passwords.get(email.toLowerCase()) !== password) return null
     return user
   },
 }
