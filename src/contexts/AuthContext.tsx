@@ -31,6 +31,7 @@ interface AuthContextValue {
   }) => Promise<User>
   logout: () => void
   updateCurrentUser: (patch: Partial<User>) => void
+  refreshCurrentUser: () => Promise<User | null>
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null)
@@ -102,8 +103,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setCurrentUser((prev) => (prev ? { ...prev, ...patch } : null))
   }, [])
 
+  const refreshCurrentUser = useCallback(async (): Promise<User | null> => {
+    if (!localStorage.getItem(SESSION_KEY)) return null
+    try {
+      const user = await api.get<User>('/auth/me')
+      setCurrentUser(user)
+      return user
+    } catch {
+      return null
+    }
+  }, [])
+
   return (
-    <AuthContext.Provider value={{ currentUser, session, loading, login, signup, logout, updateCurrentUser }}>
+    <AuthContext.Provider value={{ currentUser, session, loading, login, signup, logout, updateCurrentUser, refreshCurrentUser }}>
       {children}
     </AuthContext.Provider>
   )

@@ -4,18 +4,30 @@ import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
 import { FormField } from '@/components/forms/FormField'
 import { CheckCircleIcon } from '@heroicons/react/24/solid'
+import { api, ApiError } from '@/services/apiClient'
 
 export function ForgotPasswordPage() {
   const [email, setEmail] = useState('')
   const [submitted, setSubmitted] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      setError('Enter a valid email address')
+      return
+    }
     setLoading(true)
-    await new Promise((r) => setTimeout(r, 1200))
-    setLoading(false)
-    setSubmitted(true)
+    setError(null)
+    try {
+      await api.post('/auth/forgot-password', { email })
+      setSubmitted(true)
+    } catch (err) {
+      setError(err instanceof ApiError ? err.message : 'Request failed')
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -45,6 +57,11 @@ export function ForgotPasswordPage() {
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-4">
+              {error && (
+                <div className="px-4 py-3 bg-danger-light text-danger text-body-sm rounded-lg">
+                  {error}
+                </div>
+              )}
               <FormField label="Email address" htmlFor="email" required>
                 <Input
                   id="email"

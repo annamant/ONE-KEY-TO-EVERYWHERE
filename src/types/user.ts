@@ -4,7 +4,6 @@ export type UserStatus = 'active' | 'suspended' | 'pending_verification'
 export interface User {
   id: string
   email: string
-  passwordHash: string
   firstName: string
   lastName: string
   role: UserRole

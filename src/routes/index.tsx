@@ -22,6 +22,7 @@ import { LoginPage } from '@/pages/auth/LoginPage'
 import { SignupPage } from '@/pages/auth/SignupPage'
 import { RoleSelectPage } from '@/pages/auth/RoleSelectPage'
 import { ForgotPasswordPage } from '@/pages/auth/ForgotPasswordPage'
+import { ResetPasswordPage } from '@/pages/auth/ResetPasswordPage'
 
 // Member pages
 import { MemberDashboardPage } from '@/pages/member/DashboardPage'
@@ -95,6 +96,7 @@ export const router = createBrowserRouter([
         ),
       },
       { path: 'forgot-password', element: <ForgotPasswordPage /> },
+      { path: 'reset-password', element: <ResetPasswordPage /> },
     ],
   },
   {

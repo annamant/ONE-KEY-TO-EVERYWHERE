@@ -1,3 +1,5 @@
+import nodemailer, { type Transporter } from 'nodemailer'
+
 type EmailPayload = {
   to: string
   subject: string
@@ -5,13 +7,35 @@ type EmailPayload = {
   html?: string
 }
 
-/** Sends email. In dev, logs to console. Set SMTP env vars for production. */
-export async function sendEmail(payload: EmailPayload): Promise<void> {
-  const { to, subject, text } = payload
+let transporter: Transporter | null = null
 
-  if (process.env.SMTP_HOST) {
-    // Production hook — wire your SMTP provider here
-    console.log(`[email] SMTP not fully configured — would send to ${to}: ${subject}`)
+function getTransporter(): Transporter | null {
+  if (!process.env.SMTP_HOST) return null
+  if (transporter) return transporter
+  transporter = nodemailer.createTransport({
+    host: process.env.SMTP_HOST,
+    port: Number(process.env.SMTP_PORT ?? 587),
+    secure: Number(process.env.SMTP_PORT ?? 587) === 465,
+    auth: process.env.SMTP_USER
+      ? { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS ?? '' }
+      : undefined,
+  })
+  return transporter
+}
+
+/** Sends email via SMTP when configured, otherwise logs to console for dev. */
+export async function sendEmail(payload: EmailPayload): Promise<void> {
+  const { to, subject, text, html } = payload
+
+  const transport = getTransporter()
+  if (transport) {
+    await transport.sendMail({
+      from: process.env.SMTP_FROM ?? `no-reply@${process.env.SMTP_HOST}`,
+      to,
+      subject,
+      text,
+      html,
+    })
     return
   }
 
@@ -22,6 +46,8 @@ export async function sendEmail(payload: EmailPayload): Promise<void> {
   console.log(text)
   console.log('─────────────────────────────────────────────────\n')
 }
+
+const APP_URL = process.env.APP_URL ?? 'http://localhost:5173'
 
 export function membershipApprovedEmail(firstName: string): EmailPayload {
   return {
@@ -34,7 +60,7 @@ export function membershipApprovedEmail(firstName: string): EmailPayload {
       '',
       'You can now log in and browse curated homes in Puglia, manage your key wallet, and book stays.',
       '',
-      'Log in: http://localhost:5173/auth/login',
+      `Log in: ${APP_URL}/auth/login`,
       '',
       'Welcome to the Club.',
       '— One Key to Everywhere',
@@ -70,6 +96,33 @@ export function memberWaitlistAckEmail(firstName: string): EmailPayload {
       "Club memberships are limited and selective. We'll reach out when it's your moment.",
       '',
       '— One Key to Everywhere',
+    ].join('\n'),
+  }
+}
+
+export function passwordResetEmail(firstName: string, token: string): EmailPayload {
+  const link = `${APP_URL}/auth/reset-password?token=${token}`
+  return {
+    to: '',
+    subject: 'Reset your One Key to Everywhere password',
+    text: [
+      `Hi ${firstName},`,
+      '',
+      'We received a request to reset your password.',
+      '',
+      `Click the link below to choose a new password. The link expires in 1 hour:`,
+      link,
+      '',
+      "If you didn't request a password reset, you can safely ignore this email.",
+      '',
+      '— One Key to Everywhere',
+    ].join('\n'),
+    html: [
+      `<p>Hi ${firstName},</p>`,
+      '<p>We received a request to reset your password.</p>',
+      '<p><a href="' + link + '">Reset your password</a> (link expires in 1 hour)</p>',
+      "<p>If you didn't request a password reset, you can safely ignore this email.</p>",
+      '<p>— One Key to Everywhere</p>',
     ].join('\n'),
   }
 }

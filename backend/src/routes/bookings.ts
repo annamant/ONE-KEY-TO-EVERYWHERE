@@ -76,6 +76,13 @@ router.post('/', authenticate, requireRole('member'), (req, res, next) => {
     }
 
     const db = getDb()
+
+    // Re-check member status from DB (JWT has no status field)
+    const member = db.prepare('SELECT status FROM users WHERE id = ?').get(req.user!.userId) as { status: string } | undefined
+    if (!member || member.status !== 'active') {
+      res.status(403).json({ error: 'Membership pending approval' }); return
+    }
+
     const prop = db.prepare('SELECT * FROM properties WHERE id = ?').get(propertyId) as Record<string, unknown> | undefined
     if (!prop || prop.status !== 'approved') {
       res.status(404).json({ error: 'Property not found or not available' }); return

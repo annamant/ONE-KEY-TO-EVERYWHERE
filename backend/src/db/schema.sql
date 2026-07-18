@@ -145,9 +145,18 @@ CREATE TABLE IF NOT EXISTS owner_waitlist (
 CREATE TABLE IF NOT EXISTS member_waitlist (
   id          TEXT PRIMARY KEY,
   first_name  TEXT NOT NULL,
-  email       TEXT NOT NULL,
+  email       TEXT NOT NULL UNIQUE,
   status      TEXT NOT NULL DEFAULT 'pending' CHECK(status IN ('pending','contacted','invited','rejected')),
   admin_notes TEXT,
   created_at  TEXT NOT NULL,
   updated_at  TEXT NOT NULL
+);
+
+-- Password reset tokens (single-use, expiring)
+CREATE TABLE IF NOT EXISTS password_reset_tokens (
+  token       TEXT PRIMARY KEY,
+  user_id     TEXT NOT NULL REFERENCES users(id),
+  expires_at  TEXT NOT NULL,
+  used_at     TEXT,
+  created_at  TEXT NOT NULL
 );

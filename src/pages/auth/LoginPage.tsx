@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
 import { FormField } from '@/components/forms/FormField'
 import { Divider } from '@/components/ui/Divider'
+import { ApiError } from '@/services/apiClient'
 
 export function LoginPage() {
   const { login } = useAuth()
@@ -18,6 +19,7 @@ export function LoginPage() {
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
   const [errors, setErrors] = useState<{ email?: string; password?: string; form?: string }>({})
+  const [suspended, setSuspended] = useState(false)
 
   const validate = () => {
     const e: typeof errors = {}
@@ -34,6 +36,7 @@ export function LoginPage() {
 
     setLoading(true)
     setErrors({})
+    setSuspended(false)
     try {
       const user = await login(email, password)
       toast('Welcome back!', 'success')
@@ -44,7 +47,11 @@ export function LoginPage() {
       const redirect = from ?? `/${user.role}/dashboard`
       navigate(redirect, { replace: true })
     } catch (err) {
-      setErrors({ form: err instanceof Error ? err.message : 'Login failed' })
+      if (err instanceof ApiError && err.status === 403) {
+        setSuspended(true)
+      } else {
+        setErrors({ form: err instanceof Error ? err.message : 'Login failed' })
+      }
     } finally {
       setLoading(false)
     }
@@ -62,76 +69,96 @@ export function LoginPage() {
         </div>
 
         <div className="bg-surface rounded-card shadow-card p-6">
-          <form onSubmit={handleSubmit} className="space-y-4">
-            {errors.form && (
-              <div className="px-4 py-3 bg-danger-light text-danger text-body-sm rounded-lg">
-                {errors.form}
+          {suspended ? (
+            <div className="text-center py-6">
+              <div className="px-4 py-3 bg-danger-light text-danger text-body-sm rounded-lg mb-4">
+                Your account has been suspended.
               </div>
-            )}
-
-            <FormField label="Email" htmlFor="email" error={errors.email} required>
-              <Input
-                id="email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="alice@demo.com"
-                autoComplete="email"
-                error={errors.email}
-              />
-            </FormField>
-
-            <FormField label="Password" htmlFor="password" error={errors.password} required>
-              <Input
-                id="password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••"
-                autoComplete="current-password"
-                error={errors.password}
-              />
-            </FormField>
-
-            <div className="flex justify-end">
-              <Link to="/auth/forgot-password" className="text-body-sm text-primary hover:underline">
-                Forgot password?
-              </Link>
+              <p className="text-body-sm text-text-muted mb-4">
+                Please contact the Club team if you believe this is an error.
+              </p>
+              <Button variant="outline" fullWidth onClick={() => { setSuspended(false); setEmail(''); setPassword('') }}>
+                Back to sign in
+              </Button>
             </div>
+          ) : (
+            <form onSubmit={handleSubmit} className="space-y-4">
+              {errors.form && (
+                <div className="px-4 py-3 bg-danger-light text-danger text-body-sm rounded-lg">
+                  {errors.form}
+                </div>
+              )}
 
-            <Button type="submit" fullWidth loading={loading}>
-              Sign In
-            </Button>
-          </form>
+              <FormField label="Email" htmlFor="email" error={errors.email} required>
+                <Input
+                  id="email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="alice@demo.com"
+                  autoComplete="email"
+                  error={errors.email}
+                />
+              </FormField>
 
-          <Divider className="my-5" label="Demo credentials" />
+              <FormField label="Password" htmlFor="password" error={errors.password} required>
+                <Input
+                  id="password"
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="••••••••"
+                  autoComplete="current-password"
+                  error={errors.password}
+                />
+              </FormField>
 
-          <div className="space-y-2 text-caption text-text-muted">
-            <p className="text-center font-medium text-body-sm text-text-primary mb-2">Quick access</p>
-            {[
-              { email: 'alice@demo.com', role: 'Member' },
-              { email: 'carol@demo.com', role: 'Owner' },
-              { email: 'eve@demo.com', role: 'Admin' },
-            ].map((demo) => (
-              <button
-                key={demo.email}
-                type="button"
-                onClick={() => { setEmail(demo.email); setPassword('demo') }}
-                className="w-full flex items-center justify-between px-3 py-2 bg-okte-slate-50 hover:bg-okte-slate-100 rounded-lg transition-colors text-left"
-              >
-                <span className="text-body-sm text-text-primary">{demo.email}</span>
-                <span className="text-caption text-text-muted bg-okte-slate-200 px-2 py-0.5 rounded-pill">{demo.role}</span>
-              </button>
-            ))}
-          </div>
+              <div className="flex justify-end">
+                <Link to="/auth/forgot-password" className="text-body-sm text-primary hover:underline">
+                  Forgot password?
+                </Link>
+              </div>
+
+              <Button type="submit" fullWidth loading={loading}>
+                Sign In
+              </Button>
+            </form>
+          )}
+
+          {!suspended && (
+            <>
+              <Divider className="my-5" label="Demo credentials" />
+
+              <div className="space-y-2 text-caption text-text-muted">
+                <p className="text-center font-medium text-body-sm text-text-primary mb-2">Quick access</p>
+                {[
+                  { email: 'alice@demo.com', role: 'Member' },
+                  { email: 'carol@demo.com', role: 'Owner' },
+                  { email: 'eve@demo.com', role: 'Admin' },
+                ].map((demo) => (
+                  <button
+                    key={demo.email}
+                    type="button"
+                    onClick={() => { setEmail(demo.email); setPassword('demo') }}
+                    className="w-full flex items-center justify-between px-3 py-2 bg-okte-slate-50 hover:bg-okte-slate-100 rounded-lg transition-colors text-left"
+                  >
+                    <span className="text-body-sm text-text-primary">{demo.email}</span>
+                    <span className="text-caption text-text-muted bg-okte-slate-200 px-2 py-0.5 rounded-pill">{demo.role}</span>
+                  </button>
+                ))}
+              </div>
+            </>
+          )}
         </div>
 
-        <p className="text-center text-body-sm text-text-muted mt-6">
-          Don't have an account?{' '}
-          <Link to="/auth/signup" className="text-primary hover:underline font-medium">
-            Sign up
-          </Link>
-        </p>
+        {!suspended && (
+          <p className="text-center text-body-sm text-text-muted mt-6">
+            Don't have an account?{' '}
+            <Link to="/auth/signup" className="text-primary hover:underline font-medium">
+              Sign up
+            </Link>
+          </p>
+        )}
       </div>
     </div>
   )

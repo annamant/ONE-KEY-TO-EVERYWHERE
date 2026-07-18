@@ -30,7 +30,7 @@ export function SignupPage() {
     if (!form.lastName) e.lastName = 'Last name is required'
     if (!form.email) e.email = 'Email is required'
     else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) e.email = 'Enter a valid email'
-    if (!form.password || form.password.length < 4) e.password = 'Password must be at least 4 characters'
+    if (!form.password || form.password.length < 8) e.password = 'Password must be at least 8 characters'
     if (form.password !== form.confirmPassword) e.confirmPassword = 'Passwords do not match'
     return e
   }
@@ -92,7 +92,7 @@ export function SignupPage() {
             </FormField>
 
             <FormField label="Password" htmlFor="password" error={errors.password} required>
-              <Input id="password" type="password" value={form.password} onChange={set('password')} placeholder="Min 4 characters" error={errors.password} />
+              <Input id="password" type="password" value={form.password} onChange={set('password')} placeholder="Min 8 characters" error={errors.password} />
             </FormField>
 
             <FormField label="Confirm password" htmlFor="confirmPassword" error={errors.confirmPassword} required>
