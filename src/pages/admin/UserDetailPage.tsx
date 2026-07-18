@@ -12,6 +12,7 @@ import { Select } from '@/components/ui/Select'
 import { ConfirmDialog } from '@/components/feedback/ConfirmDialog'
 import { PageSpinner } from '@/components/ui/Spinner'
 import { formatDate, formatDateRange } from '@/utils/format'
+import { CheckCircleIcon } from '@heroicons/react/24/outline'
 import type { BadgeColor } from '@/components/ui/Badge'
 import type { UserRole } from '@/types'
 
@@ -98,6 +99,14 @@ export function AdminUserDetailPage() {
               <Badge color={statusColor[user.status] ?? 'gray'} size="sm" dot>
                 {user.status === 'pending_verification' ? 'Pending' : user.status}
               </Badge>
+              {user.emailVerified ? (
+                <Badge color="green" size="sm">
+                  <CheckCircleIcon className="w-3 h-3" />
+                  Email verified
+                </Badge>
+              ) : (
+                <Badge color="gray" size="sm">Email unverified</Badge>
+              )}
             </div>
             <p className="text-body-sm text-text-muted mb-1">{user.email}</p>
             {user.phone && <p className="text-body-sm text-text-muted">{user.phone}</p>}

@@ -15,6 +15,7 @@ function rowToUser(row: Record<string, unknown>) {
     lastName: row.last_name,
     role: row.role,
     status: row.status,
+    emailVerified: Boolean(row.email_verified_at),
     avatarUrl: row.avatar_url ?? null,
     phone: row.phone ?? null,
     createdAt: row.created_at,

@@ -21,6 +21,24 @@ export function verifyToken(token: string): { userId: string; role: string } | n
   }
 }
 
+export function signEmailVerificationToken(userId: string): string {
+  return jwt.sign(
+    { userId, purpose: 'email_verification', jti: crypto.randomUUID() },
+    SECRET,
+    { expiresIn: '24h' }
+  )
+}
+
+export function verifyEmailVerificationToken(token: string): { userId: string } | null {
+  try {
+    const payload = jwt.verify(token, SECRET) as { userId: string; purpose?: string }
+    if (payload.purpose !== 'email_verification') return null
+    return { userId: payload.userId }
+  } catch {
+    return null
+  }
+}
+
 export function signPasswordResetToken(userId: string): string {
   // Include a random jti so two tokens issued to the same user in the same
   // second still differ — the token is stored as PRIMARY KEY in the DB.

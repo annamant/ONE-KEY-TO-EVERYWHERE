@@ -9,6 +9,7 @@ CREATE TABLE IF NOT EXISTS users (
   last_name   TEXT NOT NULL,
   role        TEXT NOT NULL CHECK(role IN ('member','owner','admin')),
   status      TEXT NOT NULL DEFAULT 'active' CHECK(status IN ('active','suspended','pending_verification')),
+  email_verified_at TEXT,
   avatar_url  TEXT,
   phone       TEXT,
   created_at  TEXT NOT NULL,
@@ -154,6 +155,15 @@ CREATE TABLE IF NOT EXISTS member_waitlist (
 
 -- Password reset tokens (single-use, expiring)
 CREATE TABLE IF NOT EXISTS password_reset_tokens (
+  token       TEXT PRIMARY KEY,
+  user_id     TEXT NOT NULL REFERENCES users(id),
+  expires_at  TEXT NOT NULL,
+  used_at     TEXT,
+  created_at  TEXT NOT NULL
+);
+
+-- Email verification tokens (single-use, expiring)
+CREATE TABLE IF NOT EXISTS email_verification_tokens (
   token       TEXT PRIMARY KEY,
   user_id     TEXT NOT NULL REFERENCES users(id),
   expires_at  TEXT NOT NULL,

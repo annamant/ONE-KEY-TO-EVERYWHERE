@@ -8,6 +8,7 @@ export interface User {
   lastName: string
   role: UserRole
   status: UserStatus
+  emailVerified: boolean
   avatarUrl?: string
   phone?: string
   createdAt: string

@@ -9,7 +9,7 @@ import { Input } from '@/components/ui/Input'
 import { Avatar } from '@/components/ui/Avatar'
 import { PageSpinner } from '@/components/ui/Spinner'
 import { EmptyState } from '@/components/feedback/EmptyState'
-import { MagnifyingGlassIcon, UsersIcon } from '@heroicons/react/24/outline'
+import { MagnifyingGlassIcon, UsersIcon, CheckCircleIcon } from '@heroicons/react/24/outline'
 import { formatDate } from '@/utils/format'
 import type { BadgeColor } from '@/components/ui/Badge'
 
@@ -89,6 +89,7 @@ export function AdminUsersPage() {
                   <th className="text-left px-5 py-3 text-caption font-semibold text-text-muted uppercase">User</th>
                   <th className="text-left px-5 py-3 text-caption font-semibold text-text-muted uppercase">Role</th>
                   <th className="text-left px-5 py-3 text-caption font-semibold text-text-muted uppercase">Status</th>
+                  <th className="text-left px-5 py-3 text-caption font-semibold text-text-muted uppercase">Email</th>
                   <th className="text-left px-5 py-3 text-caption font-semibold text-text-muted uppercase">Joined</th>
                   <th className="px-5 py-3" />
                 </tr>
@@ -116,6 +117,16 @@ export function AdminUsersPage() {
                       <Badge color={statusColor[u.status] ?? 'gray'} size="sm" dot>
                         {u.status === 'pending_verification' ? 'Pending' : u.status}
                       </Badge>
+                    </td>
+                    <td className="px-5 py-4">
+                      {u.emailVerified ? (
+                        <Badge color="green" size="sm">
+                          <CheckCircleIcon className="w-3 h-3" />
+                          Verified
+                        </Badge>
+                      ) : (
+                        <Badge color="gray" size="sm">Unverified</Badge>
+                      )}
                     </td>
                     <td className="px-5 py-4 text-body-sm text-text-muted">{formatDate(u.createdAt)}</td>
                     <td className="px-5 py-4">

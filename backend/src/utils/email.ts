@@ -126,3 +126,30 @@ export function passwordResetEmail(firstName: string, token: string): EmailPaylo
     ].join('\n'),
   }
 }
+
+export function emailVerificationEmail(firstName: string, token: string): EmailPayload {
+  const link = `${APP_URL}/auth/verify-email?token=${token}`
+  return {
+    to: '',
+    subject: 'Confirm your email — One Key to Everywhere',
+    text: [
+      `Hi ${firstName},`,
+      '',
+      'Welcome to One Key to Everywhere. Please confirm your email address to activate your account.',
+      '',
+      'Click the link below to verify your email. The link expires in 24 hours:',
+      link,
+      '',
+      "If you didn't create an account, you can safely ignore this email.",
+      '',
+      '— One Key to Everywhere',
+    ].join('\n'),
+    html: [
+      `<p>Hi ${firstName},</p>`,
+      '<p>Welcome to One Key to Everywhere. Please confirm your email address to activate your account.</p>',
+      '<p><a href="' + link + '">Verify your email</a> (link expires in 24 hours)</p>',
+      "<p>If you didn't create an account, you can safely ignore this email.</p>",
+      '<p>— One Key to Everywhere</p>',
+    ].join('\n'),
+  }
+}

@@ -50,7 +50,7 @@ export function SignupPage() {
         lastName: form.lastName,
         role: 'member',
       })
-      toast('Membership application submitted. We’ll review it shortly.', 'success')
+      toast('Check your inbox to confirm your email, then we’ll review your membership.', 'success')
       navigate('/member/pending', { replace: true })
     } catch (err) {
       setErrors({ form: err instanceof Error ? err.message : 'Signup failed' })
@@ -100,7 +100,7 @@ export function SignupPage() {
             </FormField>
 
             <p className="text-caption text-text-muted">
-              Your application will be reviewed by the Club team. You'll receive a confirmation email once approved.
+              You’ll receive a confirmation email to verify your address. Once verified, your application will be reviewed by the Club team.
             </p>
 
             <Button type="submit" fullWidth loading={loading}>

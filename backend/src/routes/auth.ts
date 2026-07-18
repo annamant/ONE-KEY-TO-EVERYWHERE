@@ -1,17 +1,19 @@
 import { Router } from 'express'
 import bcrypt from 'bcryptjs'
 import { getDb } from '../db/connection'
-import { signToken, signPasswordResetToken, verifyPasswordResetToken } from '../utils/jwt'
+import { signToken, signPasswordResetToken, verifyPasswordResetToken, signEmailVerificationToken, verifyEmailVerificationToken } from '../utils/jwt'
 import { authenticate } from '../middleware/auth'
 import { generateId } from '../utils/generateId'
 import { notifyAdmins } from '../utils/notifyAdmins'
-import { sendEmail, passwordResetEmail } from '../utils/email'
+import { sendEmail, passwordResetEmail, emailVerificationEmail } from '../utils/email'
 
 const router = Router()
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 const MIN_PASSWORD = 8
 const MAX_PASSWORD = 128
+const EMAIL_VERIFICATION_TTL_MS = 24 * 60 * 60 * 1000
+const RESEND_COOLDOWN_MS = 30 * 1000
 
 function rowToUser(row: Record<string, unknown>) {
   return {
@@ -21,10 +23,36 @@ function rowToUser(row: Record<string, unknown>) {
     lastName: row.last_name,
     role: row.role,
     status: row.status,
+    emailVerified: Boolean(row.email_verified_at),
     avatarUrl: row.avatar_url ?? null,
     phone: row.phone ?? null,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
+  }
+}
+
+/** Issues a fresh email-verification token, persists it, and sends the email.
+ *  Failures are logged but never thrown — signup/refresh must not break on email errors. */
+async function sendVerificationEmailFor(userId: string): Promise<void> {
+  const db = getDb()
+  const row = db.prepare('SELECT email, first_name FROM users WHERE id = ?').get(userId) as
+    | { email: string; first_name: string }
+    | undefined
+  if (!row) return
+
+  const token = signEmailVerificationToken(userId)
+  const now = new Date()
+  const expiresAt = new Date(now.getTime() + EMAIL_VERIFICATION_TTL_MS).toISOString()
+  db.prepare(`
+    INSERT INTO email_verification_tokens (token, user_id, expires_at, created_at)
+    VALUES (?,?,?,?)
+  `).run(token, userId, expiresAt, now.toISOString())
+
+  try {
+    const mail = emailVerificationEmail(row.first_name, token)
+    await sendEmail({ ...mail, to: row.email })
+  } catch (e) {
+    console.error('[email] failed to send verification email:', e)
   }
 }
 
@@ -112,6 +140,10 @@ router.post('/signup', (req, res, next) => {
       body: `${firstName} ${lastName} (${email.toLowerCase()})`,
       link: `/admin/requests?tab=membership`,
     })
+
+    // Send the email confirmation link via Resend (or log to console in dev).
+    // Fire-and-forget: a failed send must not break signup.
+    void sendVerificationEmailFor(id)
 
     res.status(201).json({ user, token })
   } catch (e) {
@@ -213,6 +245,88 @@ router.post('/reset-password', (req, res, next) => {
       db.prepare('UPDATE password_reset_tokens SET used_at = ? WHERE token = ?').run(now, token)
     })()
 
+    res.json({ ok: true })
+  } catch (e) {
+    next(e)
+  }
+})
+
+// POST /api/auth/verify-email — confirm email address with a token from the email
+router.post('/verify-email', (req, res, next) => {
+  try {
+    const { token } = req.body as { token?: string }
+    if (!token) {
+      res.status(400).json({ error: 'token is required' })
+      return
+    }
+
+    const payload = verifyEmailVerificationToken(token)
+    if (!payload) {
+      res.status(400).json({ error: 'Invalid or expired verification link' })
+      return
+    }
+
+    const db = getDb()
+    const stored = db.prepare('SELECT * FROM email_verification_tokens WHERE token = ?').get(token) as Record<string, unknown> | undefined
+    if (!stored || stored.used_at) {
+      res.status(400).json({ error: 'Invalid or expired verification link' })
+      return
+    }
+    if (new Date(stored.expires_at as string) < new Date()) {
+      res.status(400).json({ error: 'Verification link has expired' })
+      return
+    }
+
+    const userRow = db.prepare('SELECT * FROM users WHERE id = ?').get(payload.userId) as Record<string, unknown> | undefined
+    if (!userRow) {
+      res.status(400).json({ error: 'Invalid or expired verification link' })
+      return
+    }
+
+    const now = new Date().toISOString()
+    db.transaction(() => {
+      if (userRow.email_verified_at) {
+        // Already verified — just mark this token used.
+        db.prepare('UPDATE email_verification_tokens SET used_at = ? WHERE token = ?').run(now, token)
+        return
+      }
+      db.prepare('UPDATE users SET email_verified_at = ?, updated_at = ? WHERE id = ?').run(now, now, payload.userId)
+      db.prepare('UPDATE email_verification_tokens SET used_at = ? WHERE token = ?').run(now, token)
+    })()
+
+    res.json({ ok: true })
+  } catch (e) {
+    next(e)
+  }
+})
+
+// POST /api/auth/resend-verification — send a fresh verification link to the caller's own email
+router.post('/resend-verification', authenticate, async (req, res, next) => {
+  try {
+    const db = getDb()
+    const row = db.prepare('SELECT * FROM users WHERE id = ?').get(req.user!.userId) as Record<string, unknown> | undefined
+    if (!row) {
+      res.status(404).json({ error: 'User not found' })
+      return
+    }
+    if (row.email_verified_at) {
+      res.status(409).json({ error: 'Your email is already verified' })
+      return
+    }
+
+    // Throttle resends to avoid abuse.
+    const latest = db.prepare(`
+      SELECT created_at FROM email_verification_tokens
+      WHERE user_id = ?
+      ORDER BY created_at DESC
+      LIMIT 1
+    `).get(req.user!.userId) as { created_at: string } | undefined
+    if (latest && Date.now() - new Date(latest.created_at).getTime() < RESEND_COOLDOWN_MS) {
+      res.status(429).json({ error: 'A verification email was just sent. Please wait a few seconds before requesting another.' })
+      return
+    }
+
+    await sendVerificationEmailFor(req.user!.userId)
     res.json({ ok: true })
   } catch (e) {
     next(e)

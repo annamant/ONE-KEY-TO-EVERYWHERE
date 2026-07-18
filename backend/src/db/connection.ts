@@ -15,5 +15,13 @@ export function getDb(): Database.Database {
   _db = new Database(DB_PATH)
   const schema = fs.readFileSync(SCHEMA_PATH, 'utf-8')
   _db.exec(schema)
+  // Lightweight migrations for columns added after the initial schema.
+  // CREATE TABLE IF NOT EXISTS handles new tables, but ALTER TABLE is needed
+  // to add columns to an existing users table without wiping data.
+  const cols = _db.prepare('PRAGMA table_info(users)').all() as { name: string }[]
+  const hasEmailVerified = cols.some((c) => c.name === 'email_verified_at')
+  if (!hasEmailVerified) {
+    _db.exec('ALTER TABLE users ADD COLUMN email_verified_at TEXT')
+  }
   return _db
 }

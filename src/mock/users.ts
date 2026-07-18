@@ -54,6 +54,7 @@ const mockUsers = {
       id: generateId('user'),
       ...rest,
       status: 'pending_verification',
+      emailVerified: false,
       createdAt: now,
       updatedAt: now,
     }

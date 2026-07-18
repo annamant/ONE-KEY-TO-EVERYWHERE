@@ -14,7 +14,7 @@ const d  = (offset: number) => format(addDays(now, offset), "yyyy-MM-dd'T'HH:mm:
 const ds = (offset: number) => format(addDays(now, offset), 'yyyy-MM-dd')
 
 // ─── Users ──────────────────────────────────────────────────────────────────
-export const SEED_USERS: User[] = [
+const _SEED_USERS: Omit<User, 'emailVerified'>[] = [
   {
     id: 'user-alice',
     email: 'alice@demo.com',
@@ -75,6 +75,9 @@ export const SEED_USERS: User[] = [
     updatedAt: d(0),
   },
 ]
+
+// Seed users are treated as already email-verified.
+export const SEED_USERS: User[] = _SEED_USERS.map((u) => ({ ...u, emailVerified: true }))
 
 // ─── Properties — all in Puglia, Italy ──────────────────────────────────────
 export const SEED_PROPERTIES: Property[] = [
