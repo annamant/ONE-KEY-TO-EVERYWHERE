@@ -126,7 +126,12 @@ router.post('/:id/moderate', authenticate, requireRole('admin'), async (req, res
     if (!existing) { res.status(404).json({ error: 'User not found' }); return }
 
     const now = new Date().toISOString()
-    db.prepare('UPDATE users SET status = ?, updated_at = ? WHERE id = ?').run(newStatus, now, id)
+    if (action === 'verify' && existing.role === 'member') {
+      db.prepare('UPDATE users SET status = ?, email_verified_at = COALESCE(email_verified_at, ?), updated_at = ? WHERE id = ?')
+        .run(newStatus, now, now, id)
+    } else {
+      db.prepare('UPDATE users SET status = ?, updated_at = ? WHERE id = ?').run(newStatus, now, id)
+    }
     const row = db.prepare('SELECT * FROM users WHERE id = ?').get(id) as Record<string, unknown>
     const user = rowToUser(row)
 

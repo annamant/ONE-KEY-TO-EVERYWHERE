@@ -53,6 +53,7 @@ async function sendVerificationEmailFor(userId: string): Promise<void> {
     await sendEmail({ ...mail, to: row.email })
   } catch (e) {
     console.error('[email] failed to send verification email:', e)
+    throw e
   }
 }
 
@@ -143,7 +144,9 @@ router.post('/signup', (req, res, next) => {
 
     // Send the email confirmation link via Resend (or log to console in dev).
     // Fire-and-forget: a failed send must not break signup.
-    void sendVerificationEmailFor(id)
+    void sendVerificationEmailFor(id).catch((e) => {
+      console.error('[email] signup verification send failed:', e)
+    })
 
     res.status(201).json({ user, token })
   } catch (e) {

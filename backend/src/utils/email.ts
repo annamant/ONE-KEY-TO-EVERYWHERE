@@ -23,10 +23,47 @@ function getTransporter(): Transporter | null {
   return transporter
 }
 
-/** Sends email via SMTP when configured, otherwise logs to console for dev. */
+/**
+ * Prefer Resend's HTTPS API. Railway (Hobby/Free) blocks outbound SMTP
+ * ports 465/587, so nodemailer→smtp.resend.com silently fails in production.
+ * SMTP_PASS holds the Resend API key (re_...).
+ */
+async function sendViaResendApi(payload: EmailPayload): Promise<boolean> {
+  const apiKey = process.env.RESEND_API_KEY || process.env.SMTP_PASS
+  if (!apiKey || !apiKey.startsWith('re_')) return false
+
+  const from = process.env.SMTP_FROM ?? 'noreply@pulkra.com'
+  const res = await fetch('https://api.resend.com/emails', {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      from,
+      to: [payload.to],
+      subject: payload.subject,
+      text: payload.text,
+      html: payload.html ?? undefined,
+    }),
+  })
+
+  if (!res.ok) {
+    const body = await res.text().catch(() => '')
+    throw new Error(`Resend API ${res.status}: ${body.slice(0, 300)}`)
+  }
+  return true
+}
+
+/** Sends email via Resend HTTPS API (preferred), SMTP, or console in local dev. */
 export async function sendEmail(payload: EmailPayload): Promise<void> {
   const { to, subject, text, html } = payload
 
+  // 1) Resend HTTPS — works on all Railway plans
+  const sentViaApi = await sendViaResendApi(payload)
+  if (sentViaApi) return
+
+  // 2) SMTP fallback (local / Pro plan with SMTP allowed)
   const transport = getTransporter()
   if (transport) {
     await transport.sendMail({
@@ -39,6 +76,7 @@ export async function sendEmail(payload: EmailPayload): Promise<void> {
     return
   }
 
+  // 3) Dev console
   console.log('\n─── EMAIL ───────────────────────────────────────')
   console.log(`To:      ${to}`)
   console.log(`Subject: ${subject}`)

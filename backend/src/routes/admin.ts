@@ -125,7 +125,8 @@ router.post('/members/:id/approve', authenticate, requireRole('admin'), async (r
     if (row.status === 'active') { res.status(400).json({ error: 'Member is already active' }); return }
 
     const now = new Date().toISOString()
-    db.prepare('UPDATE users SET status = ?, updated_at = ? WHERE id = ?').run('active', now, id)
+    db.prepare('UPDATE users SET status = ?, email_verified_at = COALESCE(email_verified_at, ?), updated_at = ? WHERE id = ?')
+      .run('active', now, now, id)
     const updated = db.prepare('SELECT * FROM users WHERE id = ?').get(id) as Record<string, unknown>
     const user = rowToUser(updated)
 
