@@ -7,12 +7,14 @@ import {
   CalendarDaysIcon,
   CreditCardIcon,
   Cog6ToothIcon,
+  InboxStackIcon,
 } from '@heroicons/react/24/outline'
 import { Sidebar, type NavItem } from './Sidebar'
 import { TopBar } from './TopBar'
 
 const navItems: NavItem[] = [
   { label: 'Dashboard', path: '/admin/dashboard', icon: HomeIcon },
+  { label: 'Requests', path: '/admin/requests', icon: InboxStackIcon },
   { label: 'Users', path: '/admin/users', icon: UsersIcon },
   { label: 'Properties', path: '/admin/properties', icon: BuildingOfficeIcon },
   { label: 'Bookings', path: '/admin/bookings', icon: CalendarDaysIcon },

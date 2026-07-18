@@ -58,6 +58,7 @@ import { AdminBookingsPage } from '@/pages/admin/BookingsPage'
 import { AdminLedgerPage } from '@/pages/admin/LedgerPage'
 import { AdminSettingsPage } from '@/pages/admin/SettingsPage'
 import { AdminProfilePage } from '@/pages/admin/ProfilePage'
+import { AdminRequestsPage } from '@/pages/admin/RequestsPage'
 
 export const router = createBrowserRouter([
   { path: '/', element: <LandingPage /> },
@@ -218,6 +219,7 @@ export const router = createBrowserRouter([
     children: [
       { index: true, element: <Navigate to="/admin/dashboard" replace /> },
       { path: 'dashboard', element: <AdminDashboardPage /> },
+      { path: 'requests', element: <AdminRequestsPage /> },
       { path: 'users', element: <AdminUsersPage /> },
       { path: 'users/:id', element: <AdminUserDetailPage /> },
       { path: 'properties', element: <AdminPropertiesPage /> },

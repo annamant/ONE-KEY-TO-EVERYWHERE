@@ -10,6 +10,8 @@ import bookingsRouter from './routes/bookings'
 import ledgerRouter from './routes/ledger'
 import householdsRouter from './routes/households'
 import notificationsRouter from './routes/notifications'
+import waitlistRouter from './routes/waitlist'
+import adminRouter from './routes/admin'
 import { errorHandler } from './middleware/errorHandler'
 
 const app = express()
@@ -37,6 +39,8 @@ app.use('/api/bookings',      bookingsRouter)
 app.use('/api/ledger',        ledgerRouter)
 app.use('/api/households',    householdsRouter)
 app.use('/api/notifications', notificationsRouter)
+app.use('/api/waitlist',       waitlistRouter)
+app.use('/api/admin',          adminRouter)
 
 app.use(errorHandler)
 

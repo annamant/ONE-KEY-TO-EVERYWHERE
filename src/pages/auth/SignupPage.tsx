@@ -4,7 +4,6 @@ import { useAuth } from '@/contexts/AuthContext'
 import { useToast } from '@/contexts/ToastContext'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
-import { Select } from '@/components/ui/Select'
 import { FormField } from '@/components/forms/FormField'
 
 export function SignupPage() {
@@ -18,12 +17,11 @@ export function SignupPage() {
     email: '',
     password: '',
     confirmPassword: '',
-    role: 'member' as 'member' | 'owner',
   })
   const [loading, setLoading] = useState(false)
   const [errors, setErrors] = useState<Record<string, string>>({})
 
-  const set = (k: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) =>
+  const set = (k: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement>) =>
     setForm((f) => ({ ...f, [k]: e.target.value }))
 
   const validate = () => {
@@ -45,19 +43,15 @@ export function SignupPage() {
     setLoading(true)
     setErrors({})
     try {
-      const user = await signup({
+      await signup({
         email: form.email,
         password: form.password,
         firstName: form.firstName,
         lastName: form.lastName,
-        role: form.role,
+        role: 'member',
       })
-      toast('Account created. We’ll review your membership shortly.', 'success')
-      if (user.role === 'member' && user.status === 'pending_verification') {
-        navigate('/member/pending', { replace: true })
-      } else {
-        navigate(`/${user.role}/dashboard`, { replace: true })
-      }
+      toast('Membership application submitted. We’ll review it shortly.', 'success')
+      navigate('/member/pending', { replace: true })
     } catch (err) {
       setErrors({ form: err instanceof Error ? err.message : 'Signup failed' })
     } finally {
@@ -72,8 +66,8 @@ export function SignupPage() {
           <div className="w-12 h-12 rounded-xl bg-okte-navy-900 flex items-center justify-center mx-auto mb-4">
             <span className="text-accent font-bold text-heading-md">K</span>
           </div>
-          <h1 className="text-heading-xl text-text-primary font-semibold">Create account</h1>
-          <p className="text-body-sm text-text-muted mt-1">Join One Key to Everywhere</p>
+          <h1 className="text-heading-xl text-text-primary font-semibold">Apply for membership</h1>
+          <p className="text-body-sm text-text-muted mt-1">Create your Club member account</p>
         </div>
 
         <div className="bg-surface rounded-card shadow-card p-6">
@@ -97,18 +91,6 @@ export function SignupPage() {
               <Input id="email" type="email" value={form.email} onChange={set('email')} placeholder="you@example.com" error={errors.email} />
             </FormField>
 
-            <FormField label="Account type" htmlFor="role">
-              <Select
-                id="role"
-                value={form.role}
-                onChange={set('role') as React.ChangeEventHandler<HTMLSelectElement>}
-                options={[
-                  { value: 'member', label: 'Member — book properties' },
-                  { value: 'owner', label: 'Owner — list properties' },
-                ]}
-              />
-            </FormField>
-
             <FormField label="Password" htmlFor="password" error={errors.password} required>
               <Input id="password" type="password" value={form.password} onChange={set('password')} placeholder="Min 4 characters" error={errors.password} />
             </FormField>
@@ -117,10 +99,21 @@ export function SignupPage() {
               <Input id="confirmPassword" type="password" value={form.confirmPassword} onChange={set('confirmPassword')} placeholder="••••••••" error={errors.confirmPassword} />
             </FormField>
 
+            <p className="text-caption text-text-muted">
+              Your application will be reviewed by the Club team. You'll receive a confirmation email once approved.
+            </p>
+
             <Button type="submit" fullWidth loading={loading}>
-              Create Account
+              Submit application
             </Button>
           </form>
+
+          <div className="mt-4 p-3 rounded-lg bg-okte-slate-50 text-caption text-text-muted">
+            <strong className="text-text-primary">Property owner?</strong>{' '}
+            Members and owners follow different paths.{' '}
+            <Link to="/open-doors" className="text-primary hover:underline">Join the owner waitlist</Link>
+            {' '}instead.
+          </div>
         </div>
 
         <p className="text-center text-body-sm text-text-muted mt-6">

@@ -5,6 +5,8 @@ import { FormField } from '@/components/forms/FormField'
 import { PublicNav } from '@/components/layout/PublicNav'
 import { PublicFooter } from '@/components/layout/PublicFooter'
 import { HomeModernIcon, ShieldCheckIcon, KeyIcon, ArrowPathIcon } from '@heroicons/react/24/outline'
+import { waitlistService } from '@/services/waitlist'
+import { ApiError } from '@/services/apiClient'
 
 const WHAT_WE_LOOK_FOR = [
   {
@@ -32,6 +34,7 @@ const WHAT_WE_LOOK_FOR = [
 export function OpenDoorsPage() {
   const [submitted, setSubmitted] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
   const [form, setForm] = useState({
     firstName: '',
     lastName: '',
@@ -49,9 +52,23 @@ export function OpenDoorsPage() {
     e.preventDefault()
     if (!form.firstName || !form.email || !form.city) return
     setLoading(true)
-    await new Promise((r) => setTimeout(r, 900))
-    setLoading(false)
-    setSubmitted(true)
+    setError('')
+    try {
+      await waitlistService.submitOwner({
+        firstName: form.firstName,
+        lastName: form.lastName || undefined,
+        email: form.email,
+        phone: form.phone || undefined,
+        city: form.city,
+        propertyType: form.propertyType || undefined,
+        message: form.message || undefined,
+      })
+      setSubmitted(true)
+    } catch (err) {
+      setError(err instanceof ApiError ? err.message : 'Something went wrong. Please try again.')
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -62,7 +79,7 @@ export function OpenDoorsPage() {
       <section style={{ background: '#F5F5F5', borderBottom: '1px solid #E5E5E5' }} className="py-16 text-center">
         <div className="max-w-2xl mx-auto px-6">
           <p className="text-caption font-semibold uppercase tracking-widest mb-4" style={{ color: '#C4882F' }}>
-            For property owners · Puglia
+            Property Owner Waitlist · Puglia
           </p>
           <h1 className="font-display text-display-lg font-bold mb-4" style={{ color: '#0A0A0A' }}>
             Open your doors<br />to the Club.
@@ -105,7 +122,7 @@ export function OpenDoorsPage() {
                 Thank you, {form.firstName}.
               </h2>
               <p className="text-body-sm" style={{ color: '#6B6B6B' }}>
-                We've received your enquiry. Someone from our team will be in touch at{' '}
+                We've received your owner waitlist enquiry. Someone from our team will be in touch at{' '}
                 <strong style={{ color: '#0A0A0A' }}>{form.email}</strong> within a few days.
               </p>
             </div>
@@ -116,11 +133,15 @@ export function OpenDoorsPage() {
                   Tell us about your home
                 </h2>
                 <p className="text-body-sm" style={{ color: '#6B6B6B' }}>
-                  This is not an application form — it's the beginning of a conversation. Fill in what you can and we'll take it from there.
+                  This is the property owner waitlist — the beginning of a conversation. Fill in what you can and we'll take it from there.
                 </p>
               </div>
 
               <form onSubmit={handleSubmit} className="space-y-5">
+                {error && (
+                  <div className="px-4 py-3 bg-danger-light text-danger text-body-sm rounded-lg">{error}</div>
+                )}
+
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                   <FormField label="First name" required>
                     <Input value={form.firstName} onChange={set('firstName')} placeholder="Your first name" />
@@ -187,7 +208,7 @@ export function OpenDoorsPage() {
                   loading={loading}
                   style={{ background: '#0A0A0A', color: '#FFFFFF', border: 'none', fontWeight: 700 }}
                 >
-                  Send enquiry
+                  Join owner waitlist
                 </Button>
               </form>
 

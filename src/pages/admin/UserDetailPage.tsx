@@ -88,7 +88,7 @@ export function AdminUserDetailPage() {
                 onClick={() => moderate('verify')}
                 disabled={acting}
               >
-                Approve member
+                Approve & send email
               </Button>
             )}
             {user.status === 'active' && (

@@ -2,6 +2,8 @@ import { Router } from 'express'
 import { getDb } from '../db/connection'
 import { authenticate } from '../middleware/auth'
 import { requireRole } from '../middleware/requireRole'
+import { sendEmail, membershipApprovedEmail } from '../utils/email'
+import { notifyUser } from '../utils/notifyAdmins'
 
 const router = Router()
 
@@ -81,7 +83,7 @@ router.patch('/:id', authenticate, (req, res, next) => {
 })
 
 // POST /api/users/:id/moderate  (admin only)
-router.post('/:id/moderate', authenticate, requireRole('admin'), (req, res, next) => {
+router.post('/:id/moderate', authenticate, requireRole('admin'), async (req, res, next) => {
   try {
     const { id } = req.params
     const { action } = req.body as { action?: string }
@@ -90,11 +92,26 @@ router.post('/:id/moderate', authenticate, requireRole('admin'), (req, res, next
     if (!newStatus) { res.status(400).json({ error: 'Invalid action' }); return }
 
     const db = getDb()
+    const existing = db.prepare('SELECT * FROM users WHERE id = ?').get(id) as Record<string, unknown> | undefined
+    if (!existing) { res.status(404).json({ error: 'User not found' }); return }
+
     const now = new Date().toISOString()
     db.prepare('UPDATE users SET status = ?, updated_at = ? WHERE id = ?').run(newStatus, now, id)
-    const row = db.prepare('SELECT * FROM users WHERE id = ?').get(id) as Record<string, unknown> | undefined
-    if (!row) { res.status(404).json({ error: 'User not found' }); return }
-    res.json(rowToUser(row))
+    const row = db.prepare('SELECT * FROM users WHERE id = ?').get(id) as Record<string, unknown>
+    const user = rowToUser(row)
+
+    if (action === 'verify' && existing.role === 'member') {
+      const email = membershipApprovedEmail(user.firstName as string)
+      await sendEmail({ ...email, to: user.email as string })
+      notifyUser(id, {
+        type: 'membership_approved',
+        title: 'Membership approved',
+        body: 'Your Club membership has been approved. You can now browse and book homes.',
+        link: '/member/dashboard',
+      })
+    }
+
+    res.json(user)
   } catch (e) { next(e) }
 })
 

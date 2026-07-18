@@ -4,6 +4,7 @@ import { getDb } from '../db/connection'
 import { signToken } from '../utils/jwt'
 import { authenticate } from '../middleware/auth'
 import { generateId } from '../utils/generateId'
+import { notifyAdmins } from '../utils/notifyAdmins'
 
 const router = Router()
 
@@ -70,6 +71,12 @@ router.post('/signup', (req, res, next) => {
       res.status(400).json({ error: 'Role must be member or owner' })
       return
     }
+    if (role === 'owner') {
+      res.status(403).json({
+        error: 'Property owners join via Open Your Doors. Submit an enquiry at /open-doors and our team will be in touch.',
+      })
+      return
+    }
 
     const db = getDb()
     const existing = db.prepare('SELECT id FROM users WHERE lower(email) = lower(?)').get(email)
@@ -90,6 +97,14 @@ router.post('/signup', (req, res, next) => {
     const row = db.prepare('SELECT * FROM users WHERE id = ?').get(id) as Record<string, unknown>
     const user = rowToUser(row)
     const token = signToken({ userId: id, role })
+
+    notifyAdmins({
+      type: 'admin_alert',
+      title: 'New membership application',
+      body: `${firstName} ${lastName} (${email.toLowerCase()})`,
+      link: `/admin/requests?tab=membership`,
+    })
+
     res.status(201).json({ user, token })
   } catch (e) {
     next(e)

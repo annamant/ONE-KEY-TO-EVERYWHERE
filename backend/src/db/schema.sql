@@ -124,3 +124,30 @@ CREATE TABLE IF NOT EXISTS invite_tokens (
   used_at      TEXT,
   created_at   TEXT NOT NULL
 );
+
+-- Property owner waitlist (Open Your Doors enquiries)
+CREATE TABLE IF NOT EXISTS owner_waitlist (
+  id            TEXT PRIMARY KEY,
+  first_name    TEXT NOT NULL,
+  last_name     TEXT,
+  email         TEXT NOT NULL,
+  phone         TEXT,
+  city          TEXT NOT NULL,
+  property_type TEXT,
+  message       TEXT,
+  status        TEXT NOT NULL DEFAULT 'pending' CHECK(status IN ('pending','contacted','approved','rejected')),
+  admin_notes   TEXT,
+  created_at    TEXT NOT NULL,
+  updated_at    TEXT NOT NULL
+);
+
+-- Member interest waitlist (pre-signup expression of interest)
+CREATE TABLE IF NOT EXISTS member_waitlist (
+  id          TEXT PRIMARY KEY,
+  first_name  TEXT NOT NULL,
+  email       TEXT NOT NULL,
+  status      TEXT NOT NULL DEFAULT 'pending' CHECK(status IN ('pending','contacted','invited','rejected')),
+  admin_notes TEXT,
+  created_at  TEXT NOT NULL,
+  updated_at  TEXT NOT NULL
+);
