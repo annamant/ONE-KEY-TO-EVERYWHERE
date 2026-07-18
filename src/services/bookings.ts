@@ -25,4 +25,10 @@ export const bookingService = {
 
   cancel: (id: string, reason?: string) =>
     api.post<Booking>(`/bookings/${id}/cancel`, { reason }),
+
+  modify: (id: string, newDates: { checkIn: string; checkOut: string }) =>
+    api.patch<Booking>(`/bookings/${id}`, newDates),
+
+  override: (id: string, patch: Partial<Booking>) =>
+    api.patch<Booking>(`/bookings/${id}/override`, patch),
 }

@@ -2,6 +2,7 @@ import 'dotenv/config'
 import express from 'express'
 import cors from 'cors'
 import { getDb } from './db/connection'
+import { seedDatabase } from './db/seed'
 import authRouter from './routes/auth'
 import usersRouter from './routes/users'
 import propertiesRouter from './routes/properties'
@@ -14,11 +15,20 @@ import { errorHandler } from './middleware/errorHandler'
 const app = express()
 const PORT = Number(process.env.PORT ?? 3001)
 
-app.use(cors({ origin: 'http://localhost:5173', credentials: true }))
+const corsOrigins = (process.env.CORS_ORIGIN ?? 'http://localhost:5173')
+  .split(',')
+  .map((origin) => origin.trim())
+  .filter(Boolean)
+
+app.use(cors({ origin: corsOrigins, credentials: true }))
 app.use(express.json())
 
 // Initialize DB on startup
-getDb()
+const db = getDb()
+const userCount = db.prepare('SELECT COUNT(*) as count FROM users').get() as { count: number }
+if (userCount.count === 0) {
+  seedDatabase()
+}
 
 app.use('/api/auth',          authRouter)
 app.use('/api/users',         usersRouter)

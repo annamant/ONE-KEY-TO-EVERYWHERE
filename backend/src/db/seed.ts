@@ -13,20 +13,22 @@ const ds = (offset: number) => format(addDays(now, offset), 'yyyy-MM-dd')
 
 const DEMO_PASSWORD_HASH = bcrypt.hashSync('demo', 10)
 
-const db = getDb()
+export function seedDatabase(reset = false): void {
+  const db = getDb()
 
-// Wipe existing data
-db.exec(`
-  DELETE FROM invite_tokens;
-  DELETE FROM notifications;
-  DELETE FROM household_audit;
-  DELETE FROM household_members;
-  DELETE FROM households;
-  DELETE FROM ledger_entries;
-  DELETE FROM bookings;
-  DELETE FROM properties;
-  DELETE FROM users;
-`)
+  if (reset) {
+    db.exec(`
+      DELETE FROM invite_tokens;
+      DELETE FROM notifications;
+      DELETE FROM household_audit;
+      DELETE FROM household_members;
+      DELETE FROM households;
+      DELETE FROM ledger_entries;
+      DELETE FROM bookings;
+      DELETE FROM properties;
+      DELETE FROM users;
+    `)
+  }
 
 // ─── Users ────────────────────────────────────────────────────────────────────
 const insertUser = db.prepare(`
@@ -259,3 +261,8 @@ console.log(`  → ${bookings.length} bookings`)
 console.log(`  → ${ledger.length} ledger entries`)
 console.log(`  → 1 household`)
 console.log(`  → ${notifications.length} notifications`)
+}
+
+if (require.main === module) {
+  seedDatabase(true)
+}
