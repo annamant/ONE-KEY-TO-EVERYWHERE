@@ -5,7 +5,6 @@ import { useToast } from '@/contexts/ToastContext'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
 import { FormField } from '@/components/forms/FormField'
-import { Divider } from '@/components/ui/Divider'
 import { ApiError } from '@/services/apiClient'
 
 export function LoginPage() {
@@ -95,7 +94,7 @@ export function LoginPage() {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="alice@demo.com"
+                  placeholder="you@example.com"
                   autoComplete="email"
                   error={errors.email}
                 />
@@ -123,31 +122,6 @@ export function LoginPage() {
                 Sign In
               </Button>
             </form>
-          )}
-
-          {!suspended && (
-            <>
-              <Divider className="my-5" label="Demo credentials" />
-
-              <div className="space-y-2 text-caption text-text-muted">
-                <p className="text-center font-medium text-body-sm text-text-primary mb-2">Quick access</p>
-                {[
-                  { email: 'alice@demo.com', role: 'Member' },
-                  { email: 'carol@demo.com', role: 'Owner' },
-                  { email: 'eve@demo.com', role: 'Admin' },
-                ].map((demo) => (
-                  <button
-                    key={demo.email}
-                    type="button"
-                    onClick={() => { setEmail(demo.email); setPassword('demo') }}
-                    className="w-full flex items-center justify-between px-3 py-2 bg-okte-slate-50 hover:bg-okte-slate-100 rounded-lg transition-colors text-left"
-                  >
-                    <span className="text-body-sm text-text-primary">{demo.email}</span>
-                    <span className="text-caption text-text-muted bg-okte-slate-200 px-2 py-0.5 rounded-pill">{demo.role}</span>
-                  </button>
-                ))}
-              </div>
-            </>
           )}
         </div>
 

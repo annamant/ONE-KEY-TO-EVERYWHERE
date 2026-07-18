@@ -193,7 +193,7 @@ export const router = createBrowserRouter([
     path: '/owner',
     element: (
       <RequireAuth>
-        <RequireRole role="owner">
+        <RequireRole roles={['owner', 'admin']}>
           <OwnerShell />
         </RequireRole>
       </RequireAuth>

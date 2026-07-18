@@ -18,6 +18,7 @@ const navItems: NavItem[] = [
   { label: 'Requests', path: '/admin/requests', icon: InboxStackIcon },
   { label: 'Users', path: '/admin/users', icon: UsersIcon },
   { label: 'Properties', path: '/admin/properties', icon: BuildingOfficeIcon },
+  { label: 'My Homes', path: '/owner/properties', icon: HomeIcon },
   { label: 'Bookings', path: '/admin/bookings', icon: CalendarDaysIcon },
   { label: 'Ledger', path: '/admin/ledger', icon: CreditCardIcon },
   { label: 'Settings', path: '/admin/settings', icon: Cog6ToothIcon },

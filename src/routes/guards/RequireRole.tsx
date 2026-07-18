@@ -3,16 +3,20 @@ import { useAuth } from '@/contexts/AuthContext'
 import type { UserRole } from '@/types'
 
 interface RequireRoleProps {
-  role: UserRole
+  /** Single required role (shorthand). */
+  role?: UserRole
+  /** Any of these roles may access. */
+  roles?: UserRole[]
   children: React.ReactNode
 }
 
-export function RequireRole({ role, children }: RequireRoleProps) {
+export function RequireRole({ role, roles, children }: RequireRoleProps) {
   const { currentUser } = useAuth()
+  const allowed = roles ?? (role ? [role] : [])
 
   if (!currentUser) return <Navigate to="/auth/login" replace />
 
-  if (currentUser.role !== role) {
+  if (!allowed.includes(currentUser.role)) {
     const redirectMap: Record<UserRole, string> = {
       member: '/member/dashboard',
       owner: '/owner/dashboard',

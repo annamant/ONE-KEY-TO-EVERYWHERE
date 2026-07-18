@@ -5,11 +5,13 @@ import {
   BuildingOfficeIcon,
   CalendarDaysIcon,
   ChartBarIcon,
+  ShieldCheckIcon,
 } from '@heroicons/react/24/outline'
+import { useAuth } from '@/contexts/AuthContext'
 import { Sidebar, type NavItem } from './Sidebar'
 import { TopBar } from './TopBar'
 
-const navItems: NavItem[] = [
+const baseNavItems: NavItem[] = [
   { label: 'Dashboard', path: '/owner/dashboard', icon: HomeIcon },
   { label: 'Properties', path: '/owner/properties', icon: BuildingOfficeIcon },
   { label: 'Reservations', path: '/owner/reservations', icon: CalendarDaysIcon },
@@ -17,7 +19,12 @@ const navItems: NavItem[] = [
 ]
 
 export function OwnerShell() {
+  const { currentUser } = useAuth()
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const navItems =
+    currentUser?.role === 'admin'
+      ? [...baseNavItems, { label: 'Admin', path: '/admin/dashboard', icon: ShieldCheckIcon }]
+      : baseNavItems
 
   return (
     <div className="flex h-screen overflow-hidden bg-surface-alt">

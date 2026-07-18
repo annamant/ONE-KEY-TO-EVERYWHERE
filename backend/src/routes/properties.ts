@@ -55,8 +55,8 @@ router.get('/admin', authenticate, requireRole('admin'), (req, res, next) => {
   } catch (e) { next(e) }
 })
 
-// GET /api/properties/owner  (owner — own listings)
-router.get('/owner', authenticate, requireRole('owner'), (req, res, next) => {
+// GET /api/properties/owner  (owner/admin — own listings)
+router.get('/owner', authenticate, requireRole('owner', 'admin'), (req, res, next) => {
   try {
     const db = getDb()
     const rows = db.prepare('SELECT * FROM properties WHERE owner_id = ? ORDER BY created_at DESC').all(req.user!.userId) as Record<string, unknown>[]
@@ -117,8 +117,8 @@ router.get('/', authenticate, (req, res, next) => {
   } catch (e) { next(e) }
 })
 
-// POST /api/properties  (owner — create)
-router.post('/', authenticate, requireRole('owner'), (req, res, next) => {
+// POST /api/properties  (owner/admin — create)
+router.post('/', authenticate, requireRole('owner', 'admin'), (req, res, next) => {
   try {
     const body = req.body as Record<string, unknown>
     const now = new Date().toISOString()
