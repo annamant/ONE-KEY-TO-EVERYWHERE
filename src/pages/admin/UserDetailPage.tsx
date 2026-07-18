@@ -37,7 +37,10 @@ export function AdminUserDetailPage() {
     setActing(true)
     try {
       await mockUsers.moderate(id!, action)
-      toast(action === 'suspend' ? 'User suspended' : 'User unsuspended', 'success')
+      toast(
+        action === 'suspend' ? 'User suspended' : action === 'verify' ? 'Member approved' : 'User restored',
+        'success'
+      )
       refetch()
     } catch {
       toast('Action failed', 'error')
@@ -79,9 +82,19 @@ export function AdminUserDetailPage() {
             <p className="text-caption text-text-muted mt-2">Joined {formatDate(user.createdAt)}</p>
           </div>
           <div className="flex gap-2">
-            {user.status === 'active' ? (
+            {user.status === 'pending_verification' && (
+              <Button
+                size="sm"
+                onClick={() => moderate('verify')}
+                disabled={acting}
+              >
+                Approve member
+              </Button>
+            )}
+            {user.status === 'active' && (
               <Button variant="danger" size="sm" onClick={() => setSuspendOpen(true)}>Suspend</Button>
-            ) : (
+            )}
+            {user.status === 'suspended' && (
               <Button variant="outline" size="sm" onClick={() => setUnsuspendOpen(true)}>Unsuspend</Button>
             )}
           </div>

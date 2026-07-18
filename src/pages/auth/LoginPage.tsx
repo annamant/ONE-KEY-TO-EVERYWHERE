@@ -37,6 +37,10 @@ export function LoginPage() {
     try {
       const user = await login(email, password)
       toast('Welcome back!', 'success')
+      if (user.role === 'member' && user.status === 'pending_verification') {
+        navigate('/member/pending', { replace: true })
+        return
+      }
       const redirect = from ?? `/${user.role}/dashboard`
       navigate(redirect, { replace: true })
     } catch (err) {

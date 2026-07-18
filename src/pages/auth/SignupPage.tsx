@@ -52,8 +52,12 @@ export function SignupPage() {
         lastName: form.lastName,
         role: form.role,
       })
-      toast('Account created! Welcome to One Key.', 'success')
-      navigate(`/${user.role}/dashboard`, { replace: true })
+      toast('Account created. We’ll review your membership shortly.', 'success')
+      if (user.role === 'member' && user.status === 'pending_verification') {
+        navigate('/member/pending', { replace: true })
+      } else {
+        navigate(`/${user.role}/dashboard`, { replace: true })
+      }
     } catch (err) {
       setErrors({ form: err instanceof Error ? err.message : 'Signup failed' })
     } finally {

@@ -13,14 +13,13 @@ export function PublicFooter() {
               <span className="font-bold" style={{ color: '#FFFFFF' }}>One Key to Everywhere</span>
             </div>
             <p className="text-body-sm leading-relaxed">
-              A private Club for the finest homes in Puglia, Italy. Not a platform — a community built on trust.
+              A private Club for five exceptional homes in Ostuni, Italy. Not a platform — a community built on trust.
             </p>
           </div>
           <div>
             <h4 className="font-semibold text-body-sm mb-4" style={{ color: '#FFFFFF' }}>The Club</h4>
             <ul className="space-y-2 text-body-sm">
               <li><Link to="/how-it-works" className="transition-colors hover:text-white">How It Works</Link></li>
-              <li><Link to="/pricing" className="transition-colors hover:text-white">Membership Plans</Link></li>
               <li><Link to="/waitlist" className="transition-colors hover:text-white">Apply to Join</Link></li>
             </ul>
           </div>
@@ -39,7 +38,7 @@ export function PublicFooter() {
           </div>
         </div>
         <div className="flex flex-col sm:flex-row justify-between items-center gap-3 pt-6" style={{ borderTop: '1px solid rgba(255,255,255,0.1)' }}>
-          <p className="text-caption">© 2026 One Key to Everywhere · Puglia, Italy</p>
+          <p className="text-caption">© 2026 One Key to Everywhere · Ostuni, Italy</p>
           <div className="flex gap-4 text-caption">
             <a href="#" className="transition-colors hover:text-white">Privacy</a>
             <a href="#" className="transition-colors hover:text-white">Terms</a>

@@ -7,13 +7,15 @@ import {
   KeyIcon,
   UserGroupIcon,
   UserCircleIcon,
+  ClockIcon,
 } from '@heroicons/react/24/outline'
 import { Sidebar, type NavItem } from './Sidebar'
 import { TopBar } from './TopBar'
 import { cn } from '@/utils/classNames'
 import { useIsTablet } from '@/hooks/useMediaQuery'
+import { useAuth } from '@/contexts/AuthContext'
 
-const navItems: NavItem[] = [
+const fullNav: NavItem[] = [
   { label: 'Dashboard', path: '/member/dashboard', icon: HomeIcon },
   { label: 'Search', path: '/member/search', icon: MagnifyingGlassIcon },
   { label: 'Bookings', path: '/member/bookings', icon: CalendarDaysIcon },
@@ -22,14 +24,20 @@ const navItems: NavItem[] = [
   { label: 'Profile', path: '/member/profile', icon: UserCircleIcon },
 ]
 
+const pendingNav: NavItem[] = [
+  { label: 'Status', path: '/member/pending', icon: ClockIcon },
+  { label: 'Profile', path: '/member/profile', icon: UserCircleIcon },
+]
+
 export function MemberShell() {
+  const { currentUser } = useAuth()
   const isTablet = useIsTablet()
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [collapsed, setCollapsed] = useState(false)
+  const navItems = currentUser?.status === 'pending_verification' ? pendingNav : fullNav
 
   return (
     <div className="flex h-screen overflow-hidden bg-surface-alt">
-      {/* Desktop sidebar */}
       <div className={cn('hidden lg:flex flex-col')}>
         <Sidebar
           navItems={navItems}
@@ -37,7 +45,6 @@ export function MemberShell() {
         />
       </div>
 
-      {/* Mobile sidebar overlay */}
       {sidebarOpen && (
         <>
           <div
@@ -60,7 +67,6 @@ export function MemberShell() {
         </main>
       </div>
 
-      {/* Tablet collapse toggle */}
       {!isTablet && (
         <button
           onClick={() => setCollapsed(!collapsed)}

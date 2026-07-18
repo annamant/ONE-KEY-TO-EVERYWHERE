@@ -1,6 +1,7 @@
 import { createBrowserRouter, Navigate, Outlet } from 'react-router-dom'
 import { RequireAuth } from './guards/RequireAuth'
 import { RequireRole } from './guards/RequireRole'
+import { RequireActive } from './guards/RequireActive'
 import { RedirectIfAuthed } from './guards/RedirectIfAuthed'
 
 // Layouts
@@ -34,6 +35,7 @@ import { WalletPage } from '@/pages/member/WalletPage'
 import { HouseholdPage } from '@/pages/member/HouseholdPage'
 import { HouseholdInvitePage } from '@/pages/member/HouseholdInvitePage'
 import { MemberProfilePage } from '@/pages/member/ProfilePage'
+import { PendingApprovalPage } from '@/pages/member/PendingApprovalPage'
 
 // Owner pages
 import { OwnerDashboardPage } from '@/pages/owner/DashboardPage'
@@ -106,15 +108,79 @@ export const router = createBrowserRouter([
     children: [
       { index: true, element: <Navigate to="/member/dashboard" replace /> },
       { path: 'dashboard', element: <MemberDashboardPage /> },
-      { path: 'search', element: <SearchPage /> },
-      { path: 'properties/:id', element: <PropertyDetailPage /> },
-      { path: 'booking/checkout', element: <BookingCheckoutPage /> },
-      { path: 'booking/confirmation/:id', element: <BookingConfirmPage /> },
-      { path: 'bookings', element: <BookingsPage /> },
-      { path: 'bookings/:id', element: <BookingDetailPage /> },
-      { path: 'wallet', element: <WalletPage /> },
-      { path: 'household', element: <HouseholdPage /> },
-      { path: 'household/invite/:token', element: <HouseholdInvitePage /> },
+      { path: 'pending', element: <PendingApprovalPage /> },
+      {
+        path: 'search',
+        element: (
+          <RequireActive>
+            <SearchPage />
+          </RequireActive>
+        ),
+      },
+      {
+        path: 'properties/:id',
+        element: (
+          <RequireActive>
+            <PropertyDetailPage />
+          </RequireActive>
+        ),
+      },
+      {
+        path: 'booking/checkout',
+        element: (
+          <RequireActive>
+            <BookingCheckoutPage />
+          </RequireActive>
+        ),
+      },
+      {
+        path: 'booking/confirmation/:id',
+        element: (
+          <RequireActive>
+            <BookingConfirmPage />
+          </RequireActive>
+        ),
+      },
+      {
+        path: 'bookings',
+        element: (
+          <RequireActive>
+            <BookingsPage />
+          </RequireActive>
+        ),
+      },
+      {
+        path: 'bookings/:id',
+        element: (
+          <RequireActive>
+            <BookingDetailPage />
+          </RequireActive>
+        ),
+      },
+      {
+        path: 'wallet',
+        element: (
+          <RequireActive>
+            <WalletPage />
+          </RequireActive>
+        ),
+      },
+      {
+        path: 'household',
+        element: (
+          <RequireActive>
+            <HouseholdPage />
+          </RequireActive>
+        ),
+      },
+      {
+        path: 'household/invite/:token',
+        element: (
+          <RequireActive>
+            <HouseholdInvitePage />
+          </RequireActive>
+        ),
+      },
       { path: 'profile', element: <MemberProfilePage /> },
     ],
   },

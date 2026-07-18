@@ -43,7 +43,7 @@ const mockUsers = {
     const user: User = {
       id: generateId('user'),
       ...data,
-      status: 'active',
+      status: 'pending_verification',
       createdAt: now,
       updatedAt: now,
     }

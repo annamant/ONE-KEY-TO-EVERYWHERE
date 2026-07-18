@@ -62,11 +62,24 @@ router.get('/owner', authenticate, requireRole('owner'), (req, res, next) => {
   } catch (e) { next(e) }
 })
 
-// GET /api/properties  (public — approved only, with search filters)
+// GET /api/properties  (approved members only — approved listings)
 router.get('/', authenticate, (req, res, next) => {
   try {
-    const { region, sleeps, maxKeys, minKeys, query, amenities, checkIn, checkOut } = req.query as Record<string, string | undefined>
     const db = getDb()
+    const user = db.prepare('SELECT status, role FROM users WHERE id = ?').get(req.user!.userId) as
+      | { status: string; role: string }
+      | undefined
+
+    if (!user) {
+      res.status(401).json({ error: 'Unauthorized' })
+      return
+    }
+    if (user.role === 'member' && user.status !== 'active') {
+      res.status(403).json({ error: 'Membership pending approval' })
+      return
+    }
+
+    const { region, sleeps, maxKeys, minKeys, query, amenities, checkIn, checkOut } = req.query as Record<string, string | undefined>
     let sql = "SELECT * FROM properties WHERE status = 'approved'"
     const params: unknown[] = []
 
@@ -140,8 +153,25 @@ router.post('/', authenticate, requireRole('owner'), (req, res, next) => {
 router.get('/:id', authenticate, (req, res, next) => {
   try {
     const db = getDb()
+    const user = db.prepare('SELECT status, role FROM users WHERE id = ?').get(req.user!.userId) as
+      | { status: string; role: string }
+      | undefined
+
+    if (!user) {
+      res.status(401).json({ error: 'Unauthorized' })
+      return
+    }
+    if (user.role === 'member' && user.status !== 'active') {
+      res.status(403).json({ error: 'Membership pending approval' })
+      return
+    }
+
     const row = db.prepare('SELECT * FROM properties WHERE id = ?').get(req.params.id) as Record<string, unknown> | undefined
     if (!row) { res.status(404).json({ error: 'Property not found' }); return }
+    // Members only see approved listings
+    if (user.role === 'member' && row.status !== 'approved') {
+      res.status(404).json({ error: 'Property not found' }); return
+    }
     res.json(rowToProp(row))
   } catch (e) { next(e) }
 })

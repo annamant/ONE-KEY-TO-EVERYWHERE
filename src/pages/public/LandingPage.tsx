@@ -3,59 +3,30 @@ import { PublicNav } from '@/components/layout/PublicNav'
 import { PublicFooter } from '@/components/layout/PublicFooter'
 import { KeyIcon, HomeModernIcon, UsersIcon, ShieldCheckIcon } from '@heroicons/react/24/outline'
 
-// Verified Unsplash images — Puglia, Italy
-const HERO_IMG = '/images/landing/jose-jovena-dgj88Fece5c-unsplash.jpg';
-const OSTUNI_IMG = '/images/landing/freysteinn-g-jonsson-DqFMDsdQhXc-unsplash.jpg';
-const FINAL_CTA_IMG = '/images/landing/mathilde-ro-CWwYdFYKIw0-unsplash.jpg';
-
-// ... rest of your LandingPage.tsx ...
-const HOMES = [
-  {
-    title: "Trullo — Peppe",
-    area: 'Ostuni, Puglia',
-    tier: 'Club Premium',
-    img: 'https://images.unsplash.com/photo-sc6X5YIuxq8?w=800&auto=format&fit=crop&q=80',
-  },
-  {
-    title: 'Blue House',
-    area: 'Ostuni, Puglia',
-    tier: 'Club Luxury',
-    img: 'https://images.unsplash.com/photo-tplY9UrKtV4?w=800&auto=format&fit=crop&q=80',
-  },
-  {
-    title: 'Yellow House',
-    area: 'Ostuni, Puglia',
-    tier: 'Club Premium',
-    img: 'https://images.unsplash.com/photo-eKl9Ync7t8Y?w=800&auto=format&fit=crop&q=80',
-  },
-  {
-    title: 'Trullo Family House',
-    area: 'Ostuni, Puglia',
-    tier: 'Club Luxury',
-    img: 'https://images.unsplash.com/photo-GWHkstcGkFM?w=800&auto=format&fit=crop&q=80',
-  },
-]
+const HERO_IMG = '/images/landing/freysteinn-g-jonsson-DqFMDsdQhXc-unsplash.jpg'
+const OSTUNI_IMG = '/images/landing/-ostuni-5_risultato-768x512.jpeg.webp'
+const FINAL_CTA_IMG = '/images/landing/mathilde-ro-CWwYdFYKIw0-unsplash.jpg'
 
 const PILLARS = [
   {
     icon: <KeyIcon className="w-6 h-6" />,
-    title: 'One key. Every home.',
-    desc: 'When you join the Club you gain access to everyewhere throughout the year for you, our friends and family',
+    title: 'One key. Five homes.',
+    desc: 'Join the Club and unlock every Ostuni home throughout the year — for you, your friends, and your family.',
   },
   {
     icon: <HomeModernIcon className="w-6 h-6" />,
     title: 'Real homes. Real character.',
-    desc: 'You access a home that someone loves. Trulli, masserie, coastal towers, baroque palazzi — every property is selected for its soul, not its star rating.',
+    desc: 'You access a home that someone loves. Trulli, masserie, whitewashed houses — every property is selected for its soul, not its star rating.',
   },
   {
     icon: <UsersIcon className="w-6 h-6" />,
     title: 'A carefully curated circle.',
-    desc: "You don't join by accident. Every member is vetted.The Club exists because trust is built with care — not with algorithms.",
+    desc: "You don't join by accident. Every member is vetted. The Club exists because trust is built with care — not with algorithms.",
   },
   {
     icon: <ShieldCheckIcon className="w-6 h-6" />,
     title: 'The European way.',
-    desc: 'No opportunistic dynamic pricing. No penalty for choosing January. Born in Puglia with European values: fairness, continuity, respect for the territory.',
+    desc: 'No opportunistic dynamic pricing. No penalty for choosing January. Born in Ostuni with European values: fairness, continuity, respect for the territory.',
   },
 ]
 
@@ -69,12 +40,11 @@ export function LandingPage() {
       <section className="relative flex flex-col" style={{ height: '100svh', minHeight: 600 }}>
         <img
           src={HERO_IMG}
-          alt="Polignano a Mare, Puglia"
+          alt="Ostuni, the white city of Puglia"
           className="absolute inset-0 w-full h-full object-cover"
           style={{ objectPosition: 'center 40%' }}
           loading="eager"
         />
-        {/* Gradient overlay */}
         <div
           className="absolute inset-0"
           style={{
@@ -90,18 +60,18 @@ export function LandingPage() {
           <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16 pb-10 sm:pb-14 flex flex-col sm:flex-row items-end justify-between gap-8">
             <div className="max-w-lg">
               <p className="text-caption font-semibold uppercase tracking-[0.22em] mb-4" style={{ color: 'rgba(255,255,255,0.6)' }}>
-                Private Members Club · Puglia, Italy
+                Private Members Club · Ostuni, Italy
               </p>
               <h1
                 className="font-display font-bold leading-none mb-5"
                 style={{ color: '#FFFFFF', fontSize: 'clamp(3rem, 7vw, 5.5rem)', lineHeight: 1.02 }}
               >
-                Live across<br />
-                <em style={{ fontStyle: 'italic' }}>Puglia.</em><br />
+                Live in<br />
+                <em style={{ fontStyle: 'italic' }}>Ostuni.</em><br />
                 One key.
               </h1>
               <p className="text-body-sm leading-relaxed mb-8 max-w-sm" style={{ color: 'rgba(255,255,255,0.7)' }}>
-                A private Club that gives you access to exceptional homes across Puglia. Stay weeks, not nights. Move between places. Make it yours.
+                A private Club with five exceptional homes in Ostuni. Stay weeks, not nights. Move between places. Make it yours.
               </p>
               <div className="flex items-center gap-5 flex-wrap">
                 <button
@@ -127,8 +97,8 @@ export function LandingPage() {
 
             <div className="flex gap-10 sm:gap-14 shrink-0">
               {[
-                { n: '50+', label: 'Club Residences' },
-                { n: '1', label: 'Region, Done Right' },
+                { n: '5', label: 'Club Homes' },
+                { n: '1', label: 'Town, Done Right' },
                 { n: '∞', label: 'Ways to Experience' },
               ].map(({ n, label }) => (
                 <div key={label} className="text-right">
@@ -155,7 +125,7 @@ export function LandingPage() {
             "A membership club for experiences — a key to everywhere."
           </p>
           <p className="text-caption uppercase tracking-widest mt-5" style={{ color: '#C4882F', letterSpacing: '0.18em' }}>
-            One Key to Everywhere · Est. Puglia
+            One Key to Everywhere · Est. Ostuni
           </p>
         </div>
       </section>
@@ -164,13 +134,13 @@ export function LandingPage() {
       <section className="relative overflow-hidden" style={{ height: 420 }}>
         <img
           src={OSTUNI_IMG}
-          alt="Ostuni, the white city of Puglia"
+          alt="Ostuni, the white city"
           className="w-full h-full object-cover"
           style={{ objectPosition: 'center 50%' }}
         />
         <div
           className="absolute inset-0 flex items-center"
-          style={{ background: 'linear-gradient(to right, rgba(0,0,0,0.10) 0%, transparent 60%)' }}
+          style={{ background: 'linear-gradient(to right, rgba(0,0,0,0.45) 0%, rgba(0,0,0,0.15) 60%)' }}
         >
           <div className="px-10 sm:px-16">
             <p className="text-caption font-semibold uppercase tracking-[0.2em] mb-2" style={{ color: '#C4882F' }}>
@@ -178,9 +148,9 @@ export function LandingPage() {
             </p>
             <p
               className="font-display font-bold"
-              style={{ color: '#FFFFFF', fontSize: 'clamp(1.6rem, 3vw, 2.4rem)', maxWidth: 400, lineHeight: 1.25 }}
+              style={{ color: '#FFFFFF', fontSize: 'clamp(1.6rem, 3vw, 2.4rem)', maxWidth: 420, lineHeight: 1.25 }}
             >
-              Puglia at its most extraordinary.
+              One town. Five homes. The Club begins here.
             </p>
           </div>
         </div>
@@ -214,49 +184,27 @@ export function LandingPage() {
         </div>
       </section>
 
-      {/* ── CLUB HOMES ───────────────────────────────────────────────────────── */}
+      {/* ── MEMBERS-ONLY HOMES ───────────────────────────────────────────────── */}
       <section style={{ background: '#F5F5F5', borderTop: '1px solid #E5E5E5' }}>
-        <div className="max-w-6xl mx-auto px-6 py-20">
-          <div className="flex items-end justify-between mb-10 gap-4">
-            <div>
-              <p className="text-caption font-semibold uppercase tracking-[0.18em] mb-2" style={{ color: '#C4882F' }}>Club homes</p>
-              <h2 className="font-display text-heading-xl font-bold" style={{ color: '#0A0A0A' }}>
-                Every home has a story.
-              </h2>
-            </div>
-            <button
-              onClick={() => navigate('/auth/login')}
-              className="text-caption font-semibold uppercase tracking-wider shrink-0 px-5 py-2"
-              style={{ border: '1.5px solid #0A0A0A', color: '#0A0A0A', background: 'transparent', cursor: 'pointer', letterSpacing: '0.1em' }}
-              onMouseEnter={(e) => { e.currentTarget.style.background = '#0A0A0A'; e.currentTarget.style.color = '#FFFFFF' }}
-              onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#0A0A0A' }}
-            >
-              Browse all
-            </button>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-            {HOMES.map((h) => (
-              <div
-                key={h.title}
-                className="rounded-2xl overflow-hidden cursor-pointer group"
-                style={{ background: '#FFFFFF', boxShadow: '0 1px 4px rgba(0,0,0,.08)' }}
-                onClick={() => navigate('/auth/signup')}
-              >
-                <div className="overflow-hidden" style={{ height: 220 }}>
-                  <img
-                    src={h.img}
-                    alt={h.title}
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                  />
-                </div>
-                <div className="p-4">
-                  <span className="text-caption font-semibold uppercase tracking-wide" style={{ color: '#C4882F', letterSpacing: '0.12em' }}>{h.tier}</span>
-                  <h3 className="text-body-md font-semibold mt-1" style={{ color: '#0A0A0A' }}>{h.title}</h3>
-                  <p className="text-caption mt-0.5" style={{ color: '#6B6B6B' }}>{h.area}</p>
-                </div>
-              </div>
-            ))}
-          </div>
+        <div className="max-w-3xl mx-auto px-6 py-20 text-center">
+          <p className="text-caption font-semibold uppercase tracking-[0.18em] mb-3" style={{ color: '#C4882F' }}>
+            Five homes in Ostuni
+          </p>
+          <h2 className="font-display text-heading-xl font-bold mb-4" style={{ color: '#0A0A0A' }}>
+            The homes stay private.
+          </h2>
+          <p className="text-body-lg mb-8" style={{ color: '#6B6B6B' }}>
+            Club residences are shared only with accepted members. Apply, register, and once we approve you — the five Ostuni homes open up.
+          </p>
+          <button
+            onClick={() => navigate('/waitlist')}
+            className="text-caption font-semibold uppercase tracking-wider px-6 py-3"
+            style={{ border: '1.5px solid #0A0A0A', color: '#0A0A0A', background: 'transparent', cursor: 'pointer', letterSpacing: '0.1em' }}
+            onMouseEnter={(e) => { e.currentTarget.style.background = '#0A0A0A'; e.currentTarget.style.color = '#FFFFFF' }}
+            onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#0A0A0A' }}
+          >
+            Request membership
+          </button>
         </div>
       </section>
 
@@ -268,7 +216,7 @@ export function LandingPage() {
             Your home has a place<br />in this Club.
           </h2>
           <p className="text-body-lg mb-8 max-w-xl mx-auto" style={{ color: '#6B6B6B' }}>
-            If you own an exceptional home in Puglia — a trullo, a masseria, a palazzo — we'd like to hear its story.
+            If you own an exceptional home in Ostuni — a trullo, a masseria, a whitewashed house — we'd like to hear its story.
           </p>
           <button
             onClick={() => navigate('/open-doors')}
@@ -292,18 +240,22 @@ export function LandingPage() {
             backgroundPosition: 'center',
           }}
         />
+        <div
+          className="absolute inset-0"
+          style={{ background: 'rgba(0,0,0,0.45)' }}
+        />
         <div className="relative max-w-xl mx-auto px-6">
           <p
-           className="text-caption font-semibold uppercase tracking-[0.22em] mb-4"
-           style={{ color: 'rgba(196,136,47,0.95)', textShadow: '0 2px 10px rgba(0,0,0,0.55)' }} 
-        >
-           Membership is limited   
+            className="text-caption font-semibold uppercase tracking-[0.22em] mb-4"
+            style={{ color: 'rgba(196,136,47,0.95)', textShadow: '0 2px 10px rgba(0,0,0,0.55)' }}
+          >
+            Membership is limited
           </p>
           <h2 className="font-display font-bold mb-4" style={{ color: '#FFFFFF', fontSize: 'clamp(2rem, 5vw, 3.5rem)', lineHeight: 1.1 }}>
-            Puglia.<br />Done right.
+            Ostuni.<br />Done right.
           </h2>
           <p className="text-body-md mb-10" style={{ color: 'rgba(255,255,255,0.55)' }}>
-            One region. One Club. The way it should be.
+            One town. One Club. Membership details wait for you inside.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <button
@@ -316,13 +268,13 @@ export function LandingPage() {
               Join the Waitlist
             </button>
             <button
-              onClick={() => navigate('/pricing')}
+              onClick={() => navigate('/how-it-works')}
               className="text-caption font-semibold uppercase tracking-wider px-8 py-4 transition-all"
               style={{ color: '#FFFFFF', border: '1.5px solid rgba(255,255,255,0.4)', background: 'transparent', cursor: 'pointer', letterSpacing: '0.12em' }}
               onMouseEnter={(e) => (e.currentTarget.style.borderColor = '#FFFFFF')}
               onMouseLeave={(e) => (e.currentTarget.style.borderColor = 'rgba(255,255,255,0.4)')}
             >
-              View Membership Plans
+              How It Works
             </button>
           </div>
         </div>

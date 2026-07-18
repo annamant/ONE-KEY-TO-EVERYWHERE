@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Navigate } from 'react-router-dom'
 import {
   KeyIcon,
   MagnifyingGlassIcon,
@@ -29,6 +29,10 @@ export function MemberDashboardPage() {
     [currentUser?.id]
   )
   const { data: properties } = useMockApi(() => mockProperties.list(), [])
+
+  if (currentUser?.status === 'pending_verification') {
+    return <Navigate to="/member/pending" replace />
+  }
 
   const propMap = Object.fromEntries((properties ?? []).map((p) => [p.id, p]))
   const upcomingBookings = (bookings ?? []).filter((b) => ['confirmed', 'active'].includes(b.status)).slice(0, 3)

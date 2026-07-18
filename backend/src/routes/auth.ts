@@ -84,7 +84,7 @@ router.post('/signup', (req, res, next) => {
     db.prepare(`
       INSERT INTO users (id,email,password_hash,first_name,last_name,role,status,created_at,updated_at)
       VALUES (?,?,?,?,?,?,?,?,?)
-    `).run(id, email.toLowerCase(), hash, firstName, lastName, role, 'active', now, now)
+    `).run(id, email.toLowerCase(), hash, firstName, lastName, role, 'pending_verification', now, now)
 
     const row = db.prepare('SELECT * FROM users WHERE id = ?').get(id) as Record<string, unknown>
     const user = rowToUser(row)
