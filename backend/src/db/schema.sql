@@ -160,3 +160,32 @@ CREATE TABLE IF NOT EXISTS password_reset_tokens (
   used_at     TEXT,
   created_at  TEXT NOT NULL
 );
+
+-- Admin booking overrides (audit trail for status overrides)
+CREATE TABLE IF NOT EXISTS booking_overrides (
+  id              TEXT PRIMARY KEY,
+  booking_id      TEXT NOT NULL REFERENCES bookings(id),
+  admin_id        TEXT NOT NULL REFERENCES users(id),
+  previous_status TEXT NOT NULL,
+  new_status      TEXT NOT NULL,
+  note            TEXT,
+  created_at      TEXT NOT NULL
+);
+
+-- Property review decisions (audit trail + rejection reasons)
+CREATE TABLE IF NOT EXISTS property_review_notes (
+  id           TEXT PRIMARY KEY,
+  property_id  TEXT NOT NULL REFERENCES properties(id),
+  admin_id     TEXT NOT NULL REFERENCES users(id),
+  decision     TEXT NOT NULL CHECK(decision IN ('approved','rejected','suspended')),
+  reason       TEXT,
+  created_at   TEXT NOT NULL
+);
+
+-- Platform settings (key-value store)
+CREATE TABLE IF NOT EXISTS settings (
+  key         TEXT PRIMARY KEY,
+  value       TEXT NOT NULL,
+  updated_at  TEXT NOT NULL,
+  updated_by  TEXT REFERENCES users(id)
+);

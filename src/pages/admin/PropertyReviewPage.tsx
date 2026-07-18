@@ -6,9 +6,10 @@ import { mockProperties, mockUsers } from '@/services'
 import { Badge } from '@/components/ui/Badge'
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
+import { Modal } from '@/components/feedback/Modal'
+import { ConfirmDialog } from '@/components/feedback/ConfirmDialog'
 import { Textarea } from '@/components/ui/Textarea'
 import { FormField } from '@/components/forms/FormField'
-import { ConfirmDialog } from '@/components/feedback/ConfirmDialog'
 import { PageSpinner } from '@/components/ui/Spinner'
 import { CheckCircleIcon, XCircleIcon } from '@heroicons/react/24/outline'
 import { formatDate } from '@/utils/format'
@@ -37,10 +38,10 @@ export function AdminPropertyReviewPage() {
     [property?.ownerId]
   )
 
-  const setStatus = async (status: 'approved' | 'rejected') => {
+  const setStatus = async (status: 'approved' | 'rejected', reason?: string) => {
     setActing(true)
     try {
-      await mockProperties.setStatus(id!, status)
+      await mockProperties.setStatus(id!, status, status === 'rejected' ? reason : undefined)
       toast(status === 'approved' ? 'Property approved!' : 'Property rejected', status === 'approved' ? 'success' : 'error')
       refetch()
     } catch {
@@ -186,16 +187,39 @@ export function AdminPropertyReviewPage() {
         onClose={() => setApproveOpen(false)}
       />
 
-      <ConfirmDialog
+      <Modal
         open={rejectOpen}
-        title="Reject Property"
-        message={`Reject "${property.title}"? The owner will be notified.`}
-        confirmLabel="Reject"
-        variant="danger"
-        loading={acting}
-        onConfirm={() => setStatus('rejected')}
         onClose={() => setRejectOpen(false)}
-      />
+        title="Reject Property"
+        size="md"
+        footer={
+          <div className="flex gap-3 justify-end">
+            <Button variant="ghost" onClick={() => setRejectOpen(false)} disabled={acting}>Cancel</Button>
+            <Button
+              variant="danger"
+              onClick={() => setStatus('rejected', rejectReason)}
+              loading={acting}
+              disabled={!rejectReason.trim()}
+            >
+              Reject
+            </Button>
+          </div>
+        }
+      >
+        <div className="space-y-3">
+          <p className="text-body-sm text-text-muted">
+            Reject "{property.title}"? The owner will be notified.
+          </p>
+          <FormField label="Reason" hint="Required — shared with the owner so they can fix and resubmit.">
+            <Textarea
+              value={rejectReason}
+              onChange={(e) => setRejectReason(e.target.value)}
+              placeholder="e.g. Photos are too low resolution, description is missing key details..."
+              rows={4}
+            />
+          </FormField>
+        </div>
+      </Modal>
     </div>
   )
 }

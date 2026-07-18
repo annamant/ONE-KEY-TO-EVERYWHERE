@@ -30,6 +30,16 @@ export function AdminDashboardPage() {
   const activeBookings = (bookings ?? []).filter((b) => ['confirmed', 'active'].includes(b.status))
   const totalKeys = (ledgerEntries ?? []).filter((e) => e.amount > 0).reduce((s, e) => s + e.amount, 0)
 
+  // Week-over-week user growth (new users this week vs last week)
+  const nowMs = Date.now()
+  const weekMs = 7 * 24 * 60 * 60 * 1000
+  const thisWeek = (users ?? []).filter((u) => nowMs - new Date(u.createdAt).getTime() < weekMs).length
+  const lastWeek = (users ?? []).filter((u) => {
+    const age = nowMs - new Date(u.createdAt).getTime()
+    return age >= weekMs && age < 2 * weekMs
+  }).length
+  const userDelta = lastWeek > 0 ? Math.round(((thisWeek - lastWeek) / lastWeek) * 100) : (thisWeek > 0 ? 100 : 0)
+
   // Monthly bookings chart
   const monthlyMap: Record<string, number> = {}
   ;(bookings ?? []).forEach((b) => {
@@ -54,8 +64,8 @@ export function AdminDashboardPage() {
           value={(users ?? []).length}
           icon={<UsersIcon className="w-5 h-5" />}
           iconBg="bg-okte-navy-50 text-primary"
-          delta={8}
-          deltaLabel="this week"
+          delta={userDelta}
+          deltaLabel="vs last week"
         />
         <StatCard
           label="Properties"

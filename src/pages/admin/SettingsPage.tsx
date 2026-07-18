@@ -1,32 +1,84 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useToast } from '@/contexts/ToastContext'
+import { settingsService } from '@/services'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
 import { Select } from '@/components/ui/Select'
 import { FormField } from '@/components/forms/FormField'
 import { Divider } from '@/components/ui/Divider'
+import { PageSpinner } from '@/components/ui/Spinner'
+
+const DEFAULTS = {
+  platformName: 'One Key to Everywhere',
+  supportEmail: 'support@okte.com',
+  defaultTier: 'premium',
+  maxKeys: '500',
+  minKeys: '10',
+  reviewDays: '2',
+  cancellationWindow: '48',
+  maintenanceMode: 'false',
+}
 
 export function AdminSettingsPage() {
   const { toast } = useToast()
+  const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
 
-  // Platform settings (demo — not persisted to db)
-  const [platformName, setPlatformName] = useState('One Key to Everywhere')
-  const [supportEmail, setSupportEmail] = useState('support@okte.com')
-  const [defaultTier, setDefaultTier] = useState('premium')
-  const [maxKeys, setMaxKeys] = useState('500')
-  const [minKeys, setMinKeys] = useState('10')
-  const [reviewDays, setReviewDays] = useState('2')
-  const [cancellationWindow, setCancellationWindow] = useState('48')
+  const [platformName, setPlatformName] = useState(DEFAULTS.platformName)
+  const [supportEmail, setSupportEmail] = useState(DEFAULTS.supportEmail)
+  const [defaultTier, setDefaultTier] = useState(DEFAULTS.defaultTier)
+  const [maxKeys, setMaxKeys] = useState(DEFAULTS.maxKeys)
+  const [minKeys, setMinKeys] = useState(DEFAULTS.minKeys)
+  const [reviewDays, setReviewDays] = useState(DEFAULTS.reviewDays)
+  const [cancellationWindow, setCancellationWindow] = useState(DEFAULTS.cancellationWindow)
   const [maintenanceMode, setMaintenanceMode] = useState(false)
+
+  useEffect(() => {
+    let cancelled = false
+    ;(async () => {
+      try {
+        const s = await settingsService.get()
+        if (cancelled) return
+        setPlatformName(s.platformName ?? DEFAULTS.platformName)
+        setSupportEmail(s.supportEmail ?? DEFAULTS.supportEmail)
+        setDefaultTier(s.defaultTier ?? DEFAULTS.defaultTier)
+        setMaxKeys(s.maxKeys ?? DEFAULTS.maxKeys)
+        setMinKeys(s.minKeys ?? DEFAULTS.minKeys)
+        setReviewDays(s.reviewDays ?? DEFAULTS.reviewDays)
+        setCancellationWindow(s.cancellationWindow ?? DEFAULTS.cancellationWindow)
+        setMaintenanceMode(s.maintenanceMode === 'true')
+      } catch {
+        // keep defaults if endpoint unavailable
+      } finally {
+        if (!cancelled) setLoading(false)
+      }
+    })()
+    return () => { cancelled = true }
+  }, [])
 
   const handleSave = async () => {
     setSaving(true)
-    await new Promise((r) => setTimeout(r, 600))
-    setSaving(false)
-    toast('Settings saved', 'success')
+    try {
+      await settingsService.update({
+        platformName,
+        supportEmail,
+        defaultTier,
+        maxKeys,
+        minKeys,
+        reviewDays,
+        cancellationWindow,
+        maintenanceMode: String(maintenanceMode),
+      })
+      toast('Settings saved', 'success')
+    } catch {
+      toast('Failed to save settings', 'error')
+    } finally {
+      setSaving(false)
+    }
   }
+
+  if (loading) return <PageSpinner />
 
   return (
     <div className="page-content max-w-2xl">

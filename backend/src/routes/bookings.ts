@@ -142,6 +142,43 @@ router.get('/:id', authenticate, (req, res, next) => {
   } catch (e) { next(e) }
 })
 
+// PATCH /api/bookings/:id/override  (admin — change status bypassing business rules)
+router.patch('/:id/override', authenticate, requireRole('admin'), (req, res, next) => {
+  try {
+    const { id } = req.params
+    const { status, note } = req.body as { status?: string; note?: string }
+    const validStatuses = ['pending','confirmed','active','completed','cancelled','no_show']
+    if (!status || !validStatuses.includes(status)) {
+      res.status(400).json({ error: 'Invalid status' }); return
+    }
+
+    const db = getDb()
+    const existing = db.prepare('SELECT * FROM bookings WHERE id = ?').get(id) as Record<string, unknown> | undefined
+    if (!existing) { res.status(404).json({ error: 'Booking not found' }); return }
+    if (existing.status === status) {
+      res.status(400).json({ error: 'Booking already has that status' }); return
+    }
+
+    const now = new Date().toISOString()
+    const override = db.transaction(() => {
+      const prev = existing.status as string
+      const cancelledAt = status === 'cancelled' ? now : existing.cancelled_at ?? null
+      db.prepare(`
+        UPDATE bookings SET status = ?, cancelled_at = ?, updated_at = ? WHERE id = ?
+      `).run(status, cancelledAt, now, id)
+
+      db.prepare(`
+        INSERT INTO booking_overrides (id, booking_id, admin_id, previous_status, new_status, note, created_at)
+        VALUES (?,?,?,?,?,?,?)
+      `).run(generateId('override'), id, req.user!.userId, prev, status, note ?? null, now)
+
+      return db.prepare('SELECT * FROM bookings WHERE id = ?').get(id) as Record<string, unknown>
+    })
+
+    res.json(rowToBooking(override()))
+  } catch (e) { next(e) }
+})
+
 // POST /api/bookings/:id/cancel
 router.post('/:id/cancel', authenticate, (req, res, next) => {
   try {

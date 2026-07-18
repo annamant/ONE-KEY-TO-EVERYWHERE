@@ -1,16 +1,19 @@
 import { useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useToast } from '@/contexts/ToastContext'
+import { useAuth } from '@/contexts/AuthContext'
 import { useMockApi } from '@/hooks/useMockApi'
 import { mockUsers, mockBookings, mockLedger } from '@/services'
 import { Badge } from '@/components/ui/Badge'
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
 import { Avatar } from '@/components/ui/Avatar'
+import { Select } from '@/components/ui/Select'
 import { ConfirmDialog } from '@/components/feedback/ConfirmDialog'
 import { PageSpinner } from '@/components/ui/Spinner'
 import { formatDate, formatDateRange } from '@/utils/format'
 import type { BadgeColor } from '@/components/ui/Badge'
+import type { UserRole } from '@/types'
 
 const roleColor: Record<string, BadgeColor> = { member: 'blue', owner: 'purple', admin: 'navy' }
 const statusColor: Record<string, BadgeColor> = { active: 'green', suspended: 'red', pending_verification: 'amber' }
@@ -20,14 +23,17 @@ export function AdminUserDetailPage() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
   const { toast } = useToast()
+  const { session } = useAuth()
   const [suspendOpen, setSuspendOpen] = useState(false)
   const [unsuspendOpen, setUnsuspendOpen] = useState(false)
   const [acting, setActing] = useState(false)
+  const [pendingRole, setPendingRole] = useState<UserRole | ''>('')
+  const [roleConfirmOpen, setRoleConfirmOpen] = useState(false)
 
   const { data: user, loading, refetch } = useMockApi(() => mockUsers.getById(id!), [id])
   const { data: allBookings } = useMockApi(() => mockBookings.adminList(), [])
   const { data: ledger } = useMockApi(
-    () => user ? mockLedger.listEntries(user.id) : Promise.resolve([]),
+    () => user ? mockLedger.adminList({ userId: user.id }) : Promise.resolve([]),
     [user?.id]
   )
 
@@ -48,6 +54,22 @@ export function AdminUserDetailPage() {
       setActing(false)
       setSuspendOpen(false)
       setUnsuspendOpen(false)
+    }
+  }
+
+  const changeRole = async () => {
+    if (!pendingRole) return
+    setActing(true)
+    try {
+      await mockUsers.setRole(id!, pendingRole)
+      toast(`Role updated to ${pendingRole}`, 'success')
+      setPendingRole('')
+      refetch()
+    } catch {
+      toast('Role change failed', 'error')
+    } finally {
+      setActing(false)
+      setRoleConfirmOpen(false)
     }
   }
 
@@ -101,12 +123,44 @@ export function AdminUserDetailPage() {
         </div>
       </Card>
 
+      {/* Role management */}
+      <Card className="mb-4">
+        <div className="flex items-center justify-between gap-4">
+          <div>
+            <h3 className="text-body-md font-semibold text-text-primary mb-1">Role</h3>
+            <p className="text-caption text-text-muted">
+              Promote or demote this user. Admins gain full console access.
+              {id === session?.userId && ' You cannot change your own role.'}
+            </p>
+          </div>
+          <div className="flex items-center gap-2">
+            <Select
+              value={pendingRole || user.role}
+              onChange={(e) => setPendingRole(e.target.value as UserRole)}
+              options={[
+                { value: 'member', label: 'Member' },
+                { value: 'owner', label: 'Owner' },
+                { value: 'admin', label: 'Admin' },
+              ]}
+              className="min-w-[140px]"
+            />
+            <Button
+              size="sm"
+              disabled={acting || !pendingRole || pendingRole === user.role || id === session?.userId}
+              onClick={() => setRoleConfirmOpen(true)}
+            >
+              Apply
+            </Button>
+          </div>
+        </div>
+      </Card>
+
       {/* Key balance */}
       {user.role === 'member' && (
         <Card className="mb-4">
           <h3 className="text-body-md font-semibold text-text-primary mb-2">Key Balance</h3>
           <p className="text-heading-md font-bold text-okte-gold-600">
-            {(ledger ?? []).length > 0 ? (ledger ?? [])[(ledger ?? []).length - 1].balanceAfter : 0} keys
+            {(ledger ?? []).length > 0 ? (ledger ?? [])[0].balanceAfter : 0} keys
           </p>
           <p className="text-caption text-text-muted">{(ledger ?? []).length} ledger entries</p>
         </Card>
@@ -188,6 +242,16 @@ export function AdminUserDetailPage() {
         loading={acting}
         onConfirm={() => moderate('restore')}
         onClose={() => setUnsuspendOpen(false)}
+      />
+      <ConfirmDialog
+        open={roleConfirmOpen}
+        title="Change Role"
+        message={`Change ${user.firstName} ${user.lastName}'s role from ${user.role} to ${pendingRole}?`}
+        confirmLabel="Confirm"
+        variant="primary"
+        loading={acting}
+        onConfirm={changeRole}
+        onClose={() => setRoleConfirmOpen(false)}
       />
     </div>
   )

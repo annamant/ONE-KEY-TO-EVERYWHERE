@@ -8,7 +8,7 @@ import {
   UserGroupIcon,
   ExclamationTriangleIcon,
 } from '@heroicons/react/24/solid'
-import { useNotifications } from '@/contexts/NotificationContext'
+import { useNotifications } from '@/hooks/useNotifications'
 import { formatRelative } from '@/utils/format'
 import { cn } from '@/utils/classNames'
 import { Button } from '@/components/ui/Button'

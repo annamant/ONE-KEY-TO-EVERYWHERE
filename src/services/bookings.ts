@@ -29,6 +29,6 @@ export const bookingService = {
   modify: (id: string, newDates: { checkIn: string; checkOut: string }) =>
     api.patch<Booking>(`/bookings/${id}`, newDates),
 
-  override: (id: string, patch: Partial<Booking>) =>
+  override: (id: string, patch: { status: BookingStatus; note?: string }) =>
     api.patch<Booking>(`/bookings/${id}/override`, patch),
 }

@@ -82,6 +82,35 @@ router.patch('/:id', authenticate, (req, res, next) => {
   } catch (e) { next(e) }
 })
 
+// POST /api/users/:id/role  (admin only — change a user's role)
+router.post('/:id/role', authenticate, requireRole('admin'), (req, res, next) => {
+  try {
+    const { id } = req.params
+    const { role } = req.body as { role?: string }
+    const validRoles = ['member', 'owner', 'admin']
+    if (!role || !validRoles.includes(role)) {
+      res.status(400).json({ error: 'Invalid role' }); return
+    }
+    if (id === req.user!.userId) {
+      res.status(400).json({ error: 'You cannot change your own role' }); return
+    }
+
+    const db = getDb()
+    const existing = db.prepare('SELECT * FROM users WHERE id = ?').get(id) as Record<string, unknown> | undefined
+    if (!existing) { res.status(404).json({ error: 'User not found' }); return }
+    if (existing.role === role) {
+      res.status(400).json({ error: 'User already has that role' }); return
+    }
+
+    const now = new Date().toISOString()
+    // Promoting a suspended/pending user to admin implies activation
+    const newStatus = role === 'admin' ? 'active' : existing.status
+    db.prepare('UPDATE users SET role = ?, status = ?, updated_at = ? WHERE id = ?').run(role, newStatus, now, id)
+    const row = db.prepare('SELECT * FROM users WHERE id = ?').get(id) as Record<string, unknown>
+    res.json(rowToUser(row))
+  } catch (e) { next(e) }
+})
+
 // POST /api/users/:id/moderate  (admin only)
 router.post('/:id/moderate', authenticate, requireRole('admin'), async (req, res, next) => {
   try {

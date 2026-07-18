@@ -221,16 +221,27 @@ router.patch('/:id', authenticate, requireRole('owner', 'admin'), (req, res, nex
 router.post('/:id/status', authenticate, requireRole('admin'), (req, res, next) => {
   try {
     const { id } = req.params
-    const { status } = req.body as { status?: string }
+    const { status, reason } = req.body as { status?: string; reason?: string }
     const validStatuses = ['draft','pending_approval','approved','rejected','suspended']
     if (!status || !validStatuses.includes(status)) {
       res.status(400).json({ error: 'Invalid status' }); return
+    }
+    const decisionMap: Record<string, 'approved' | 'rejected' | 'suspended'> = {
+      approved: 'approved', rejected: 'rejected', suspended: 'suspended',
     }
     const db = getDb()
     const now = new Date().toISOString()
     db.prepare('UPDATE properties SET status = ?, updated_at = ? WHERE id = ?').run(status, now, id)
     const row = db.prepare('SELECT * FROM properties WHERE id = ?').get(id) as Record<string, unknown> | undefined
     if (!row) { res.status(404).json({ error: 'Property not found' }); return }
+
+    if (decisionMap[status]) {
+      db.prepare(`
+        INSERT INTO property_review_notes (id, property_id, admin_id, decision, reason, created_at)
+        VALUES (?,?,?,?,?,?)
+      `).run(generateId('review'), id, req.user!.userId, decisionMap[status], reason ?? null, now)
+    }
+
     res.json(rowToProp(row))
   } catch (e) { next(e) }
 })

@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { BellIcon } from '@heroicons/react/24/outline'
-import { useNotifications } from '@/contexts/NotificationContext'
+import { useNotifications } from '@/hooks/useNotifications'
 import { NotificationDrawer } from './NotificationDrawer'
 import { cn } from '@/utils/classNames'
 

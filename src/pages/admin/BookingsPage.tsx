@@ -8,6 +8,7 @@ import { Card } from '@/components/ui/Card'
 import { Input } from '@/components/ui/Input'
 import { Modal } from '@/components/feedback/Modal'
 import { Select } from '@/components/ui/Select'
+import { Textarea } from '@/components/ui/Textarea'
 import { PageSpinner } from '@/components/ui/Spinner'
 import { EmptyState } from '@/components/feedback/EmptyState'
 import { CalendarDaysIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline'
@@ -27,6 +28,7 @@ export function AdminBookingsPage() {
   const [search, setSearch] = useState('')
   const [overrideTarget, setOverrideTarget] = useState<Booking | null>(null)
   const [newStatus, setNewStatus] = useState<string>('')
+  const [overrideNote, setOverrideNote] = useState('')
   const [acting, setActing] = useState(false)
 
   const { data: bookings, loading, refetch } = useMockApi(() => mockBookings.adminList(), [])
@@ -52,10 +54,14 @@ export function AdminBookingsPage() {
     if (!overrideTarget || !newStatus) return
     setActing(true)
     try {
-      await mockBookings.override(overrideTarget.id, { status: newStatus as any })
+      await mockBookings.override(overrideTarget.id, {
+        status: newStatus as any,
+        note: overrideNote.trim() || undefined,
+      })
       toast('Booking status updated', 'success')
       refetch()
       setOverrideTarget(null)
+      setOverrideNote('')
     } catch {
       toast('Override failed', 'error')
     } finally {
@@ -136,7 +142,11 @@ export function AdminBookingsPage() {
                         <Button
                           variant="ghost"
                           size="sm"
-                          onClick={() => { setOverrideTarget(b); setNewStatus(b.status) }}
+                          onClick={() => {
+                            setOverrideTarget(b)
+                            setNewStatus(b.status)
+                            setOverrideNote('')
+                          }}
                         >
                           Override
                         </Button>
@@ -177,6 +187,17 @@ export function AdminBookingsPage() {
                 { value: 'cancelled', label: 'Cancelled' },
               ]}
             />
+            <div>
+              <label className="block text-caption font-medium text-text-muted mb-1 uppercase">
+                Note (optional)
+              </label>
+              <Textarea
+                value={overrideNote}
+                onChange={(e) => setOverrideNote(e.target.value)}
+                placeholder="Reason for override — recorded in the audit log"
+                rows={3}
+              />
+            </div>
             <p className="text-caption text-warning">Admin overrides bypass normal business rules and are logged.</p>
           </div>
         )}

@@ -143,4 +143,38 @@ router.post('/members/:id/approve', authenticate, requireRole('admin'), async (r
   } catch (e) { next(e) }
 })
 
+// GET /api/admin/settings
+router.get('/settings', authenticate, requireRole('admin'), (req, res, next) => {
+  try {
+    const db = getDb()
+    const rows = db.prepare('SELECT key, value FROM settings').all() as { key: string; value: string }[]
+    const settings: Record<string, string> = {}
+    for (const r of rows) settings[r.key] = r.value
+    res.json(settings)
+  } catch (e) { next(e) }
+})
+
+// PUT /api/admin/settings
+router.put('/settings', authenticate, requireRole('admin'), (req, res, next) => {
+  try {
+    const body = req.body as Record<string, unknown>
+    const allowed = [
+      'platformName', 'supportEmail', 'defaultTier',
+      'maxKeys', 'minKeys', 'reviewDays', 'cancellationWindow', 'maintenanceMode',
+    ]
+    const db = getDb()
+    const now = new Date().toISOString()
+    const upsert = db.prepare(`
+      INSERT INTO settings (key, value, updated_at, updated_by) VALUES (?,?,?,?)
+      ON CONFLICT(key) DO UPDATE SET value = excluded.value, updated_at = excluded.updated_at, updated_by = excluded.updated_by
+    `)
+    for (const key of allowed) {
+      if (body[key] !== undefined) {
+        upsert.run(key, String(body[key]), now, req.user!.userId)
+      }
+    }
+    res.json({ ok: true })
+  } catch (e) { next(e) }
+})
+
 export default router

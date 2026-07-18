@@ -29,6 +29,9 @@ export const userService = {
   moderate: (id: string, action: 'suspend' | 'restore' | 'verify') =>
     api.post<User>(`/users/${id}/moderate`, { action }),
 
+  setRole: (id: string, role: 'member' | 'owner' | 'admin') =>
+    api.post<User>(`/users/${id}/role`, { role }),
+
   verifyPassword: (_email: string, _password: string): Promise<User | null> => {
     throw new Error('Use auth service login')
   },

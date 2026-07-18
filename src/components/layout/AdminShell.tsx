@@ -8,6 +8,7 @@ import {
   CreditCardIcon,
   Cog6ToothIcon,
   InboxStackIcon,
+  UserCircleIcon,
 } from '@heroicons/react/24/outline'
 import { Sidebar, type NavItem } from './Sidebar'
 import { TopBar } from './TopBar'
@@ -20,6 +21,7 @@ const navItems: NavItem[] = [
   { label: 'Bookings', path: '/admin/bookings', icon: CalendarDaysIcon },
   { label: 'Ledger', path: '/admin/ledger', icon: CreditCardIcon },
   { label: 'Settings', path: '/admin/settings', icon: Cog6ToothIcon },
+  { label: 'Profile', path: '/admin/profile', icon: UserCircleIcon },
 ]
 
 export function AdminShell() {

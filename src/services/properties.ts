@@ -35,8 +35,8 @@ export const propertyService = {
   update: (id: string, patch: Partial<Property>) =>
     api.patch<Property>(`/properties/${id}`, patch),
 
-  setStatus: (id: string, status: PropertyStatus, _adminNote?: string) =>
-    api.post<Property>(`/properties/${id}/status`, { status }),
+  setStatus: (id: string, status: PropertyStatus, reason?: string) =>
+    api.post<Property>(`/properties/${id}/status`, { status, reason }),
 
   setBlackouts: (id: string, dates: string[]) =>
     api.patch<Property>(`/properties/${id}/blackouts`, { dates }),

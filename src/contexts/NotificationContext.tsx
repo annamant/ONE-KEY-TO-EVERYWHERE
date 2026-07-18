@@ -1,6 +1,5 @@
 import {
   createContext,
-  useContext,
   useState,
   useCallback,
   useEffect,
@@ -20,6 +19,8 @@ interface NotificationContextValue {
 }
 
 const NotificationContext = createContext<NotificationContextValue | null>(null)
+
+export { NotificationContext }
 
 export function NotificationProvider({ children }: { children: ReactNode }) {
   const { currentUser } = useAuth()
@@ -69,10 +70,4 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
       {children}
     </NotificationContext.Provider>
   )
-}
-
-export function useNotifications() {
-  const ctx = useContext(NotificationContext)
-  if (!ctx) throw new Error('useNotifications must be used within NotificationProvider')
-  return ctx
 }
