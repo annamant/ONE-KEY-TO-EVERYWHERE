@@ -180,11 +180,7 @@ export const router = createBrowserRouter([
       },
       {
         path: 'household/invite/:token',
-        element: (
-          <RequireActive>
-            <HouseholdInvitePage />
-          </RequireActive>
-        ),
+        element: <HouseholdInvitePage />,
       },
       { path: 'profile', element: <MemberProfilePage /> },
     ],

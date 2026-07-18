@@ -4,3 +4,8 @@ dist/
 .env.local
 .DS_Store
 *.local
+
+# SQLite local database (dev/runtime artifacts)
+*.db
+*.db-shm
+*.db-wal

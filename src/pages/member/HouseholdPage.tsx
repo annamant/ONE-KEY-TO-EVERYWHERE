@@ -76,9 +76,9 @@ export function HouseholdPage() {
     if (!household) return
     setInviting(true)
     try {
-      const token = await mockHouseholds.invite(household.id, inviteEmail, inviteRole)
-      setInviteLink(`${window.location.origin}/member/household/invite/${token}`)
-      toast('Invite created!', 'success')
+      const { inviteUrl } = await mockHouseholds.invite(household.id, inviteEmail, inviteRole)
+      setInviteLink(inviteUrl)
+      toast('Invite sent!', 'success')
       setInviteEmail('')
       refetch()
     } catch (err) {
@@ -276,7 +276,7 @@ export function HouseholdPage() {
       >
         {inviteLink ? (
           <div>
-            <p className="text-body-sm text-text-muted mb-3">Share this link with your invitee:</p>
+            <p className="text-body-sm text-text-muted mb-3">We emailed an invitation link to your invitee. You can also share this link directly:</p>
             <div className="bg-okte-slate-50 rounded-lg px-3 py-2 font-mono text-caption text-text-primary break-all select-all">
               {inviteLink}
             </div>

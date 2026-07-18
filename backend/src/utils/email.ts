@@ -85,7 +85,11 @@ export async function sendEmail(payload: EmailPayload): Promise<void> {
   console.log('─────────────────────────────────────────────────\n')
 }
 
-const APP_URL = process.env.APP_URL ?? 'http://localhost:5173'
+export const APP_URL = process.env.APP_URL ?? 'http://localhost:5173'
+
+export function householdInviteUrl(token: string): string {
+  return `${APP_URL}/member/household/invite/${token}`
+}
 
 export function membershipApprovedEmail(firstName: string): EmailPayload {
   return {
@@ -160,6 +164,39 @@ export function passwordResetEmail(firstName: string, token: string): EmailPaylo
       '<p>We received a request to reset your password.</p>',
       '<p><a href="' + link + '">Reset your password</a> (link expires in 1 hour)</p>',
       "<p>If you didn't request a password reset, you can safely ignore this email.</p>",
+      '<p>— One Key to Everywhere</p>',
+    ].join('\n'),
+  }
+}
+
+export function householdInviteEmail(
+  inviteeEmail: string,
+  householdName: string,
+  inviterName: string,
+  role: string,
+  token: string,
+): EmailPayload {
+  const link = householdInviteUrl(token)
+  return {
+    to: inviteeEmail,
+    subject: `You're invited to join ${householdName} on One Key to Everywhere`,
+    text: [
+      'Hi,',
+      '',
+      `${inviterName} invited you to join the household "${householdName}" as ${role}.`,
+      '',
+      'Click the link below to accept the invitation. The link expires in 7 days:',
+      link,
+      '',
+      "If you weren't expecting this invitation, you can safely ignore this email.",
+      '',
+      '— One Key to Everywhere',
+    ].join('\n'),
+    html: [
+      '<p>Hi,</p>',
+      `<p><strong>${inviterName}</strong> invited you to join the household <strong>${householdName}</strong> as ${role}.</p>`,
+      `<p><a href="${link}">Accept invitation</a> (link expires in 7 days)</p>`,
+      "<p>If you weren't expecting this invitation, you can safely ignore this email.</p>",
       '<p>— One Key to Everywhere</p>',
     ].join('\n'),
   }

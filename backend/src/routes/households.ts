@@ -3,6 +3,7 @@ import { getDb } from '../db/connection'
 import { authenticate } from '../middleware/auth'
 import { requireRole } from '../middleware/requireRole'
 import { generateId } from '../utils/generateId'
+import { sendEmail, householdInviteEmail, householdInviteUrl } from '../utils/email'
 
 const router = Router()
 
@@ -23,7 +24,7 @@ function buildHousehold(
       joinedAt: m.joined_at,
     })),
     invites: invites.map((i) => ({
-      id: i.id,
+      id: i.token,
       householdId: i.household_id,
       email: i.invitee_email,
       role: i.role,
@@ -82,41 +83,36 @@ router.post('/', authenticate, requireRole('member'), (req, res, next) => {
   } catch (e) { next(e) }
 })
 
-// GET /api/households/:id
-router.get('/:id', authenticate, (req, res, next) => {
+// GET /api/households/invites/:token — public preview for invite links
+router.get('/invites/:token', (req, res, next) => {
   try {
-    const h = getHouseholdById(req.params.id)
-    if (!h) { res.status(404).json({ error: 'Household not found' }); return }
-    res.json(h)
-  } catch (e) { next(e) }
-})
-
-// POST /api/households/:id/invite
-router.post('/:id/invite', authenticate, requireRole('member'), (req, res, next) => {
-  try {
-    const { email, role } = req.body as { email?: string; role?: string }
-    if (!email || !role) { res.status(400).json({ error: 'email and role are required' }); return }
-
     const db = getDb()
-    const membership = db.prepare(
-      "SELECT role FROM household_members WHERE household_id = ? AND user_id = ? AND status = 'active'"
-    ).get(req.params.id, req.user!.userId) as { role: string } | undefined
-    if (!membership || membership.role !== 'Manager') {
-      res.status(403).json({ error: 'Only managers can invite' }); return
+    const row = db.prepare(`
+      SELECT i.*, h.name AS household_name
+      FROM invite_tokens i
+      JOIN households h ON h.id = i.household_id
+      WHERE i.token = ?
+    `).get(req.params.token) as Record<string, unknown> | undefined
+
+    if (!row) {
+      res.json({ valid: false, reason: 'not_found' })
+      return
+    }
+    if (row.used_at) {
+      res.json({ valid: false, reason: 'used' })
+      return
+    }
+    if (new Date(row.expires_at as string) < new Date()) {
+      res.json({ valid: false, reason: 'expired' })
+      return
     }
 
-    const token = generateId('invite')
-    const now = new Date().toISOString()
-    const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString()
-    const inviteId = generateId('inv')
-    db.prepare('INSERT INTO invite_tokens (token,household_id,role,invitee_email,expires_at,created_at) VALUES (?,?,?,?,?,?)').run(
-      token, req.params.id, role, email, expiresAt, now
-    )
-    db.prepare('INSERT INTO household_audit (id,household_id,actor_id,target_id,action,detail,created_at) VALUES (?,?,?,?,?,?,?)').run(
-      generateId('audit'), req.params.id, req.user!.userId, null, 'member_invited', `Invited ${email} as ${role}`, now
-    )
-    void inviteId
-    res.json({ token, inviteUrl: `/member/household/invite/${token}` })
+    res.json({
+      valid: true,
+      householdName: row.household_name,
+      role: row.role,
+      inviteeEmail: row.invitee_email,
+    })
   } catch (e) { next(e) }
 })
 
@@ -132,11 +128,36 @@ router.post('/accept-invite', authenticate, requireRole('member'), (req, res, ne
     if (invite.used_at) { res.status(400).json({ error: 'Invite already used' }); return }
     if (new Date(invite.expires_at as string) < new Date()) { res.status(400).json({ error: 'Invite expired' }); return }
 
+    const existingHousehold = db.prepare(
+      "SELECT household_id FROM household_members WHERE user_id = ? AND status = 'active' LIMIT 1"
+    ).get(req.user!.userId) as { household_id: string } | undefined
+    if (existingHousehold) {
+      res.status(409).json({ error: 'You already belong to a household' })
+      return
+    }
+
+    const alreadyMember = db.prepare(
+      "SELECT 1 AS ok FROM household_members WHERE household_id = ? AND user_id = ? AND status = 'active'"
+    ).get(invite.household_id, req.user!.userId) as { ok: number } | undefined
+    if (alreadyMember) {
+      res.status(400).json({ error: 'You are already a member of this household' })
+      return
+    }
+
     const now = new Date().toISOString()
-    db.prepare('UPDATE invite_tokens SET used_at = ? WHERE token = ?').run(now, token)
-    db.prepare('INSERT INTO household_members (household_id,user_id,role,status,joined_at) VALUES (?,?,?,?,?)').run(
-      invite.household_id, req.user!.userId, invite.role, 'active', now
-    )
+    const acceptInvite = db.transaction(() => {
+      const updated = db.prepare(
+        'UPDATE invite_tokens SET used_at = ? WHERE token = ? AND used_at IS NULL'
+      ).run(now, token)
+      if (updated.changes === 0) {
+        throw Object.assign(new Error('Invite already used'), { status: 400 })
+      }
+      db.prepare('INSERT INTO household_members (household_id,user_id,role,status,joined_at) VALUES (?,?,?,?,?)').run(
+        invite.household_id, req.user!.userId, invite.role, 'active', now
+      )
+    })
+    acceptInvite()
+
     const user = db.prepare('SELECT first_name FROM users WHERE id = ?').get(req.user!.userId) as { first_name: string } | undefined
     db.prepare('INSERT INTO household_audit (id,household_id,actor_id,target_id,action,detail,created_at) VALUES (?,?,?,?,?,?,?)').run(
       generateId('audit'), invite.household_id, req.user!.userId, null, 'member_joined',
@@ -144,6 +165,56 @@ router.post('/accept-invite', authenticate, requireRole('member'), (req, res, ne
     )
 
     res.json(getHouseholdById(invite.household_id as string))
+  } catch (e) { next(e) }
+})
+
+// GET /api/households/:id
+router.get('/:id', authenticate, (req, res, next) => {
+  try {
+    const h = getHouseholdById(req.params.id)
+    if (!h) { res.status(404).json({ error: 'Household not found' }); return }
+    res.json(h)
+  } catch (e) { next(e) }
+})
+
+// POST /api/households/:id/invite
+router.post('/:id/invite', authenticate, requireRole('member'), async (req, res, next) => {
+  try {
+    const { email, role } = req.body as { email?: string; role?: string }
+    if (!email || !role) { res.status(400).json({ error: 'email and role are required' }); return }
+
+    const db = getDb()
+    const membership = db.prepare(
+      "SELECT role FROM household_members WHERE household_id = ? AND user_id = ? AND status = 'active'"
+    ).get(req.params.id, req.user!.userId) as { role: string } | undefined
+    if (!membership || membership.role !== 'Manager') {
+      res.status(403).json({ error: 'Only managers can invite' }); return
+    }
+
+    const token = generateId('invite')
+    const now = new Date().toISOString()
+    const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString()
+    db.prepare('INSERT INTO invite_tokens (token,household_id,role,invitee_email,expires_at,created_at) VALUES (?,?,?,?,?,?)').run(
+      token, req.params.id, role, email, expiresAt, now
+    )
+    db.prepare('INSERT INTO household_audit (id,household_id,actor_id,target_id,action,detail,created_at) VALUES (?,?,?,?,?,?,?)').run(
+      generateId('audit'), req.params.id, req.user!.userId, null, 'member_invited', `Invited ${email} as ${role}`, now
+    )
+
+    const household = db.prepare('SELECT name FROM households WHERE id = ?').get(req.params.id) as { name: string } | undefined
+    const inviter = db.prepare('SELECT first_name, last_name FROM users WHERE id = ?').get(req.user!.userId) as
+      { first_name: string; last_name: string } | undefined
+    const inviterName = inviter ? `${inviter.first_name} ${inviter.last_name}`.trim() : 'A household manager'
+    const mail = householdInviteEmail(
+      email,
+      household?.name ?? 'your household',
+      inviterName,
+      role,
+      token,
+    )
+    await sendEmail(mail)
+
+    res.json({ token, inviteUrl: householdInviteUrl(token) })
   } catch (e) { next(e) }
 })
 

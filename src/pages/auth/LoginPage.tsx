@@ -39,7 +39,7 @@ export function LoginPage() {
     try {
       const user = await login(email, password)
       toast('Welcome back!', 'success')
-      if (user.role === 'member' && user.status === 'pending_verification') {
+      if (user.role === 'member' && user.status === 'pending_verification' && !from?.includes('/household/invite/')) {
         navigate('/member/pending', { replace: true })
         return
       }

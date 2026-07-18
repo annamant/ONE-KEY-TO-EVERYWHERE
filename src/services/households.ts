@@ -12,8 +12,12 @@ export const householdService = {
     api.post<Household>('/households', { name }),
 
   invite: (householdId: string, email: string, role: HouseholdMemberRole) =>
-    api.post<{ token: string; inviteUrl: string }>(`/households/${householdId}/invite`, { email, role })
-      .then((r) => r.token),
+    api.post<{ token: string; inviteUrl: string }>(`/households/${householdId}/invite`, { email, role }),
+
+  previewInvite: (token: string) =>
+    api.get<{ valid: boolean; reason?: string; householdName?: string; role?: string; inviteeEmail?: string }>(
+      `/households/invites/${encodeURIComponent(token)}`
+    ),
 
   acceptInvite: (token: string, _userId?: string) =>
     api.post<Household>('/households/accept-invite', { token }),
