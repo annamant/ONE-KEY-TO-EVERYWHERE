@@ -1,7 +1,8 @@
 import { useNavigate } from 'react-router-dom'
 import { MapPinIcon } from '@heroicons/react/20/solid'
-import { UserGroupIcon } from '@heroicons/react/24/outline'
+import { UserGroupIcon, BuildingOfficeIcon } from '@heroicons/react/24/outline'
 import { cn } from '@/utils/classNames'
+import { getPropertyCoverImage } from '@/utils/property'
 import { Badge } from '@/components/ui/Badge'
 import type { Property } from '@/types'
 
@@ -18,6 +19,7 @@ const tierColor = {
 
 export function PropertyCard({ property, className }: PropertyCardProps) {
   const navigate = useNavigate()
+  const coverImage = getPropertyCoverImage(property)
 
   return (
     <div
@@ -27,13 +29,19 @@ export function PropertyCard({ property, className }: PropertyCardProps) {
         className
       )}
     >
-      <div className="relative aspect-[4/3] overflow-hidden">
-        <img
-          src={property.coverImage}
-          alt={property.title}
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-          loading="lazy"
-        />
+      <div className="relative aspect-[4/3] overflow-hidden bg-okte-slate-100">
+        {coverImage ? (
+          <img
+            src={coverImage}
+            alt={property.title}
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+            loading="lazy"
+          />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center">
+            <BuildingOfficeIcon className="w-10 h-10 text-text-muted" />
+          </div>
+        )}
         <div className="absolute top-3 left-3">
           <Badge color={tierColor[property.tier]} size="sm">
             {property.tier}

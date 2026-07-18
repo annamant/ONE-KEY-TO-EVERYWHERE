@@ -10,6 +10,7 @@ import { PageSpinner } from '@/components/ui/Spinner'
 import { EmptyState } from '@/components/feedback/EmptyState'
 import { BuildingOfficeIcon } from '@heroicons/react/24/outline'
 import type { BadgeColor } from '@/components/ui/Badge'
+import { getPropertyCoverImage } from '@/utils/property'
 
 const statusConfig: Record<string, { label: string; color: BadgeColor }> = {
   draft: { label: 'Draft', color: 'gray' },
@@ -56,11 +57,12 @@ export function OwnerPropertiesPage() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {properties.map((p) => {
             const sc = statusConfig[p.status] ?? { label: p.status, color: 'gray' as BadgeColor }
+            const coverImage = getPropertyCoverImage(p)
             return (
               <Card key={p.id} padding="none" className="overflow-hidden">
                 <div className="relative">
-                  {p.coverImage ? (
-                    <img src={p.coverImage} alt={p.title} className="w-full h-44 object-cover" />
+                  {coverImage ? (
+                    <img src={coverImage} alt={p.title} className="w-full h-44 object-cover" />
                   ) : (
                     <div className="w-full h-44 bg-okte-slate-100 flex items-center justify-center">
                       <BuildingOfficeIcon className="w-10 h-10 text-text-muted" />

@@ -15,15 +15,15 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 
 const variantClasses: Record<ButtonVariant, string> = {
   primary:
-    'bg-primary text-white hover:bg-okte-navy-700 active:bg-okte-navy-800 focus-visible:ring-primary/50',
+    'bg-primary text-white hover:bg-okte-gray-800 active:bg-okte-gray-900 focus-visible:ring-primary/50',
   secondary:
-    'bg-okte-slate-100 text-text-primary hover:bg-okte-slate-200 active:bg-okte-slate-300 focus-visible:ring-okte-slate-400/50',
+    'bg-okte-gray-100 text-text-primary hover:bg-okte-gray-200 active:bg-okte-gray-300 focus-visible:ring-okte-gray-400/50',
   ghost:
-    'bg-transparent text-text-primary hover:bg-okte-slate-100 active:bg-okte-slate-200 focus-visible:ring-okte-slate-400/50',
+    'bg-transparent text-text-primary hover:bg-okte-gray-100 active:bg-okte-gray-200 focus-visible:ring-okte-gray-400/50',
   danger:
     'bg-danger text-white hover:bg-red-600 active:bg-red-700 focus-visible:ring-danger/50',
   outline:
-    'bg-transparent border border-border text-text-primary hover:bg-okte-slate-50 active:bg-okte-slate-100 focus-visible:ring-okte-slate-400/50',
+    'bg-transparent border border-border text-text-primary hover:bg-okte-gray-50 active:bg-okte-gray-100 focus-visible:ring-okte-gray-400/50',
 }
 
 const sizeClasses: Record<ButtonSize, string> = {

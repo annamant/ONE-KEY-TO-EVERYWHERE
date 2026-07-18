@@ -8,6 +8,7 @@ import {
   ChevronLeftIcon,
   ChevronRightIcon,
   StarIcon,
+  BuildingOfficeIcon,
 } from '@heroicons/react/24/outline'
 import { KeyIcon } from '@heroicons/react/24/solid'
 import type { DateRange } from 'react-day-picker'
@@ -16,6 +17,7 @@ import { mockProperties } from '@/services'
 import { useAuth } from '@/contexts/AuthContext'
 import { calculateKeyCost } from '@/utils/keyCalc'
 import { formatDate } from '@/utils/format'
+import { getPropertyCoverImage } from '@/utils/property'
 import { Badge } from '@/components/ui/Badge'
 import { Button } from '@/components/ui/Button'
 import { PageSpinner } from '@/components/ui/Spinner'
@@ -71,6 +73,10 @@ export function PropertyDetailPage() {
   }
 
   const tierColors = { standard: 'gray' as const, premium: 'blue' as const, luxury: 'amber' as const }
+  const coverImage = getPropertyCoverImage(property)
+  const galleryImages = property.images.length > 0
+    ? property.images
+    : (coverImage ? [coverImage] : [])
 
   return (
     <div className="page-content max-w-6xl">
@@ -85,27 +91,33 @@ export function PropertyDetailPage() {
 
       {/* Image Gallery */}
       <div className="relative rounded-xl overflow-hidden mb-6 aspect-[16/7] bg-okte-slate-100">
-        <img
-          src={property.images[imageIndex] ?? property.coverImage}
-          alt={property.title}
-          className="w-full h-full object-cover"
-        />
-        {property.images.length > 1 && (
+        {galleryImages.length > 0 ? (
+          <img
+            src={galleryImages[imageIndex] ?? galleryImages[0]}
+            alt={property.title}
+            className="w-full h-full object-cover"
+          />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center">
+            <BuildingOfficeIcon className="w-16 h-16 text-text-muted" />
+          </div>
+        )}
+        {galleryImages.length > 1 && (
           <>
             <button
-              onClick={() => setImageIndex((i) => (i - 1 + property.images.length) % property.images.length)}
+              onClick={() => setImageIndex((i) => (i - 1 + galleryImages.length) % galleryImages.length)}
               className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 bg-white/80 backdrop-blur rounded-full flex items-center justify-center shadow hover:bg-white transition-colors"
             >
               <ChevronLeftIcon className="w-5 h-5" />
             </button>
             <button
-              onClick={() => setImageIndex((i) => (i + 1) % property.images.length)}
+              onClick={() => setImageIndex((i) => (i + 1) % galleryImages.length)}
               className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 bg-white/80 backdrop-blur rounded-full flex items-center justify-center shadow hover:bg-white transition-colors"
             >
               <ChevronRightIcon className="w-5 h-5" />
             </button>
             <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5">
-              {property.images.map((_, i) => (
+              {galleryImages.map((_, i) => (
                 <button
                   key={i}
                   onClick={() => setImageIndex(i)}

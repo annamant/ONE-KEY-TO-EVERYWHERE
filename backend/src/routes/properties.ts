@@ -9,6 +9,9 @@ import { destroyImage, publicIdFromUrl, uploadImageBuffer } from '../utils/cloud
 const router = Router()
 
 function rowToProp(row: Record<string, unknown>) {
+  const images = JSON.parse(row.images as string || '[]') as string[]
+  const coverImage = (row.cover_image as string) || images[0] || ''
+
   return {
     id: row.id,
     ownerId: row.owner_id,
@@ -31,8 +34,8 @@ function rowToProp(row: Record<string, unknown>) {
     status: row.status,
     amenities: JSON.parse(row.amenities as string || '[]'),
     houseRules: JSON.parse(row.house_rules as string || '[]'),
-    coverImage: row.cover_image,
-    images: JSON.parse(row.images as string || '[]'),
+    coverImage,
+    images,
     blackoutDates: JSON.parse(row.blackout_dates as string || '[]'),
     listingQualityScore: row.listing_quality_score,
     totalBookings: row.total_bookings,
