@@ -63,7 +63,7 @@ const mockBookings = {
     await mockLedger.debit(
       params.memberId,
       keysCharged,
-      `${property.title} — ${nights} nights`,
+      `${property.title} — ${nights} days`,
       undefined,
       'booking_debit'
     )

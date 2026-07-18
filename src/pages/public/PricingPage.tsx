@@ -44,7 +44,7 @@ const PLANS = [
       'Keys never expire',
       'Free cancellation up to 48h before',
       'Priority Club support',
-      'Long-stay discount (7+ nights)',
+      'Extended access discount (7+ days)',
       'Early access to new homes',
     ],
   },
@@ -66,7 +66,7 @@ const PLANS = [
       'Keys never expire',
       'Free cancellation up to 48h before',
       'Dedicated Club concierge',
-      'Long-stay discount (7+ nights)',
+      'Extended access discount (7+ days)',
       'Early access to new homes',
       'Permanent "Founder" badge',
       'A voice in how the Club grows',
@@ -159,14 +159,14 @@ export function PricingPage() {
             How many keys per home?
           </h2>
           <p className="text-body-sm text-center mb-8" style={{ color: '#6B6B6B' }}>
-            Each home has a fixed key cost per night — the same all year round.
+            Each home has a fixed key rate — the same all year round.
           </p>
           <div className="rounded-2xl overflow-hidden" style={{ border: '1px solid #E5E5E5' }}>
             <table className="w-full">
               <thead>
                 <tr style={{ background: '#EFEFEF', borderBottom: '1px solid #E5E5E5' }}>
                   <th className="text-left px-6 py-4 text-body-sm font-semibold" style={{ color: '#0A0A0A' }}>Tier</th>
-                  <th className="text-left px-6 py-4 text-body-sm font-semibold" style={{ color: '#0A0A0A' }}>Keys / night</th>
+                  <th className="text-left px-6 py-4 text-body-sm font-semibold" style={{ color: '#0A0A0A' }}>Key rate</th>
                   <th className="text-left px-6 py-4 text-body-sm font-semibold" style={{ color: '#0A0A0A' }}>Examples</th>
                 </tr>
               </thead>
@@ -183,7 +183,7 @@ export function PricingPage() {
           </div>
           <div className="mt-4 p-4 rounded-xl" style={{ background: '#EFEFEF', border: '1px solid #E5E5E5' }}>
             <p className="text-body-sm" style={{ color: '#1A1A1A' }}>
-              <strong>Seasonality:</strong> Visits from November through February cost 20% fewer keys. Stays of 7+ nights receive an additional 10–15% discount. Never opportunistic dynamic pricing.
+              <strong>Seasonality:</strong> Visits from November through February cost 20% fewer keys. Access of 7+ days receives an additional 10–15% discount. Never opportunistic dynamic pricing.
             </p>
           </div>
         </div>

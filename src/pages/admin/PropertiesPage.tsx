@@ -103,7 +103,7 @@ export function AdminPropertiesPage() {
                   <div className="flex gap-2 text-caption text-text-muted mb-3">
                     <span className="capitalize">{p.tier}</span>
                     <span>·</span>
-                    <span>{p.keysPerNight} keys/night</span>
+                    <span>{p.keysPerNight} keys</span>
                     <span>·</span>
                     <span>Sleeps {p.sleeps}</span>
                   </div>

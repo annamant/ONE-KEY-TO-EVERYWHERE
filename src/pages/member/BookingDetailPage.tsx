@@ -140,7 +140,7 @@ export function BookingDetailPage() {
             <div>
               <p className="text-caption text-text-muted">Dates</p>
               <p className="text-body-sm font-medium">{formatDateRange(booking.checkIn, booking.checkOut)}</p>
-              <p className="text-caption text-text-muted">{booking.nights} nights</p>
+              <p className="text-caption text-text-muted">{booking.nights} days</p>
             </div>
           </div>
           <div className="flex items-center gap-3">

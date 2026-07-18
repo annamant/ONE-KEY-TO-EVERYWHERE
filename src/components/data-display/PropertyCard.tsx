@@ -47,7 +47,7 @@ export function PropertyCard({ property, className }: PropertyCardProps) {
           </h3>
           <div className="flex items-center gap-1 flex-shrink-0 bg-okte-gold-50 px-2 py-0.5 rounded-pill">
             <span className="text-caption font-bold text-okte-gold-700">{property.keysPerNight}</span>
-            <span className="text-caption text-okte-gold-600">keys/night</span>
+            <span className="text-caption text-okte-gold-600">keys</span>
           </div>
         </div>
         <div className="flex items-center gap-1 text-text-muted mb-3">

@@ -90,7 +90,7 @@ export function OwnerReservationDetailPage() {
             {[
               { label: 'Check-in', value: formatDate(booking.checkIn) },
               { label: 'Check-out', value: formatDate(booking.checkOut) },
-              { label: 'Duration', value: `${nights} night${nights !== 1 ? 's' : ''}` },
+              { label: 'Duration', value: `${nights} day${nights !== 1 ? 's' : ''}` },
               { label: 'Guests', value: String(booking.guests) },
               { label: 'Keys charged', value: `${booking.keysCharged} keys` },
               { label: 'Booked on', value: formatDate(booking.createdAt) },

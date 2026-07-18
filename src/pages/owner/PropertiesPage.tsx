@@ -70,7 +70,7 @@ export function OwnerPropertiesPage() {
                   <div className="flex gap-2 text-caption text-text-muted mb-4">
                     <span>Sleeps {p.sleeps}</span>
                     <span>·</span>
-                    <span>{p.keysPerNight} keys/night</span>
+                    <span>{p.keysPerNight} keys</span>
                     <span>·</span>
                     <span>{p.totalBookings} bookings</span>
                   </div>

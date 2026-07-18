@@ -109,7 +109,7 @@ export function PropertyEditPage() {
               ]}
             />
           </FormField>
-          <FormField label="Keys / night">
+          <FormField label="Key rate">
             <Input type="number" min="1" value={keysPerNight} onChange={(e) => setKeysPerNight(e.target.value)} />
           </FormField>
         </div>
@@ -125,10 +125,10 @@ export function PropertyEditPage() {
           </FormField>
         </div>
         <div className="grid grid-cols-2 gap-4">
-          <FormField label="Min stay (nights)">
+          <FormField label="Min access (days)">
             <Input type="number" min="1" value={minStay} onChange={(e) => setMinStay(e.target.value)} />
           </FormField>
-          <FormField label="Max stay (nights)">
+          <FormField label="Max access (days)">
             <Input type="number" min="1" value={maxStay} onChange={(e) => setMaxStay(e.target.value)} />
           </FormField>
         </div>

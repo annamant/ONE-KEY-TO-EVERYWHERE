@@ -106,7 +106,7 @@ export function BookingCheckoutPage() {
         <h3 className="text-body-md font-semibold text-text-primary mb-4">Key Cost Breakdown</h3>
         <div className="space-y-3">
           <div className="flex justify-between text-body-sm">
-            <span className="text-text-muted">{state.cost.baseKeysPerNight} keys × {state.cost.nights} nights</span>
+            <span className="text-text-muted">{state.cost.baseKeysPerNight} keys × {state.cost.nights} days</span>
             <span>{state.cost.baseKeysPerNight * state.cost.nights} keys</span>
           </div>
           {state.cost.seasonalMultiplier < 1 && (
@@ -117,7 +117,7 @@ export function BookingCheckoutPage() {
           )}
           {state.cost.longStayMultiplier < 1 && (
             <div className="flex justify-between text-body-sm text-success">
-              <span>Long-stay bonus ({Math.round((1 - state.cost.longStayMultiplier) * 100)}% off)</span>
+              <span>Extended access discount ({Math.round((1 - state.cost.longStayMultiplier) * 100)}% off)</span>
               <span>−{Math.round(state.cost.baseKeysPerNight * state.cost.nights * (1 - state.cost.longStayMultiplier))} keys</span>
             </div>
           )}

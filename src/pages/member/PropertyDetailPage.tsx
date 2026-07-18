@@ -179,12 +179,12 @@ export function PropertyDetailPage() {
             </ul>
           </div>
 
-          {/* Stay rules */}
+          {/* Access rules */}
           <div className="bg-okte-slate-50 rounded-lg p-4">
             <p className="text-body-sm text-text-muted">
-              <strong className="text-text-primary">Min stay:</strong> {property.minStay} nights
+              <strong className="text-text-primary">Min access:</strong> {property.minStay} days
               {' · '}
-              <strong className="text-text-primary">Max stay:</strong> {property.maxStay} nights
+              <strong className="text-text-primary">Max access:</strong> {property.maxStay} days
             </p>
           </div>
         </div>
@@ -195,7 +195,7 @@ export function PropertyDetailPage() {
             <div className="flex items-center justify-between mb-4">
               <div>
                 <span className="text-heading-lg font-bold text-text-primary">{property.keysPerNight}</span>
-                <span className="text-body-sm text-text-muted ml-1">keys / night</span>
+                <span className="text-body-sm text-text-muted ml-1">key rate</span>
               </div>
               <div className="flex items-center gap-1 bg-okte-gold-50 px-3 py-1 rounded-pill">
                 <KeyIcon className="w-4 h-4 text-okte-gold-600" />
@@ -237,7 +237,7 @@ export function PropertyDetailPage() {
             {cost && (
               <div className="border-t border-border pt-4 mb-4 space-y-2">
                 <div className="flex justify-between text-body-sm">
-                  <span className="text-text-muted">{property.keysPerNight} keys × {cost.nights} nights</span>
+                  <span className="text-text-muted">{property.keysPerNight} keys × {cost.nights} days</span>
                   <span>{property.keysPerNight * cost.nights} keys</span>
                 </div>
                 {cost.seasonalMultiplier < 1 && (
@@ -248,7 +248,7 @@ export function PropertyDetailPage() {
                 )}
                 {cost.longStayMultiplier < 1 && (
                   <div className="flex justify-between text-body-sm text-success">
-                    <span>Long-stay bonus</span>
+                    <span>Extended access discount</span>
                     <span>−{Math.round((1 - cost.longStayMultiplier) * 100)}%</span>
                   </div>
                 )}

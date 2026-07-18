@@ -57,7 +57,7 @@ export function BookingCard({ booking, property, className, basePath = '/member/
         <div className="flex items-center gap-1 text-body-sm text-text-muted">
           <CalendarDaysIcon className="w-4 h-4 flex-shrink-0" />
           <span className="text-body-sm">{formatDateRange(booking.checkIn, booking.checkOut)}</span>
-          <span className="text-text-subtle ml-1">· {booking.nights} nights</span>
+          <span className="text-text-subtle ml-1">· {booking.nights} days</span>
         </div>
         <div className="mt-2 flex items-center gap-1">
           <span className="text-caption font-semibold text-okte-gold-700">{formatKeys(booking.keysCharged)}</span>

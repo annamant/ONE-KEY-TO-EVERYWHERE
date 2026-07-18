@@ -18,7 +18,7 @@ const MEMBER_STEPS = [
   {
     icon: <HomeModernIcon className="w-6 h-6" />,
     title: 'Access any home in the Club',
-    desc: 'Choose a home. Use your keys to access it. There is no seasonal "price" — each home has a fixed key cost per night. The same in winter as in summer.',
+    desc: 'Choose a home. Use your keys to access it. There is no seasonal "price" — each home has a fixed key rate. The same in winter as in summer.',
   },
   {
     icon: <SparklesIcon className="w-6 h-6" />,
@@ -34,7 +34,7 @@ const FAQS = [
   },
   {
     q: 'How many keys does it cost to access a home?',
-    a: 'Each Club home has a fixed key cost per night — set by the owner in agreement with us. There are no seasonal price hikes: the value of a key is the same in high and low season.',
+    a: 'Each Club home has a fixed key rate — set by the owner in agreement with us. There are no seasonal price hikes: the value of a key is the same in high and low season.',
   },
   {
     q: 'Can I share my keys with family?',
@@ -45,12 +45,12 @@ const FAQS = [
     a: 'You can cancel with a full key refund up to 48 hours before access. After 48 hours a partial refund applies.',
   },
   {
-    q: 'Is the Club only for Puglia?',
-    a: 'For now, yes — and we say that with pride. Before expanding, we want to do one thing as well as it can possibly be done. Puglia is the heart of the Club.',
+    q: 'Is the Club only for Ostuni?',
+    a: 'For now, yes — and we say that with pride. Before expanding, we want to do one thing as well as it can possibly be done. Ostuni is where the Club begins.',
   },
   {
     q: 'Why don\'t key costs change between summer and winter?',
-    a: 'Because we believe Puglia is beautiful all year round, and that owners deserve to welcome guests in the off-season too. The key model removes the opportunistic incentive of dynamic pricing.',
+    a: 'Because we believe Ostuni is beautiful all year round, and that owners deserve to welcome members in the off-season too. The key model removes the opportunistic incentive of dynamic pricing.',
   },
   {
     q: 'I\'m a property owner. Do I have to be a Club member too?',
@@ -110,8 +110,8 @@ export function HowItWorksPage() {
         <div className="space-y-4">
           {[
             { n: '1', text: 'With your membership you receive a number of keys. They are yours — they never expire.' },
-            { n: '2', text: 'Each Club home has a fixed key cost per night. The same in January as in August. No dynamic pricing, ever.' },
-            { n: '3', text: 'Choose a home, use your keys to access it. The longer the visit, the more you save. The Club rewards those who stay, not those who rush.' },
+            { n: '2', text: 'Each Club home has a fixed key rate. The same in January as in August. No dynamic pricing, ever.' },
+            { n: '3', text: 'Choose a home, use your keys to access it. The longer your visit, the more you save. The Club rewards those who take their time, not those who rush.' },
           ].map(({ n, text }) => (
             <div key={n} className="flex gap-4 p-5 rounded-card text-left" style={{ background: '#F5F5F5', border: '1px solid #E5E5E5' }}>
               <span className="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-caption font-bold" style={{ background: '#0A0A0A', color: '#FFFFFF' }}>{n}</span>

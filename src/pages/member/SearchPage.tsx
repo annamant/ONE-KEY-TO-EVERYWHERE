@@ -125,7 +125,7 @@ export function SearchPage() {
             />
           </div>
           <div>
-            <label className="block text-body-sm font-medium text-text-primary mb-1.5">Max keys/night</label>
+            <label className="block text-body-sm font-medium text-text-primary mb-1.5">Max key rate</label>
             <Select
               value={maxKeys}
               onChange={(e) => setMaxKeys(e.target.value)}

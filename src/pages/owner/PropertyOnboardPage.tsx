@@ -164,16 +164,16 @@ export function PropertyOnboardPage() {
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
               {(['sleeps', 'bedrooms', 'bathrooms', 'keysPerNight'] as const).map((f) => (
-                <FormField key={f} label={f === 'keysPerNight' ? 'Keys/night' : f.charAt(0).toUpperCase() + f.slice(1)} required={f === 'sleeps'}>
+                <FormField key={f} label={f === 'keysPerNight' ? 'Key rate' : f.charAt(0).toUpperCase() + f.slice(1)} required={f === 'sleeps'}>
                   <Input type="number" min="1" value={form[f]} onChange={(e) => set(f, e.target.value)} />
                 </FormField>
               ))}
             </div>
             <div className="grid grid-cols-2 gap-4">
-              <FormField label="Min stay (nights)">
+              <FormField label="Min access (days)">
                 <Input type="number" min="1" value={form.minStay} onChange={(e) => set('minStay', e.target.value)} />
               </FormField>
-              <FormField label="Max stay (nights)">
+              <FormField label="Max access (days)">
                 <Input type="number" min="1" value={form.maxStay} onChange={(e) => set('maxStay', e.target.value)} />
               </FormField>
             </div>
@@ -256,7 +256,7 @@ export function PropertyOnboardPage() {
                 { label: 'Location', value: `${form.city}, ${form.country}` },
                 { label: 'Sleeps', value: form.sleeps },
                 { label: 'Bedrooms', value: form.bedrooms },
-                { label: 'Keys/night', value: form.keysPerNight },
+                { label: 'Key rate', value: form.keysPerNight },
                 { label: 'Tier', value: form.tier },
                 { label: 'Amenities', value: form.amenities.join(', ') || 'None selected' },
               ].map(({ label, value }) => (

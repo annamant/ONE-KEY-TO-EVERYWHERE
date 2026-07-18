@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom'
 import { PublicNav } from '@/components/layout/PublicNav'
 import { PublicFooter } from '@/components/layout/PublicFooter'
-import { KeyIcon, HomeModernIcon, UsersIcon, ShieldCheckIcon } from '@heroicons/react/24/outline'
+import { KeyIcon, UsersIcon, ShieldCheckIcon } from '@heroicons/react/24/outline'
 
 const HERO_IMG = '/images/landing/freysteinn-g-jonsson-DqFMDsdQhXc-unsplash.jpg'
 const OSTUNI_IMG = '/images/landing/-ostuni-5_risultato-768x512.jpeg.webp'
@@ -11,22 +11,17 @@ const PILLARS = [
   {
     icon: <KeyIcon className="w-6 h-6" />,
     title: 'One key. Five homes.',
-    desc: 'Join the Club and unlock every Ostuni home throughout the year — for you, your friends, and your family.',
-  },
-  {
-    icon: <HomeModernIcon className="w-6 h-6" />,
-    title: 'Real homes. Real character.',
-    desc: 'You access a home that someone loves. Trulli, masserie, whitewashed houses — every property is selected for its soul, not its star rating.',
+    desc: 'A private Club with one key to five homes in Ostuni. Experience the white city all year round — for you, your friends, and your family.',
   },
   {
     icon: <UsersIcon className="w-6 h-6" />,
     title: 'A carefully curated circle.',
-    desc: "You don't join by accident. Every member is vetted. The Club exists because trust is built with care — not with algorithms.",
+    desc: "You don't join by accident. Every member is vetted. The Club is a circle built on trust — not algorithms.",
   },
   {
     icon: <ShieldCheckIcon className="w-6 h-6" />,
-    title: 'The European way.',
-    desc: 'No opportunistic dynamic pricing. No penalty for choosing January. Born in Ostuni with European values: fairness, continuity, respect for the territory.',
+    title: 'The Ostuni way.',
+    desc: 'No opportunistic pricing. January is as welcome as August. A Club born here, rooted in fairness, continuity, and respect for the territory.',
   },
 ]
 
@@ -66,12 +61,12 @@ export function LandingPage() {
                 className="font-display font-bold leading-none mb-5"
                 style={{ color: '#FFFFFF', fontSize: 'clamp(3rem, 7vw, 5.5rem)', lineHeight: 1.02 }}
               >
-                Live in<br />
+                Experience<br />
                 <em style={{ fontStyle: 'italic' }}>Ostuni.</em><br />
                 One key.
               </h1>
               <p className="text-body-sm leading-relaxed mb-8 max-w-sm" style={{ color: 'rgba(255,255,255,0.7)' }}>
-                A private Club with five exceptional homes in Ostuni. Stay weeks, not nights. Move between places. Make it yours.
+                A private Club to experience Ostuni all year round.
               </p>
               <div className="flex items-center gap-5 flex-wrap">
                 <button
@@ -99,7 +94,7 @@ export function LandingPage() {
               {[
                 { n: '5', label: 'Club Homes' },
                 { n: '1', label: 'Town, Done Right' },
-                { n: '∞', label: 'Ways to Experience' },
+                { n: '∞', label: 'Ways to Belong' },
               ].map(({ n, label }) => (
                 <div key={label} className="text-right">
                   <p className="font-display font-bold leading-none" style={{ color: '#FFFFFF', fontSize: 'clamp(1.8rem, 3.5vw, 2.8rem)' }}>
@@ -122,7 +117,7 @@ export function LandingPage() {
             className="font-display font-bold"
             style={{ color: '#FFFFFF', fontSize: 'clamp(1.5rem, 3.5vw, 2.2rem)', lineHeight: 1.35 }}
           >
-            "A membership club for experiences — a key to everywhere."
+            "A membership club — one key, every home."
           </p>
           <p className="text-caption uppercase tracking-widest mt-5" style={{ color: '#C4882F', letterSpacing: '0.18em' }}>
             One Key to Everywhere · Est. Ostuni
@@ -166,7 +161,7 @@ export function LandingPage() {
             Not a booking.<br />An access.
           </h2>
           <p className="text-body-lg max-w-xl mx-auto" style={{ color: '#6B6B6B' }}>
-            The Club works unlike anything you've seen in travel.
+            The Club works unlike anything you've seen before.
           </p>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
@@ -216,7 +211,7 @@ export function LandingPage() {
             Your home has a place<br />in this Club.
           </h2>
           <p className="text-body-lg mb-8 max-w-xl mx-auto" style={{ color: '#6B6B6B' }}>
-            If you own an exceptional home in Ostuni — a trullo, a masseria, a whitewashed house — we'd like to hear its story.
+            If you own a home in Ostuni with character — a trullo, a masseria, a whitewashed house — we'd like to hear its story.
           </p>
           <button
             onClick={() => navigate('/open-doors')}

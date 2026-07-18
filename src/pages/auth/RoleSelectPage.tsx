@@ -22,7 +22,7 @@ export function RoleSelectPage() {
           <div className="bg-surface rounded-card shadow-card p-6 text-center">
             <UserGroupIcon className="w-10 h-10 text-primary mx-auto mb-3" />
             <h3 className="text-body-md font-semibold mb-2">Member Dashboard</h3>
-            <p className="text-caption text-text-muted mb-4">Search & book properties with keys</p>
+            <p className="text-caption text-text-muted mb-4">Search & access Club homes with keys</p>
             <Button fullWidth size="sm" onClick={() => navigate('/member/dashboard')}>
               Member Portal
             </Button>

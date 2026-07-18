@@ -108,7 +108,7 @@ router.post('/', authenticate, requireRole('member'), (req, res, next) => {
         INSERT INTO ledger_entries (id,user_id,type,amount,balance_after,description,booking_id,created_at)
         VALUES (?,?,?,?,?,?,?,?)
       `).run(ledgerId, req.user!.userId, 'booking_debit', -cost.total, balance - cost.total,
-        `${prop.title} — ${cost.nights} nights`, bookingId, now)
+        `${prop.title} — ${cost.nights} days`, bookingId, now)
 
       // Increment property total_bookings
       db.prepare('UPDATE properties SET total_bookings = total_bookings + 1, updated_at = ? WHERE id = ?').run(now, propertyId)

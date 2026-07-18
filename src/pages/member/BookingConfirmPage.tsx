@@ -70,7 +70,7 @@ export function BookingConfirmPage() {
               <p className="text-caption text-text-muted">Dates</p>
               <p className="text-body-sm font-medium">
                 {formatDateRange(booking.checkIn, booking.checkOut)}
-                <span className="text-text-muted ml-1">· {booking.nights} nights</span>
+                <span className="text-text-muted ml-1">· {booking.nights} days</span>
               </p>
             </div>
           </div>
