@@ -70,13 +70,22 @@ export function LandingPage() {
               </p>
               <div className="flex items-center gap-5 flex-wrap">
                 <button
-                  onClick={() => navigate('/waitlist')}
+                  onClick={() => navigate('/auth/signup')}
+                  className="text-caption font-bold uppercase tracking-wider px-6 py-3 transition-all"
+                  style={{ border: 'none', color: '#0A0A0A', background: '#FFFFFF', cursor: 'pointer', letterSpacing: '0.12em' }}
+                  onMouseEnter={(e) => { e.currentTarget.style.opacity = '0.92' }}
+                  onMouseLeave={(e) => { e.currentTarget.style.opacity = '1' }}
+                >
+                  Create Account
+                </button>
+                <button
+                  onClick={() => navigate('/auth/login')}
                   className="text-caption font-bold uppercase tracking-wider px-6 py-3 transition-all"
                   style={{ border: '1.5px solid #FFFFFF', color: '#FFFFFF', background: 'transparent', cursor: 'pointer', letterSpacing: '0.12em' }}
                   onMouseEnter={(e) => { e.currentTarget.style.background = '#FFFFFF'; e.currentTarget.style.color = '#0A0A0A' }}
                   onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#FFFFFF' }}
                 >
-                  Join the Waitlist
+                  Sign In
                 </button>
                 <button
                   onClick={() => navigate('/how-it-works')}

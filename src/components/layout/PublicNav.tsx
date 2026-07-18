@@ -91,24 +91,24 @@ export function PublicNav({ transparent = false }: PublicNavProps) {
                   onMouseEnter={(e) => (e.currentTarget.style.color = linkHoverColor)}
                   onMouseLeave={(e) => (e.currentTarget.style.color = linkColor)}
                 >
-                  Member Login
+                  Sign In
                 </button>
                 <button
-                  onClick={() => navigate('/waitlist')}
+                  onClick={() => navigate('/auth/signup')}
                   className="text-caption font-semibold uppercase tracking-wider px-4 py-2 rounded transition-colors"
                   style={
                     transparent
-                      ? { color: '#FFFFFF', border: '1px solid rgba(255,255,255,0.5)', background: 'transparent', cursor: 'pointer', letterSpacing: '0.1em' }
+                      ? { color: '#0A0A0A', border: 'none', background: '#FFFFFF', cursor: 'pointer', letterSpacing: '0.1em' }
                       : { color: '#FFFFFF', border: 'none', background: '#0A0A0A', cursor: 'pointer', letterSpacing: '0.1em' }
                   }
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.background = transparent ? 'rgba(255,255,255,0.15)' : '#1A1A1A'
+                    e.currentTarget.style.opacity = '0.9'
                   }}
                   onMouseLeave={(e) => {
-                    e.currentTarget.style.background = transparent ? 'transparent' : '#0A0A0A'
+                    e.currentTarget.style.opacity = '1'
                   }}
                 >
-                  Join Waitlist
+                  Sign Up
                 </button>
               </>
             )}
@@ -146,12 +146,12 @@ export function PublicNav({ transparent = false }: PublicNavProps) {
             <Button variant="outline" fullWidth onClick={() => { navigate('/auth/login'); setMobileOpen(false) }}
               style={transparent ? { borderColor: '#FFFFFF', color: '#FFFFFF' } : {}}
             >
-              Member Login
+              Sign In
             </Button>
-            <Button fullWidth onClick={() => { navigate('/waitlist'); setMobileOpen(false) }}
+            <Button fullWidth onClick={() => { navigate('/auth/signup'); setMobileOpen(false) }}
               style={{ background: '#0A0A0A', color: '#FFFFFF', border: 'none' }}
             >
-              Join Waitlist
+              Sign Up
             </Button>
           </div>
         </div>

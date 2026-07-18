@@ -81,10 +81,11 @@ router.post('/signup', (req, res, next) => {
     const hash = bcrypt.hashSync(password, 10)
     const now = new Date().toISOString()
     const id = generateId('user')
+    const status = role === 'owner' ? 'active' : 'pending_verification'
     db.prepare(`
       INSERT INTO users (id,email,password_hash,first_name,last_name,role,status,created_at,updated_at)
       VALUES (?,?,?,?,?,?,?,?,?)
-    `).run(id, email.toLowerCase(), hash, firstName, lastName, role, 'pending_verification', now, now)
+    `).run(id, email.toLowerCase(), hash, firstName, lastName, role, status, now, now)
 
     const row = db.prepare('SELECT * FROM users WHERE id = ?').get(id) as Record<string, unknown>
     const user = rowToUser(row)
