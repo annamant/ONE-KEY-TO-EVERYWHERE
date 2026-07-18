@@ -59,7 +59,13 @@ export function OwnerPropertiesPage() {
             return (
               <Card key={p.id} padding="none" className="overflow-hidden">
                 <div className="relative">
-                  <img src={p.coverImage} alt={p.title} className="w-full h-44 object-cover" />
+                  {p.coverImage ? (
+                    <img src={p.coverImage} alt={p.title} className="w-full h-44 object-cover" />
+                  ) : (
+                    <div className="w-full h-44 bg-okte-slate-100 flex items-center justify-center">
+                      <BuildingOfficeIcon className="w-10 h-10 text-text-muted" />
+                    </div>
+                  )}
                   <div className="absolute top-3 left-3">
                     <Badge color={sc.color} size="sm" dot>{sc.label}</Badge>
                   </div>

@@ -2,7 +2,9 @@ import { Router } from 'express'
 import { getDb } from '../db/connection'
 import { authenticate } from '../middleware/auth'
 import { requireRole } from '../middleware/requireRole'
+import { imageUpload } from '../middleware/upload'
 import { generateId } from '../utils/generateId'
+import { destroyImage, publicIdFromUrl, uploadImageBuffer } from '../utils/cloudinary'
 
 const router = Router()
 
@@ -215,6 +217,97 @@ router.patch('/:id', authenticate, requireRole('owner', 'admin'), (req, res, nex
     const row = db.prepare('SELECT * FROM properties WHERE id = ?').get(id) as Record<string, unknown>
     res.json(rowToProp(row))
   } catch (e) { next(e) }
+})
+
+// POST /api/properties/:id/images  (owner — upload photos to Cloudinary)
+router.post(
+  '/:id/images',
+  authenticate,
+  requireRole('owner', 'admin'),
+  imageUpload.array('images', 10),
+  async (req, res, next) => {
+    try {
+      const { id } = req.params
+      const db = getDb()
+      const existing = db.prepare('SELECT * FROM properties WHERE id = ?').get(id) as Record<string, unknown> | undefined
+      if (!existing) { res.status(404).json({ error: 'Property not found' }); return }
+      if (req.user!.role === 'owner' && existing.owner_id !== req.user!.userId) {
+        res.status(403).json({ error: 'Forbidden' }); return
+      }
+
+      const files = req.files as Express.Multer.File[] | undefined
+      if (!files?.length) {
+        res.status(400).json({ error: 'At least one image file is required' })
+        return
+      }
+
+      const currentImages = JSON.parse((existing.images as string) || '[]') as string[]
+      const remaining = Math.max(0, 10 - currentImages.length)
+      if (remaining === 0) {
+        res.status(400).json({ error: 'Maximum of 10 images per property' })
+        return
+      }
+      const toUpload = files.slice(0, remaining)
+
+      const uploaded = await Promise.all(
+        toUpload.map((file) => uploadImageBuffer(file.buffer, `okte/properties/${id}`))
+      )
+      const newUrls = uploaded.map((u) => u.url)
+      const images = [...currentImages, ...newUrls]
+      const coverImage = (existing.cover_image as string) || images[0] || ''
+      const now = new Date().toISOString()
+
+      db.prepare(
+        'UPDATE properties SET images = ?, cover_image = ?, updated_at = ? WHERE id = ?'
+      ).run(JSON.stringify(images), coverImage, now, id)
+
+      const row = db.prepare('SELECT * FROM properties WHERE id = ?').get(id) as Record<string, unknown>
+      res.status(201).json(rowToProp(row))
+    } catch (e) {
+      next(e)
+    }
+  }
+)
+
+// DELETE /api/properties/:id/images  (owner — remove a photo)
+router.delete('/:id/images', authenticate, requireRole('owner', 'admin'), async (req, res, next) => {
+  try {
+    const { id } = req.params
+    const { url } = req.body as { url?: string }
+    if (!url) { res.status(400).json({ error: 'url is required' }); return }
+
+    const db = getDb()
+    const existing = db.prepare('SELECT * FROM properties WHERE id = ?').get(id) as Record<string, unknown> | undefined
+    if (!existing) { res.status(404).json({ error: 'Property not found' }); return }
+    if (req.user!.role === 'owner' && existing.owner_id !== req.user!.userId) {
+      res.status(403).json({ error: 'Forbidden' }); return
+    }
+
+    const currentImages = JSON.parse((existing.images as string) || '[]') as string[]
+    const images = currentImages.filter((u) => u !== url)
+    if (images.length === currentImages.length) {
+      res.status(404).json({ error: 'Image not found on this property' })
+      return
+    }
+
+    let coverImage = existing.cover_image as string
+    if (coverImage === url) coverImage = images[0] ?? ''
+
+    const publicId = publicIdFromUrl(url)
+    if (publicId) {
+      try { await destroyImage(publicId) } catch { /* ignore remote delete failures */ }
+    }
+
+    const now = new Date().toISOString()
+    db.prepare(
+      'UPDATE properties SET images = ?, cover_image = ?, updated_at = ? WHERE id = ?'
+    ).run(JSON.stringify(images), coverImage, now, id)
+
+    const row = db.prepare('SELECT * FROM properties WHERE id = ?').get(id) as Record<string, unknown>
+    res.json(rowToProp(row))
+  } catch (e) {
+    next(e)
+  }
 })
 
 // POST /api/properties/:id/status  (admin — review)

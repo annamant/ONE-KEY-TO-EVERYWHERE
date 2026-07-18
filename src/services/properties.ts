@@ -35,6 +35,21 @@ export const propertyService = {
   update: (id: string, patch: Partial<Property>) =>
     api.patch<Property>(`/properties/${id}`, patch),
 
+  uploadImages: (id: string, files: File[]) => {
+    const form = new FormData()
+    for (const file of files) form.append('images', file)
+    return api.postForm<Property>(`/properties/${id}/images`, form)
+  },
+
+  removeImage: (id: string, url: string) =>
+    api.delete<Property>(`/properties/${id}/images`, { url }),
+
+  uploadTempImages: (files: File[]) => {
+    const form = new FormData()
+    for (const file of files) form.append('images', file)
+    return api.postForm<{ urls: string[] }>('/uploads/images', form)
+  },
+
   setStatus: (id: string, status: PropertyStatus, reason?: string) =>
     api.post<Property>(`/properties/${id}/status`, { status, reason }),
 

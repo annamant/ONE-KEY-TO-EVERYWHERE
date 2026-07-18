@@ -17,6 +17,15 @@ function getToken(): string | null {
   }
 }
 
+async function parseResponse<T>(res: Response): Promise<T> {
+  if (!res.ok) {
+    const data = await res.json().catch(() => ({ error: res.statusText }))
+    throw new ApiError(res.status, (data as { error?: string }).error ?? 'Request failed')
+  }
+  if (res.status === 204) return undefined as T
+  return res.json() as Promise<T>
+}
+
 async function request<T>(method: string, path: string, body?: unknown): Promise<T> {
   const headers: Record<string, string> = { 'Content-Type': 'application/json' }
   const token = getToken()
@@ -28,13 +37,21 @@ async function request<T>(method: string, path: string, body?: unknown): Promise
     body: body !== undefined ? JSON.stringify(body) : undefined,
   })
 
-  if (!res.ok) {
-    const data = await res.json().catch(() => ({ error: res.statusText }))
-    throw new ApiError(res.status, (data as { error?: string }).error ?? 'Request failed')
-  }
+  return parseResponse<T>(res)
+}
 
-  if (res.status === 204) return undefined as T
-  return res.json() as Promise<T>
+async function requestForm<T>(path: string, formData: FormData): Promise<T> {
+  const headers: Record<string, string> = {}
+  const token = getToken()
+  if (token) headers['Authorization'] = `Bearer ${token}`
+
+  const res = await fetch(`${BASE}${path}`, {
+    method: 'POST',
+    headers,
+    body: formData,
+  })
+
+  return parseResponse<T>(res)
 }
 
 export const api = {
@@ -42,5 +59,6 @@ export const api = {
   post:   <T>(path: string, body?: unknown) => request<T>('POST', path, body),
   put:    <T>(path: string, body?: unknown) => request<T>('PUT', path, body),
   patch:  <T>(path: string, body?: unknown) => request<T>('PATCH', path, body),
-  delete: <T>(path: string) => request<T>('DELETE', path),
+  delete: <T>(path: string, body?: unknown) => request<T>('DELETE', path, body),
+  postForm: <T>(path: string, formData: FormData) => requestForm<T>(path, formData),
 }

@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/Input'
 import { Select } from '@/components/ui/Select'
 import { Textarea } from '@/components/ui/Textarea'
 import { FormField } from '@/components/forms/FormField'
+import { PropertyImagesField } from '@/components/forms/PropertyImagesField'
 import { Card } from '@/components/ui/Card'
 import { PageSpinner } from '@/components/ui/Spinner'
 import type { PropertyTier } from '@/types'
@@ -23,8 +24,9 @@ export function PropertyEditPage() {
   const navigate = useNavigate()
   const { toast } = useToast()
   const [saving, setSaving] = useState(false)
+  const [uploading, setUploading] = useState(false)
 
-  const { data: property, loading } = useMockApi(() => mockProperties.getById(id!), [id])
+  const { data: property, loading, refetch } = useMockApi(() => mockProperties.getById(id!), [id])
 
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
@@ -37,6 +39,8 @@ export function PropertyEditPage() {
   const [houseRules, setHouseRules] = useState('')
   const [minStay, setMinStay] = useState('2')
   const [maxStay, setMaxStay] = useState('14')
+  const [images, setImages] = useState<string[]>([])
+  const [coverImage, setCoverImage] = useState('')
 
   useEffect(() => {
     if (property) {
@@ -51,11 +55,40 @@ export function PropertyEditPage() {
       setHouseRules(property.houseRules.join('\n'))
       setMinStay(String(property.minStay))
       setMaxStay(String(property.maxStay))
+      setImages(property.images ?? [])
+      setCoverImage(property.coverImage ?? '')
     }
   }, [property])
 
   const toggleAmenity = (a: string) =>
     setAmenities((prev) => prev.includes(a) ? prev.filter((x) => x !== a) : [...prev, a])
+
+  const handleUpload = async (files: File[]) => {
+    setUploading(true)
+    try {
+      const updated = await mockProperties.uploadImages(id!, files)
+      setImages(updated.images)
+      setCoverImage(updated.coverImage)
+      toast(`${files.length} photo${files.length > 1 ? 's' : ''} uploaded`, 'success')
+      refetch()
+    } catch (err) {
+      toast(err instanceof Error ? err.message : 'Upload failed', 'error')
+    } finally {
+      setUploading(false)
+    }
+  }
+
+  const handleRemoveImage = async (url: string) => {
+    try {
+      const updated = await mockProperties.removeImage(id!, url)
+      setImages(updated.images)
+      setCoverImage(updated.coverImage)
+      toast('Photo removed', 'success')
+      refetch()
+    } catch (err) {
+      toast(err instanceof Error ? err.message : 'Failed to remove photo', 'error')
+    }
+  }
 
   const handleSave = async () => {
     setSaving(true)
@@ -90,6 +123,20 @@ export function PropertyEditPage() {
         <h1 className="text-heading-xl text-text-primary font-semibold">Edit Property</h1>
         <Button variant="outline" onClick={() => navigate('/owner/properties')}>Cancel</Button>
       </div>
+
+      <Card className="space-y-4 mb-6">
+        <h2 className="text-body-md font-semibold text-text-primary">Photos</h2>
+        <p className="text-body-sm text-text-muted">
+          Upload photos of your property. The first image becomes the cover.
+        </p>
+        <PropertyImagesField
+          images={images}
+          coverImage={coverImage}
+          uploading={uploading}
+          onUpload={handleUpload}
+          onRemove={handleRemoveImage}
+        />
+      </Card>
 
       <Card className="space-y-4 mb-6">
         <h2 className="text-body-md font-semibold text-text-primary">Basic Information</h2>

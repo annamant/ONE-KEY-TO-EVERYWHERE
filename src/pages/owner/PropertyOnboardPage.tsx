@@ -79,6 +79,12 @@ export function PropertyOnboardPage() {
   const handleSubmit = async () => {
     setSubmitting(true)
     try {
+      let imageUrls: string[] = []
+      if (form.images.length > 0) {
+        const uploaded = await mockProperties.uploadTempImages(form.images)
+        imageUrls = uploaded.urls
+      }
+
       await mockProperties.create(currentUser!.id, {
         title: form.title,
         slug: form.title.toLowerCase().replace(/\s+/g, '-'),
@@ -95,8 +101,8 @@ export function PropertyOnboardPage() {
         keysPerNight: parseInt(form.keysPerNight),
         amenities: form.amenities,
         houseRules: form.houseRules.split('\n').filter(Boolean),
-        coverImage: `https://picsum.photos/seed/${Date.now()}/800/600`,
-        images: [`https://picsum.photos/seed/${Date.now()}/800/600`],
+        coverImage: imageUrls[0] ?? '',
+        images: imageUrls,
         minStay: parseInt(form.minStay),
         maxStay: parseInt(form.maxStay),
         blackoutDates: [],
@@ -240,7 +246,7 @@ export function PropertyOnboardPage() {
               maxFiles={10}
             />
             <p className="text-caption text-text-muted mt-3">
-              Note: In demo mode, placeholder images will be used for the listing.
+              Photos are uploaded when you submit for review.
             </p>
           </div>
         )}
