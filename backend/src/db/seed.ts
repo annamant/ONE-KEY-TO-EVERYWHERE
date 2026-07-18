@@ -12,6 +12,7 @@ const d  = (offset: number) => format(addDays(now, offset), "yyyy-MM-dd'T'HH:mm:
 const ds = (offset: number) => format(addDays(now, offset), 'yyyy-MM-dd')
 
 const DEMO_PASSWORD_HASH = bcrypt.hashSync('demo', 10)
+const OWNER_PASSWORD_HASH = bcrypt.hashSync('Password1234', 10)
 
 export function seedDatabase(reset = false): void {
   const db = getDb()
@@ -19,6 +20,9 @@ export function seedDatabase(reset = false): void {
   if (reset) {
     db.exec(`
       DELETE FROM invite_tokens;
+      DELETE FROM password_reset_tokens;
+      DELETE FROM booking_overrides;
+      DELETE FROM property_review_notes;
       DELETE FROM notifications;
       DELETE FROM household_audit;
       DELETE FROM household_members;
@@ -26,6 +30,7 @@ export function seedDatabase(reset = false): void {
       DELETE FROM ledger_entries;
       DELETE FROM bookings;
       DELETE FROM properties;
+      DELETE FROM settings;
       DELETE FROM users;
     `)
   }
@@ -39,13 +44,13 @@ const insertUser = db.prepare(`
 const users = [
   { id:'user-alice', email:'alice@demo.com', firstName:'Alice',    lastName:'Moretti',  role:'member', avatarUrl:'https://i.pravatar.cc/150?u=alice', phone:'+39 080 555 0101', createdAt: d(-180), updatedAt: d(-10) },
   { id:'user-bob',   email:'bob@demo.com',   firstName:'Roberto',  lastName:'De Luca',  role:'member', avatarUrl:'https://i.pravatar.cc/150?u=bob',   phone:'+39 080 555 0102', createdAt: d(-160), updatedAt: d(-5) },
-  { id:'user-carol', email:'carol@demo.com', firstName:'Carolina', lastName:'Venezia',  role:'owner',  avatarUrl:'https://i.pravatar.cc/150?u=carol',  phone:'+39 080 555 0103', createdAt: d(-200), updatedAt: d(-2) },
-  { id:'user-dave',  email:'dave@demo.com',  firstName:'Davide',   lastName:'Santoro',  role:'owner',  avatarUrl:'https://i.pravatar.cc/150?u=dave',   phone:'+39 080 555 0104', createdAt: d(-150), updatedAt: d(-1) },
+  { id:'user-anna',  email:'mantova.a2@gmail.com', firstName:'Anna', lastName:'Mantova', role:'owner', avatarUrl:'https://i.pravatar.cc/150?u=anna',  phone:'+39 080 555 0100', createdAt: d(-365), updatedAt: d(0) },
   { id:'user-eve',   email:'eve@demo.com',   firstName:'Eva',      lastName:'Romano',   role:'admin',  avatarUrl:'https://i.pravatar.cc/150?u=eve',    phone:null,                createdAt: d(-365), updatedAt: d(0) },
 ]
 
 for (const u of users) {
-  insertUser.run(u.id, u.email, DEMO_PASSWORD_HASH, u.firstName, u.lastName, u.role, 'active', u.avatarUrl ?? null, u.phone ?? null, u.createdAt, u.updatedAt)
+  const hash = u.id === 'user-anna' ? OWNER_PASSWORD_HASH : DEMO_PASSWORD_HASH
+  insertUser.run(u.id, u.email, hash, u.firstName, u.lastName, u.role, 'active', u.avatarUrl ?? null, u.phone ?? null, u.createdAt, u.updatedAt)
 }
 
 // ─── Properties ────────────────────────────────────────────────────────────────
@@ -56,108 +61,64 @@ const insertProp = db.prepare(`
 
 const properties = [
   {
-    id:'prop-trullo-itria', ownerId:'user-carol',
-    title:"Trullo in the Heart of Valle d'Itria", slug:'trullo-valle-itria',
-    description:"An authentic 1800s trullo fully restored and set among centuries-old olive trees in the Valle d'Itria.",
-    region:'Puglia', country:'Italy', city:'Alberobello', address:'Contrada Popoleto, 70011 Alberobello BA',
-    latitude:40.7851, longitude:17.2350, sleeps:4, bedrooms:2, bathrooms:1, keysPerNight:4,
-    minStay:3, maxStay:30, tier:'premium', status:'approved',
-    amenities:['pool','wifi','parking','kitchen','garden','olive_grove','fireplace'],
-    houseRules:['Quiet hours after 22:00','No smoking','No pets'],
-    coverImage:'https://picsum.photos/seed/trullo-itria/800/600',
-    images:['https://picsum.photos/seed/trullo-itria/800/600','https://picsum.photos/seed/trullo-itria-2/800/600','https://picsum.photos/seed/trullo-itria-3/800/600'],
-    blackoutDates:[ds(10),ds(11),ds(12)], listingQualityScore:97, totalBookings:18, createdAt:d(-200), updatedAt:d(-5),
+    id:'prop-villa-azzurra', ownerId:'user-anna',
+    title:'Villa Azzurra — Ostuni Countryside', slug:'villa-azzurra-ostuni',
+    description:"A serene whitewashed villa nestled among ancient olive trees in the Ostuni countryside. The open-plan living area combines a fully equipped kitchen, dining space, and a comfortable sofa that converts to sleep two. One double bedroom and a full bathroom complete the indoor space, while a private terrace invites al fresco dining under the Puglian sun.",
+    region:'Puglia', country:'Italy', city:'Ostuni', address:'Contrada Ostuni countryside, 72017 Ostuni BR',
+    latitude:40.7315, longitude:17.5720, sleeps:4, bedrooms:1, bathrooms:1, keysPerNight:5,
+    minStay:2, maxStay:30, tier:'premium', status:'approved',
+    amenities:['wifi','kitchen','terrace','olive_grove','garden','parking','outdoor_dining'],
+    houseRules:['No smoking indoors','Quiet hours after 23:00','Max 4 guests'],
+    coverImage:'', images:[],
+    blackoutDates:[], listingQualityScore:88, totalBookings:0, createdAt:d(-120), updatedAt:d(-2),
   },
   {
-    id:'prop-masseria-ostuni', ownerId:'user-carol',
-    title:'Masseria Bianca — Ostuni', slug:'masseria-ostuni',
-    description:"A tastefully restored 18th-century masseria 5 km from the White City.",
-    region:'Puglia', country:'Italy', city:'Ostuni', address:'Contrada Monticello, 72017 Ostuni BR',
-    latitude:40.7280, longitude:17.5750, sleeps:8, bedrooms:4, bathrooms:3, keysPerNight:7,
-    minStay:4, maxStay:30, tier:'luxury', status:'approved',
-    amenities:['pool','wifi','parking','kitchen','olive_grove','cooking_class','garden','fireplace'],
-    houseRules:['No smoking indoors','Quiet hours 23:00–08:00','Max 8 guests'],
-    coverImage:'https://picsum.photos/seed/masseria-ostuni/800/600',
-    images:['https://picsum.photos/seed/masseria-ostuni/800/600','https://picsum.photos/seed/masseria-ostuni-2/800/600','https://picsum.photos/seed/masseria-ostuni-3/800/600','https://picsum.photos/seed/masseria-ostuni-4/800/600'],
-    blackoutDates:[ds(20),ds(21),ds(22),ds(30),ds(31)], listingQualityScore:99, totalBookings:24, createdAt:d(-190), updatedAt:d(-3),
+    id:'prop-villa-gialla', ownerId:'user-anna',
+    title:'Villa Gialla — Ostuni Countryside', slug:'villa-gialla-ostuni',
+    description:"Sister to Villa Azzurra, Villa Gialla offers the same thoughtful layout among the olive groves of the Ostuni countryside. An open-plan kitchen, dining and living area with a sofa bed (sleeps two) flows to a private terrace. One double bedroom and one bathroom make this a romantic retreat for couples or a small family.",
+    region:'Puglia', country:'Italy', city:'Ostuni', address:'Contrada Ostuni countryside, 72017 Ostuni BR',
+    latitude:40.7325, longitude:17.5680, sleeps:4, bedrooms:1, bathrooms:1, keysPerNight:5,
+    minStay:2, maxStay:30, tier:'premium', status:'approved',
+    amenities:['wifi','kitchen','terrace','olive_grove','garden','parking','outdoor_dining'],
+    houseRules:['No smoking indoors','Quiet hours after 23:00','Max 4 guests'],
+    coverImage:'', images:[],
+    blackoutDates:[], listingQualityScore:88, totalBookings:0, createdAt:d(-118), updatedAt:d(-2),
   },
   {
-    id:'prop-polignano', ownerId:'user-dave',
-    title:'Casa sul Mare — Polignano a Mare', slug:'casa-polignano',
-    description:'An apartment carved from a 19th-century palazzo perched on the headland of Polignano a Mare.',
-    region:'Puglia', country:'Italy', city:'Polignano a Mare', address:'Via Porto, 70044 Polignano a Mare BA',
-    latitude:40.9988, longitude:17.2183, sleeps:4, bedrooms:2, bathrooms:1, keysPerNight:5,
-    minStay:2, maxStay:14, tier:'premium', status:'approved',
-    amenities:['sea_view','wifi','kitchen','terrace','beach_access'],
-    houseRules:['No smoking','No parties','Shoes off at entrance'],
-    coverImage:'https://picsum.photos/seed/polignano-mare/800/600',
-    images:['https://picsum.photos/seed/polignano-mare/800/600','https://picsum.photos/seed/polignano-mare-2/800/600','https://picsum.photos/seed/polignano-mare-3/800/600'],
-    blackoutDates:[ds(5),ds(6)], listingQualityScore:94, totalBookings:31, createdAt:d(-150), updatedAt:d(-7),
+    id:'prop-trullo-g', ownerId:'user-anna',
+    title:'Trullo G — Ostuni Countryside', slug:'trullo-g-ostuni',
+    description:"An authentic conical-roofed trullo restored with care, set deep in the Ostuni countryside. The single open-plan space holds a double bed, a small kitchenette, and a cosy seating area with a working fireplace. A bathroom is tucked into a side alcove. Outside, a large outdoor space with shaded seating and dining areas invites long Puglian evenings under the stars.",
+    region:'Puglia', country:'Italy', city:'Ostuni', address:'Contrada Ostuni countryside, 72017 Ostuni BR',
+    latitude:40.7350, longitude:17.5650, sleeps:2, bedrooms:1, bathrooms:1, keysPerNight:5,
+    minStay:2, maxStay:21, tier:'premium', status:'approved',
+    amenities:['wifi','kitchen','fireplace','outdoor_dining','garden','olive_grove','parking'],
+    houseRules:['No smoking indoors','Respect the historic fabric of the trullo','Max 2 guests'],
+    coverImage:'', images:[],
+    blackoutDates:[], listingQualityScore:90, totalBookings:0, createdAt:d(-110), updatedAt:d(-3),
   },
   {
-    id:'prop-palazzo-lecce', ownerId:'user-dave',
-    title:'Palazzo Barocco — Centro Storico di Lecce', slug:'palazzo-lecce',
-    description:"A 17th-century baroque palazzo in the heart of Lecce, the 'Florence of the South'.",
-    region:'Puglia', country:'Italy', city:'Lecce', address:'Via degli Ammirati 14, 73100 Lecce LE',
-    latitude:40.3519, longitude:18.1750, sleeps:6, bedrooms:3, bathrooms:2, keysPerNight:6,
-    minStay:2, maxStay:21, tier:'luxury', status:'approved',
-    amenities:['wifi','kitchen','courtyard','fireplace','historic_centre','rooftop'],
+    id:'prop-villa-rossa', ownerId:'user-anna',
+    title:'Villa Rossa — Trullo e Lamia, Ostuni Countryside', slug:'villa-rossa-ostuni',
+    description:"A characterful complex of three cones (trullo) joined to a lamia, set in extensive grounds in the Ostuni countryside. Two bedrooms and two bathrooms accommodate guests, while a dedicated dining room, open-plan kitchen with fireplace, and a sofa area (sofa sleeps two additional guests) provide generous living space. A covered outdoor terrace and large front patio create seamless indoor-outdoor living.",
+    region:'Puglia', country:'Italy', city:'Ostuni', address:'Contrada Ostuni countryside, 72017 Ostuni BR',
+    latitude:40.7280, longitude:17.5750, sleeps:6, bedrooms:2, bathrooms:2, keysPerNight:7,
+    minStay:3, maxStay:30, tier:'luxury', status:'approved',
+    amenities:['wifi','kitchen','fireplace','terrace','patio','garden','olive_grove','parking','outdoor_dining'],
+    houseRules:['No smoking indoors','Quiet hours after 23:00','Max 6 guests'],
+    coverImage:'', images:[],
+    blackoutDates:[], listingQualityScore:94, totalBookings:0, createdAt:d(-100), updatedAt:d(-1),
+  },
+  {
+    id:'prop-casa-centro', ownerId:'user-anna',
+    title:'Casa Centro — Ostuni Old Town', slug:'casa-centro-ostuni',
+    description:"A characterful apartment in the heart of Ostuni's white-walled old town, within walking distance of the panoramic views and the main square. The main floor features two double bedrooms, a bathroom, and an open-plan kitchen, dining and sofa area. A separate lower-floor unit with its own private entrance adds a third bedroom and second bathroom, ideal for extended families or two couples travelling together. A back patio offers a quiet outdoor retreat.",
+    region:'Puglia', country:'Italy', city:'Ostuni', address:'Centro Storico, 72017 Ostuni BR',
+    latitude:40.7286, longitude:17.5874, sleeps:6, bedrooms:3, bathrooms:2, keysPerNight:6,
+    minStay:2, maxStay:21, tier:'premium', status:'approved',
+    amenities:['wifi','kitchen','historic_centre','patio','walking_distance_centre','terrace'],
     houseRules:['No smoking','Respect the neighbours','Max 6 guests'],
-    coverImage:'https://picsum.photos/seed/palazzo-lecce/800/600',
-    images:['https://picsum.photos/seed/palazzo-lecce/800/600','https://picsum.photos/seed/palazzo-lecce-2/800/600'],
-    blackoutDates:[], listingQualityScore:96, totalBookings:22, createdAt:d(-120), updatedAt:d(-1),
-  },
-  {
-    id:'prop-torre-otranto', ownerId:'user-carol',
-    title:'Torre Costiera — Otranto', slug:'torre-otranto',
-    description:'A 15th-century Aragonese watchtower converted into a characterful residence.',
-    region:'Puglia', country:'Italy', city:'Otranto', address:'Litoranea per Santa Cesarea, 73028 Otranto LE',
-    latitude:40.1467, longitude:18.4928, sleeps:4, bedrooms:2, bathrooms:2, keysPerNight:8,
-    minStay:3, maxStay:21, tier:'luxury', status:'approved',
-    amenities:['sea_view','wifi','kitchen','private_cove','terrace','historic'],
-    houseRules:['No smoking','No parties','Sea access at own risk'],
-    coverImage:'https://picsum.photos/seed/torre-otranto/800/600',
-    images:['https://picsum.photos/seed/torre-otranto/800/600','https://picsum.photos/seed/torre-otranto-2/800/600','https://picsum.photos/seed/torre-otranto-3/800/600'],
-    blackoutDates:[ds(25),ds(26),ds(27)], listingQualityScore:98, totalBookings:11, createdAt:d(-100), updatedAt:d(-2),
-  },
-  {
-    id:'prop-masseria-fasano', ownerId:'user-dave',
-    title:'Dammuso — Campagna di Fasano', slug:'dammuso-fasano',
-    description:'A local-stone farmhouse nestled among vineyards and olive groves a few kilometres from Fasano.',
-    region:'Puglia', country:'Italy', city:'Fasano', address:'Contrada Lamacavallo, 72015 Fasano BR',
-    latitude:40.8334, longitude:17.3598, sleeps:6, bedrooms:3, bathrooms:2, keysPerNight:4,
-    minStay:3, maxStay:30, tier:'premium', status:'approved',
-    amenities:['pool','wifi','parking','kitchen','vineyard','olive_grove','garden'],
-    houseRules:['No smoking indoors','Pets welcome in the garden','Quiet after 22:00'],
-    coverImage:'https://picsum.photos/seed/dammuso-fasano/800/600',
-    images:['https://picsum.photos/seed/dammuso-fasano/800/600','https://picsum.photos/seed/dammuso-fasano-2/800/600','https://picsum.photos/seed/dammuso-fasano-3/800/600'],
-    blackoutDates:[ds(8),ds(9)], listingQualityScore:91, totalBookings:14, createdAt:d(-140), updatedAt:d(-6),
-  },
-  {
-    id:'prop-farmhouse-martina', ownerId:'user-carol',
-    title:'Hypogean Oil Mill — Martina Franca', slug:'frantoio-martina-franca',
-    description:'An ancient hypogean oil mill transformed into a one-of-a-kind residence on the outskirts of Martina Franca.',
-    region:'Puglia', country:'Italy', city:'Martina Franca', address:'Contrada Carmine, 74015 Martina Franca TA',
-    latitude:40.7012, longitude:17.3355, sleeps:6, bedrooms:3, bathrooms:2, keysPerNight:5,
-    minStay:3, maxStay:21, tier:'premium', status:'approved',
-    amenities:['pool','wifi','parking','kitchen','olive_grove','wine_cellar','garden'],
-    houseRules:['No smoking','Respect the historic fabric of the building','Max 6 guests'],
-    coverImage:'https://picsum.photos/seed/frantoio-martina/800/600',
-    images:['https://picsum.photos/seed/frantoio-martina/800/600','https://picsum.photos/seed/frantoio-martina-2/800/600'],
-    blackoutDates:[ds(15),ds(16)], listingQualityScore:93, totalBookings:9, createdAt:d(-80), updatedAt:d(-4),
-  },
-  {
-    id:'prop-gargano-villa', ownerId:'user-dave',
-    title:'Villa on the Gargano — Vieste', slug:'villa-gargano-vieste',
-    description:'A private villa on the Gargano headland with direct access to a white-sand beach.',
-    region:'Puglia', country:'Italy', city:'Vieste', address:'Litoranea Vieste–Peschici Km 12, 71019 Vieste FG',
-    latitude:41.8820, longitude:16.1760, sleeps:8, bedrooms:4, bathrooms:3, keysPerNight:7,
-    minStay:5, maxStay:30, tier:'luxury', status:'pending_approval',
-    amenities:['beach_access','pool','wifi','parking','kitchen','garden','sea_view'],
-    houseRules:['No smoking','No parties','Respect the national park environment'],
-    coverImage:'https://picsum.photos/seed/villa-gargano/800/600',
-    images:['https://picsum.photos/seed/villa-gargano/800/600','https://picsum.photos/seed/villa-gargano-2/800/600','https://picsum.photos/seed/villa-gargano-3/800/600'],
-    blackoutDates:[], listingQualityScore:88, totalBookings:0, createdAt:d(-10), updatedAt:d(-1),
+    coverImage:'', images:[],
+    blackoutDates:[], listingQualityScore:92, totalBookings:0, createdAt:d(-90), updatedAt:d(-1),
   },
 ]
 
@@ -179,11 +140,11 @@ const insertBooking = db.prepare(`
 `)
 
 const bookings = [
-  { id:'booking-1', memberId:'user-alice', propertyId:'prop-masseria-ostuni', householdId:'household-puglia', checkIn:ds(14), checkOut:ds(21), nights:7, guests:4, keysCharged:49, status:'confirmed', cancellationReason:null, cancelledAt:null, confirmedAt:d(-2), createdAt:d(-3), updatedAt:d(-2) },
-  { id:'booking-2', memberId:'user-alice', propertyId:'prop-trullo-itria',    householdId:null,               checkIn:ds(60), checkOut:ds(64), nights:4, guests:2, keysCharged:16, status:'confirmed', cancellationReason:null, cancelledAt:null, confirmedAt:d(-1), createdAt:d(-1), updatedAt:d(-1) },
-  { id:'booking-3', memberId:'user-alice', propertyId:'prop-polignano',        householdId:null,               checkIn:format(subDays(now,3),'yyyy-MM-dd'), checkOut:format(addDays(now,4),'yyyy-MM-dd'), nights:7, guests:2, keysCharged:35, status:'active', cancellationReason:null, cancelledAt:null, confirmedAt:d(-10), createdAt:d(-10), updatedAt:d(-3) },
-  { id:'booking-4', memberId:'user-alice', propertyId:'prop-palazzo-lecce',    householdId:null,               checkIn:ds(-45), checkOut:ds(-41), nights:4, guests:4, keysCharged:24, status:'cancelled', cancellationReason:'Change of plans', cancelledAt:d(-48), confirmedAt:d(-50), createdAt:d(-50), updatedAt:d(-48) },
-  { id:'booking-5', memberId:'user-bob',   propertyId:'prop-masseria-fasano',  householdId:null,               checkIn:ds(30),  checkOut:ds(37),  nights:7, guests:3, keysCharged:28, status:'confirmed', cancellationReason:null, cancelledAt:null, confirmedAt:d(-5), createdAt:d(-5), updatedAt:d(-5) },
+  { id:'booking-1', memberId:'user-alice', propertyId:'prop-villa-azzurra', householdId:'household-puglia', checkIn:ds(14), checkOut:ds(21), nights:7, guests:4, keysCharged:35, status:'confirmed', cancellationReason:null, cancelledAt:null, confirmedAt:d(-2), createdAt:d(-3), updatedAt:d(-2) },
+  { id:'booking-2', memberId:'user-alice', propertyId:'prop-trullo-g',       householdId:null,               checkIn:ds(60), checkOut:ds(64), nights:4, guests:2, keysCharged:20, status:'confirmed', cancellationReason:null, cancelledAt:null, confirmedAt:d(-1), createdAt:d(-1), updatedAt:d(-1) },
+  { id:'booking-3', memberId:'user-alice', propertyId:'prop-casa-centro',    householdId:null,               checkIn:format(subDays(now,3),'yyyy-MM-dd'), checkOut:format(addDays(now,4),'yyyy-MM-dd'), nights:7, guests:4, keysCharged:42, status:'active', cancellationReason:null, cancelledAt:null, confirmedAt:d(-10), createdAt:d(-10), updatedAt:d(-3) },
+  { id:'booking-4', memberId:'user-alice', propertyId:'prop-villa-rossa',   householdId:null,               checkIn:ds(-45), checkOut:ds(-41), nights:4, guests:4, keysCharged:28, status:'cancelled', cancellationReason:'Change of plans', cancelledAt:d(-48), confirmedAt:d(-50), createdAt:d(-50), updatedAt:d(-48) },
+  { id:'booking-5', memberId:'user-bob',   propertyId:'prop-villa-gialla',  householdId:null,               checkIn:ds(30),  checkOut:ds(37),  nights:7, guests:3, keysCharged:35, status:'confirmed', cancellationReason:null, cancelledAt:null, confirmedAt:d(-5), createdAt:d(-5), updatedAt:d(-5) },
 ]
 
 for (const b of bookings) {
@@ -199,16 +160,16 @@ const insertLedger = db.prepare(`
 const ledger = [
   { id:'ledger-1',  userId:'user-alice', type:'membership_credit',  amount:100,  balanceAfter:100,  description:'Welcome to the Club — activation credit',    bookingId:null,      adminId:null,       adminNote:null,                                createdAt:d(-180) },
   { id:'ledger-2',  userId:'user-alice', type:'package_credit',     amount:100,  balanceAfter:200,  description:'Key bundle: 100 keys',                        bookingId:null,      adminId:null,       adminNote:null,                                createdAt:d(-170) },
-  { id:'ledger-3',  userId:'user-alice', type:'booking_debit',      amount:-24,  balanceAfter:176,  description:'Baroque Palazzo Lecce — 4 days',            bookingId:'booking-4', adminId:null,     adminNote:null,                                createdAt:d(-50) },
-  { id:'ledger-4',  userId:'user-alice', type:'cancellation_refund', amount:24,  balanceAfter:200,  description:'Refund: cancellation of Palazzo Lecce',       bookingId:'booking-4', adminId:null,     adminNote:null,                                createdAt:d(-48) },
+  { id:'ledger-3',  userId:'user-alice', type:'booking_debit',      amount:-28,  balanceAfter:172,  description:'Villa Rossa Ostuni — 4 days',               bookingId:'booking-4', adminId:null,     adminNote:null,                                createdAt:d(-50) },
+  { id:'ledger-4',  userId:'user-alice', type:'cancellation_refund', amount:28,  balanceAfter:200,  description:'Refund: cancellation of Villa Rossa',         bookingId:'booking-4', adminId:null,     adminNote:null,                                createdAt:d(-48) },
   { id:'ledger-5',  userId:'user-alice', type:'package_credit',     amount:50,   balanceAfter:250,  description:'Key bundle: 50 keys',                         bookingId:null,      adminId:null,       adminNote:null,                                createdAt:d(-30) },
   { id:'ledger-6',  userId:'user-alice', type:'admin_correction',   amount:20,   balanceAfter:270,  description:'Courtesy credit — technical disruption',      bookingId:null,      adminId:'user-eve', adminNote:'Compensation for system outage on 15 Dec', createdAt:d(-20) },
-  { id:'ledger-7',  userId:'user-alice', type:'booking_debit',      amount:-35,  balanceAfter:235,  description:'House on the Sea Polignano — 7 days',       bookingId:'booking-3', adminId:null,     adminNote:null,                                createdAt:d(-10) },
-  { id:'ledger-8',  userId:'user-alice', type:'booking_debit',      amount:-49,  balanceAfter:186,  description:'Masseria Bianca Ostuni — 7 days',           bookingId:'booking-1', adminId:null,     adminNote:null,                                createdAt:d(-3) },
-  { id:'ledger-9',  userId:'user-alice', type:'booking_debit',      amount:-16,  balanceAfter:170,  description:"Trullo Valle d'Itria — 4 days",             bookingId:'booking-2', adminId:null,     adminNote:null,                                createdAt:d(-1) },
+  { id:'ledger-7',  userId:'user-alice', type:'booking_debit',      amount:-42,  balanceAfter:228,  description:'Casa Centro Ostuni — 7 days',                bookingId:'booking-3', adminId:null,     adminNote:null,                                createdAt:d(-10) },
+  { id:'ledger-8',  userId:'user-alice', type:'booking_debit',      amount:-35,  balanceAfter:193,  description:'Villa Azzurra Ostuni — 7 days',              bookingId:'booking-1', adminId:null,     adminNote:null,                                createdAt:d(-3) },
+  { id:'ledger-9',  userId:'user-alice', type:'booking_debit',      amount:-20,  balanceAfter:173,  description:'Trullo G Ostuni — 4 days',                   bookingId:'booking-2', adminId:null,     adminNote:null,                                createdAt:d(-1) },
   { id:'ledger-10', userId:'user-bob',   type:'membership_credit',  amount:50,   balanceAfter:50,   description:'Welcome to the Club — activation credit',     bookingId:null,      adminId:null,       adminNote:null,                                createdAt:d(-160) },
   { id:'ledger-11', userId:'user-bob',   type:'package_credit',     amount:50,   balanceAfter:100,  description:'Key bundle: 50 keys',                         bookingId:null,      adminId:null,       adminNote:null,                                createdAt:d(-30) },
-  { id:'ledger-12', userId:'user-bob',   type:'booking_debit',      amount:-28,  balanceAfter:72,   description:'Dammuso Fasano — 7 days',                   bookingId:'booking-5', adminId:null,     adminNote:null,                                createdAt:d(-5) },
+  { id:'ledger-12', userId:'user-bob',   type:'booking_debit',      amount:-35,  balanceAfter:65,   description:'Villa Gialla Ostuni — 7 days',               bookingId:'booking-5', adminId:null,     adminNote:null,                                createdAt:d(-5) },
 ]
 
 for (const e of ledger) {
@@ -230,7 +191,7 @@ const auditRows = [
   { id:'audit-1', householdId:'household-puglia', actorId:'user-alice', targetId:null, action:'household_created', detail:'Alice created the household "Moretti Household"', createdAt:d(-180) },
   { id:'audit-2', householdId:'household-puglia', actorId:'user-alice', targetId:'user-bob', action:'member_invited',  detail:'Alice invited bob@demo.com as Booker', createdAt:d(-155) },
   { id:'audit-3', householdId:'household-puglia', actorId:'user-bob',   targetId:null, action:'member_joined',  detail:'Roberto joined the household', createdAt:d(-150) },
-  { id:'audit-4', householdId:'household-puglia', actorId:'user-alice', targetId:null, action:'booking_made',   detail:'Alice accessed Masseria Bianca Ostuni (14–21 Jul)', createdAt:d(-3) },
+  { id:'audit-4', householdId:'household-puglia', actorId:'user-alice', targetId:null, action:'booking_made',   detail:'Alice accessed Villa Azzurra Ostuni (14–21 Jul)', createdAt:d(-3) },
 ]
 const insertAudit = db.prepare(`INSERT INTO household_audit (id,household_id,actor_id,target_id,action,detail,created_at) VALUES (?,?,?,?,?,?,?)`)
 for (const a of auditRows) {
@@ -241,13 +202,13 @@ for (const a of auditRows) {
 const insertNotif = db.prepare(`INSERT INTO notifications (id,user_id,type,title,body,read,link,created_at) VALUES (?,?,?,?,?,?,?,?)`)
 
 const notifications = [
-  { id:'notif-1', userId:'user-alice', type:'booking_confirmed',  title:'Access confirmed',          body:'Your access to Masseria Bianca Ostuni (14–21 Jul) is confirmed.',  read:0, link:'/member/bookings/booking-1', createdAt:d(-2) },
+  { id:'notif-1', userId:'user-alice', type:'booking_confirmed',  title:'Access confirmed',          body:'Your access to Villa Azzurra Ostuni (14–21 Jul) is confirmed.',  read:0, link:'/member/bookings/booking-1', createdAt:d(-2) },
   { id:'notif-2', userId:'user-alice', type:'keys_credited',      title:'20 keys added',             body:'You have received 20 courtesy keys from the Club team.',           read:0, link:'/member/wallet',             createdAt:d(-20) },
   { id:'notif-3', userId:'user-alice', type:'household_invite',   title:'Roberto joined your household', body:'Roberto De Luca accepted your invitation.',                   read:1, link:'/member/household',          createdAt:d(-150) },
-  { id:'notif-4', userId:'user-bob',   type:'booking_confirmed',  title:'Access confirmed',          body:'Your access to Dammuso Fasano is confirmed.',                     read:0, link:'/member/bookings/booking-5', createdAt:d(-5) },
-  { id:'notif-5', userId:'user-carol', type:'reservation_received', title:'New access confirmed',    body:'Alice Moretti will access Masseria Bianca Ostuni from 14 to 21 July.', read:0, link:'/owner/reservations/booking-1', createdAt:d(-3) },
-  { id:'notif-6', userId:'user-dave',  type:'property_approved',  title:'Home approved',             body:'Baroque Palazzo Lecce is now active in the Club.',                read:1, link:'/owner/properties',          createdAt:d(-90) },
-  { id:'notif-7', userId:'user-eve',   type:'admin_alert',        title:'New home pending review',   body:'Villa on the Gargano — Vieste is awaiting approval.',             read:0, link:'/admin/properties/prop-gargano-villa/review', createdAt:d(-1) },
+  { id:'notif-4', userId:'user-bob',   type:'booking_confirmed',  title:'Access confirmed',          body:'Your access to Villa Gialla Ostuni is confirmed.',                read:0, link:'/member/bookings/booking-5', createdAt:d(-5) },
+  { id:'notif-5', userId:'user-anna',  type:'reservation_received', title:'New access confirmed',    body:'Alice Moretti will access Villa Azzurra Ostuni from 14 to 21 July.', read:0, link:'/owner/reservations/booking-1', createdAt:d(-3) },
+  { id:'notif-6', userId:'user-anna',  type:'property_approved',  title:'Home approved',             body:'Casa Centro — Ostuni Old Town is now active in the Club.',        read:1, link:'/owner/properties',          createdAt:d(-90) },
+  { id:'notif-7', userId:'user-eve',   type:'admin_alert',        title:'New home pending review',   body:'A new property has been submitted for review.',                   read:0, link:'/admin/properties',          createdAt:d(-1) },
 ]
 
 for (const n of notifications) {
