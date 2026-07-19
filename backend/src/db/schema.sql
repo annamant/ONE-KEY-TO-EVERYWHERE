@@ -31,7 +31,6 @@ CREATE TABLE IF NOT EXISTS properties (
   sleeps                INTEGER NOT NULL,
   bedrooms              INTEGER NOT NULL,
   bathrooms             INTEGER NOT NULL,
-  keys_per_night        INTEGER NOT NULL,
   min_stay              INTEGER NOT NULL DEFAULT 1,
   max_stay              INTEGER NOT NULL DEFAULT 30,
   tier                  TEXT NOT NULL CHECK(tier IN ('standard','premium','luxury')),

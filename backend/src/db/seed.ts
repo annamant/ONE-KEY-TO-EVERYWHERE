@@ -68,8 +68,8 @@ export function seedDatabase(reset = false): void {
 
   // ─── Properties ────────────────────────────────────────────────────────────────
   const insertProp = db.prepare(`
-    INSERT INTO properties (id,owner_id,title,slug,description,region,country,city,address,latitude,longitude,sleeps,bedrooms,bathrooms,keys_per_night,min_stay,max_stay,tier,status,amenities,house_rules,cover_image,images,blackout_dates,listing_quality_score,total_bookings,created_at,updated_at)
-    VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+    INSERT INTO properties (id,owner_id,title,slug,description,region,country,city,address,latitude,longitude,sleeps,bedrooms,bathrooms,min_stay,max_stay,tier,status,amenities,house_rules,cover_image,images,blackout_dates,listing_quality_score,total_bookings,created_at,updated_at)
+    VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
   `)
 
   const properties = [
@@ -78,7 +78,7 @@ export function seedDatabase(reset = false): void {
       title: 'Villa Azzurra — Ostuni Countryside', slug: 'villa-azzurra-ostuni',
       description: "A serene whitewashed villa nestled among ancient olive trees in the Ostuni countryside. The open-plan living area combines a fully equipped kitchen, dining space, and a comfortable sofa that converts to sleep two. One double bedroom and a full bathroom complete the indoor space, while a private terrace invites al fresco dining under the Puglian sun.",
       region: 'Puglia', country: 'Italy', city: 'Ostuni', address: 'Contrada Ostuni countryside, 72017 Ostuni BR',
-      latitude: 40.7315, longitude: 17.5720, sleeps: 4, bedrooms: 1, bathrooms: 1, keysPerNight: 5,
+      latitude: 40.7315, longitude: 17.5720, sleeps: 4, bedrooms: 1, bathrooms: 1,
       minStay: 2, maxStay: 30, tier: 'premium', status: 'approved',
       amenities: ['wifi', 'kitchen', 'terrace', 'olive_grove', 'garden', 'parking', 'outdoor_dining'],
       houseRules: ['No smoking indoors', 'Quiet hours after 23:00', 'Max 4 guests'],
@@ -90,7 +90,7 @@ export function seedDatabase(reset = false): void {
       title: 'Villa Gialla — Ostuni Countryside', slug: 'villa-gialla-ostuni',
       description: "Sister to Villa Azzurra, Villa Gialla offers the same thoughtful layout among the olive groves of the Ostuni countryside. An open-plan kitchen, dining and living area with a sofa bed (sleeps two) flows to a private terrace. One double bedroom and one bathroom make this a romantic retreat for couples or a small family.",
       region: 'Puglia', country: 'Italy', city: 'Ostuni', address: 'Contrada Ostuni countryside, 72017 Ostuni BR',
-      latitude: 40.7325, longitude: 17.5680, sleeps: 4, bedrooms: 1, bathrooms: 1, keysPerNight: 5,
+      latitude: 40.7325, longitude: 17.5680, sleeps: 4, bedrooms: 1, bathrooms: 1,
       minStay: 2, maxStay: 30, tier: 'premium', status: 'approved',
       amenities: ['wifi', 'kitchen', 'terrace', 'olive_grove', 'garden', 'parking', 'outdoor_dining'],
       houseRules: ['No smoking indoors', 'Quiet hours after 23:00', 'Max 4 guests'],
@@ -102,7 +102,7 @@ export function seedDatabase(reset = false): void {
       title: 'Trullo G — Ostuni Countryside', slug: 'trullo-g-ostuni',
       description: "An authentic conical-roofed trullo restored with care, set deep in the Ostuni countryside. The single open-plan space holds a double bed, a small kitchenette, and a cosy seating area with a working fireplace. A bathroom is tucked into a side alcove. Outside, a large outdoor space with shaded seating and dining areas invites long Puglian evenings under the stars.",
       region: 'Puglia', country: 'Italy', city: 'Ostuni', address: 'Contrada Ostuni countryside, 72017 Ostuni BR',
-      latitude: 40.7350, longitude: 17.5650, sleeps: 2, bedrooms: 1, bathrooms: 1, keysPerNight: 5,
+      latitude: 40.7350, longitude: 17.5650, sleeps: 2, bedrooms: 1, bathrooms: 1,
       minStay: 2, maxStay: 21, tier: 'premium', status: 'approved',
       amenities: ['wifi', 'kitchen', 'fireplace', 'outdoor_dining', 'garden', 'olive_grove', 'parking'],
       houseRules: ['No smoking indoors', 'Respect the historic fabric of the trullo', 'Max 2 guests'],
@@ -114,7 +114,7 @@ export function seedDatabase(reset = false): void {
       title: 'Villa Rossa — Trullo e Lamia, Ostuni Countryside', slug: 'villa-rossa-ostuni',
       description: "A characterful complex of three cones (trullo) joined to a lamia, set in extensive grounds in the Ostuni countryside. Two bedrooms and two bathrooms accommodate guests, while a dedicated dining room, open-plan kitchen with fireplace, and a sofa area (sofa sleeps two additional guests) provide generous living space. A covered outdoor terrace and large front patio create seamless indoor-outdoor living.",
       region: 'Puglia', country: 'Italy', city: 'Ostuni', address: 'Contrada Ostuni countryside, 72017 Ostuni BR',
-      latitude: 40.7280, longitude: 17.5750, sleeps: 6, bedrooms: 2, bathrooms: 2, keysPerNight: 7,
+      latitude: 40.7280, longitude: 17.5750, sleeps: 6, bedrooms: 2, bathrooms: 2,
       minStay: 3, maxStay: 30, tier: 'luxury', status: 'approved',
       amenities: ['wifi', 'kitchen', 'fireplace', 'terrace', 'patio', 'garden', 'olive_grove', 'parking', 'outdoor_dining'],
       houseRules: ['No smoking indoors', 'Quiet hours after 23:00', 'Max 6 guests'],
@@ -126,7 +126,7 @@ export function seedDatabase(reset = false): void {
       title: 'Casa Centro — Ostuni Old Town', slug: 'casa-centro-ostuni',
       description: "A characterful apartment in the heart of Ostuni's white-walled old town, within walking distance of the panoramic views and the main square. The main floor features two double bedrooms, a bathroom, and an open-plan kitchen, dining and sofa area. A separate lower-floor unit with its own private entrance adds a third bedroom and second bathroom, ideal for extended families or two couples travelling together. A back patio offers a quiet outdoor retreat.",
       region: 'Puglia', country: 'Italy', city: 'Ostuni', address: 'Centro Storico, 72017 Ostuni BR',
-      latitude: 40.7286, longitude: 17.5874, sleeps: 6, bedrooms: 3, bathrooms: 2, keysPerNight: 6,
+      latitude: 40.7286, longitude: 17.5874, sleeps: 6, bedrooms: 3, bathrooms: 2,
       minStay: 2, maxStay: 21, tier: 'premium', status: 'approved',
       amenities: ['wifi', 'kitchen', 'historic_centre', 'patio', 'walking_distance_centre', 'terrace'],
       houseRules: ['No smoking', 'Respect the neighbours', 'Max 6 guests'],
@@ -138,7 +138,7 @@ export function seedDatabase(reset = false): void {
   for (const p of properties) {
     insertProp.run(
       p.id, p.ownerId, p.title, p.slug, p.description, p.region, p.country, p.city, p.address,
-      p.latitude, p.longitude, p.sleeps, p.bedrooms, p.bathrooms, p.keysPerNight, p.minStay, p.maxStay,
+      p.latitude, p.longitude, p.sleeps, p.bedrooms, p.bathrooms, p.minStay, p.maxStay,
       p.tier, p.status,
       JSON.stringify(p.amenities), JSON.stringify(p.houseRules),
       p.coverImage, JSON.stringify(p.images), JSON.stringify(p.blackoutDates),

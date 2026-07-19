@@ -70,7 +70,7 @@ export function LandingPage() {
                 One key.
               </h1>
               <p className="text-body-md leading-relaxed mb-8 max-w-md" style={{ color: 'rgba(255,255,255,0.92)' }}>
-                Membership means year-round access to Club homes and facilities in Ostuni — for you, your friends, and your family. As if they were yours.
+                Membership means year-round access to every Club home in Ostuni — for you, your friends, and your family. As if they were yours.
               </p>
               <div className="flex items-center gap-5 flex-wrap" style={{ textShadow: 'none' }}>
                 <button

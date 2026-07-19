@@ -92,7 +92,6 @@ export function AdminPropertyReviewPage() {
               { label: 'Sleeps', value: String(property.sleeps) },
               { label: 'Bedrooms', value: String(property.bedrooms) },
               { label: 'Bathrooms', value: String(property.bathrooms) },
-              { label: 'Key rate', value: String(property.keysPerNight) },
               { label: 'Min access', value: `${property.minStay} days` },
               { label: 'Max access', value: `${property.maxStay} days` },
               { label: 'Submitted', value: formatDate(property.createdAt) },

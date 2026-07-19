@@ -49,15 +49,9 @@ export function PropertyCard({ property, className }: PropertyCardProps) {
         </div>
       </div>
       <div className="p-4">
-        <div className="flex items-start justify-between gap-2 mb-1">
-          <h3 className="text-body-md font-semibold text-text-primary line-clamp-1">
-            {property.title}
-          </h3>
-          <div className="flex items-center gap-1 flex-shrink-0 bg-okte-gold-50 px-2 py-0.5 rounded-pill">
-            <span className="text-caption font-bold text-okte-gold-700">{property.keysPerNight}</span>
-            <span className="text-caption text-okte-gold-600">keys</span>
-          </div>
-        </div>
+        <h3 className="text-body-md font-semibold text-text-primary line-clamp-1 mb-1">
+          {property.title}
+        </h3>
         <div className="flex items-center gap-1 text-text-muted mb-3">
           <MapPinIcon className="w-3.5 h-3.5 flex-shrink-0" />
           <span className="text-caption">{property.city}, {property.country}</span>

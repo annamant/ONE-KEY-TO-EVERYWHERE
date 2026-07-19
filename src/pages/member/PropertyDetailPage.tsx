@@ -56,7 +56,7 @@ export function PropertyDetailPage() {
 
   const blackoutDates = property.blackoutDates.map((d) => parseISO(d))
   const cost = dateRange?.from && dateRange?.to
-    ? calculateKeyCost(property, formatDate(dateRange.from, 'yyyy-MM-dd'), formatDate(dateRange.to, 'yyyy-MM-dd'))
+    ? calculateKeyCost(formatDate(dateRange.from, 'yyyy-MM-dd'), formatDate(dateRange.to, 'yyyy-MM-dd'))
     : null
 
   const handleBook = () => {
@@ -206,12 +206,12 @@ export function PropertyDetailPage() {
           <div className="bg-surface rounded-card shadow-card p-5 sticky top-24">
             <div className="flex items-center justify-between mb-4">
               <div>
-                <span className="text-heading-lg font-bold text-text-primary">{property.keysPerNight}</span>
-                <span className="text-body-sm text-text-muted ml-1">key rate</span>
+                <span className="text-heading-lg font-bold text-text-primary">1</span>
+                <span className="text-body-sm text-text-muted ml-1">key per night</span>
               </div>
               <div className="flex items-center gap-1 bg-okte-gold-50 px-3 py-1 rounded-pill">
                 <KeyIcon className="w-4 h-4 text-okte-gold-600" />
-                <span className="text-body-sm font-semibold text-okte-gold-700">Keys Required</span>
+                <span className="text-body-sm font-semibold text-okte-gold-700">Same at every home</span>
               </div>
             </div>
 
@@ -249,21 +249,9 @@ export function PropertyDetailPage() {
             {cost && (
               <div className="border-t border-border pt-4 mb-4 space-y-2">
                 <div className="flex justify-between text-body-sm">
-                  <span className="text-text-muted">{property.keysPerNight} keys × {cost.nights} days</span>
-                  <span>{property.keysPerNight * cost.nights} keys</span>
+                  <span className="text-text-muted">{cost.nights} nights from your key balance</span>
+                  <span>{cost.total} keys</span>
                 </div>
-                {cost.seasonalMultiplier < 1 && (
-                  <div className="flex justify-between text-body-sm text-success">
-                    <span>Off-season discount</span>
-                    <span>−{Math.round((1 - cost.seasonalMultiplier) * 100)}%</span>
-                  </div>
-                )}
-                {cost.longStayMultiplier < 1 && (
-                  <div className="flex justify-between text-body-sm text-success">
-                    <span>Extended access discount</span>
-                    <span>−{Math.round((1 - cost.longStayMultiplier) * 100)}%</span>
-                  </div>
-                )}
                 <div className="flex justify-between text-body-md font-semibold border-t border-border pt-2 mt-2">
                   <span>Total</span>
                   <span className="text-okte-gold-700">{cost.total} keys</span>

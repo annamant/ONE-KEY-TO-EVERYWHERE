@@ -30,7 +30,6 @@ export function SearchPage() {
   const [query, setQuery] = useState('')
   const [region, setRegion] = useState('')
   const [sleeps, setSleeps] = useState('')
-  const [maxKeys, setMaxKeys] = useState('')
   const [selectedAmenities, setSelectedAmenities] = useState<string[]>([])
   const [showFilters, setShowFilters] = useState(false)
 
@@ -38,13 +37,12 @@ export function SearchPage() {
     query: query || undefined,
     region: region || undefined,
     sleeps: sleeps ? parseInt(sleeps) : undefined,
-    maxKeys: maxKeys ? parseInt(maxKeys) : undefined,
     amenities: selectedAmenities.length > 0 ? selectedAmenities : undefined,
   }
 
   const { data: properties, loading } = useMockApi(
     () => mockProperties.list(filters),
-    [query, region, sleeps, maxKeys, JSON.stringify(selectedAmenities)]
+    [query, region, sleeps, JSON.stringify(selectedAmenities)]
   )
 
   const toggleAmenity = (value: string) => {
@@ -57,12 +55,11 @@ export function SearchPage() {
     setQuery('')
     setRegion('')
     setSleeps('')
-    setMaxKeys('')
     setSelectedAmenities([])
   }
 
-  const hasFilters = query || region || sleeps || maxKeys || selectedAmenities.length > 0
-  const activeFilterCount = [region, sleeps, maxKeys].filter(Boolean).length + selectedAmenities.length
+  const hasFilters = query || region || sleeps || selectedAmenities.length > 0
+  const activeFilterCount = [region, sleeps].filter(Boolean).length + selectedAmenities.length
 
   return (
     <div className="page-content">
@@ -116,21 +113,17 @@ export function SearchPage() {
             />
           </div>
           <div>
-            <label className="block text-body-sm font-medium text-text-primary mb-1.5">Sleeps (min)</label>
+            <label className="block text-body-sm font-medium text-text-primary mb-1.5">Group size</label>
             <Select
               value={sleeps}
               onChange={(e) => setSleeps(e.target.value)}
-              options={[2, 4, 6, 8, 10].map((n) => ({ value: String(n), label: `${n}+ guests` }))}
-              placeholder="Any size"
-            />
-          </div>
-          <div>
-            <label className="block text-body-sm font-medium text-text-primary mb-1.5">Max key rate</label>
-            <Select
-              value={maxKeys}
-              onChange={(e) => setMaxKeys(e.target.value)}
-              options={[3, 4, 5, 6, 7].map((n) => ({ value: String(n), label: `Up to ${n} keys` }))}
-              placeholder="Any price"
+              options={[
+                { value: '2', label: 'Up to 2' },
+                { value: '4', label: '3–4' },
+                { value: '6', label: '5–6' },
+                { value: '7', label: '7+' },
+              ]}
+              placeholder="Any group size"
             />
           </div>
           <div>

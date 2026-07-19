@@ -23,7 +23,6 @@ export interface Property {
   bedrooms: number
   bathrooms: number
   tier: PropertyTier
-  keysPerNight: number
   amenities: string[]
   houseRules: string[]
   coverImage: string
@@ -44,7 +43,5 @@ export interface SearchFilters {
   checkOut?: string
   sleeps?: number
   amenities?: string[]
-  minKeys?: number
-  maxKeys?: number
   query?: string
 }

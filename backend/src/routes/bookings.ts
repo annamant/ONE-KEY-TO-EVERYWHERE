@@ -88,7 +88,7 @@ router.post('/', authenticate, requireRole('member'), (req, res, next) => {
       res.status(404).json({ error: 'Property not found or not available' }); return
     }
 
-    const cost = calculateKeyCost(prop.keys_per_night as number, checkIn, checkOut)
+    const cost = calculateKeyCost(checkIn, checkOut)
 
     // Atomic: debit ledger + insert booking
     const createBooking = db.transaction(() => {

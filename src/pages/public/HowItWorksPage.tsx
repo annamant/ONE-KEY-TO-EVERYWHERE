@@ -12,13 +12,13 @@ const MEMBER_STEPS = [
   },
   {
     icon: <CalendarDaysIcon className="w-6 h-6" />,
-    title: 'Choose your membership level',
-    desc: 'From a short-term membership to try the Club, to a long-term membership for those who travel often — pick the level that matches your life. Every level opens the same doors.',
+    title: 'Choose your length and group size',
+    desc: 'Membership is sold by the week — 1, 2, or 4 — and by group size. Pick a 1-week membership to try the Club, or 4 weeks if you travel often. Every length opens the same doors.',
   },
   {
     icon: <KeyIcon className="w-6 h-6" />,
     title: 'Receive your keys',
-    desc: 'Your membership comes with a bundle of keys. Keys are your credit inside the Club. They don\'t expire. They don\'t change in value between August and February.',
+    desc: 'Your membership comes with a bank of keys — one per day of membership. They\'re yours to spend however you like: one night now, five next month, split across as many trips as you want. They don\'t expire.',
   },
   {
     icon: <HomeModernIcon className="w-6 h-6" />,
@@ -39,15 +39,19 @@ const FAQS = [
   },
   {
     q: 'What are the membership levels?',
-    a: 'Membership levels range from short-term — a lighter commitment with a smaller key bundle, ideal for trying the Club — to long-term memberships built for those who travel often and want a larger bundle of keys. Every level gives you the exact same access: all Club homes, at the same fixed number of keys per home.',
+    a: 'Membership is built from two choices: how long — 1, 2, or 4 weeks — and your group size, from up to 2 guests to 7+. Together they decide your price and the size of your key bank. Every combination gives you the exact same access: all Club homes, at the same fixed cost per night.',
   },
   {
     q: 'Do keys expire?',
-    a: 'No. The keys you receive with your membership are yours. There is no expiry date, no penalty for not travelling every month. You can wait for the right moment.',
+    a: 'No. The keys you receive with your membership are yours. There is no expiry date, no penalty for not travelling every month. Use one night now and save the rest for later — you can wait for the right moment.',
   },
   {
-    q: 'How many keys does each home require?',
-    a: 'Each Club home has a fixed key requirement — set by the owner in agreement with us. It never changes with the seasons: a key is worth exactly the same in high season as in low season.',
+    q: 'How many keys does a home cost?',
+    a: 'The same everywhere: 1 key per night, at any home in the Club. There\'s no per-property rate and nothing to compare between listings — the only thing that changes trip to trip is how many nights you stay.',
+  },
+  {
+    q: 'Can I use a home built for a bigger group than I paid for?',
+    a: 'Yes. Your group size sets your starting price, not a ceiling on what you can access. If the exact size you\'re looking for isn\'t available, we place you in a larger home at no extra cost — the same way an airline upgrades a passenger when economy is overbooked. You\'re never charged more, and you\'re never turned away.',
   },
   {
     q: 'Can I share my keys with family?',
@@ -138,10 +142,10 @@ export function HowItWorksPage() {
         </h2>
         <div className="space-y-4">
           {[
-            { n: '1', text: 'Choose a membership level — from short-term to long-term — and receive a bundle of keys with it. They are yours: they never expire.' },
-            { n: '2', text: 'Each Club home requires a fixed number of keys — the same in January as in August. This isn\'t a rental with a nightly rate; it\'s a membership entitlement that never moves with the season.' },
+            { n: '1', text: 'Choose your length — 1, 2, or 4 weeks — and your group size. That combination sets your one-time price and the size of your key bank: one key for every day of membership.' },
+            { n: '2', text: '1 key = 1 night, at any home in the Club — the same in January as in August. There\'s no per-property rate and no seasonal pricing, because this isn\'t a rental.' },
             { n: '3', text: 'Every home in the Club is open to you at once — not just one. Move freely between them, staying wherever fits what you need, whenever you need it.' },
-            { n: '4', text: 'The longer your visit, the more you save. The Club rewards those who take their time, not those who rush.' },
+            { n: '4', text: 'Spend your keys however you like: one night this weekend, five next month, all in one home or split across several. Your keys don\'t expire — nothing forces you to use them all at once.' },
           ].map(({ n, text }) => (
             <div key={n} className="flex gap-4 p-5 rounded-card text-left" style={{ background: '#F5F5F5', border: '1px solid #E5E5E5' }}>
               <span className="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-caption font-bold" style={{ background: '#0A0A0A', color: '#FFFFFF' }}>{n}</span>

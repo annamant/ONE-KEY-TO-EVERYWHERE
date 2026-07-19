@@ -1,87 +1,17 @@
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { CheckIcon } from '@heroicons/react/24/solid'
 import { Button } from '@/components/ui/Button'
 import { PublicNav } from '@/components/layout/PublicNav'
 import { PublicFooter } from '@/components/layout/PublicFooter'
-import { cn } from '@/utils/classNames'
-
-const PLANS = [
-  {
-    name: 'Explorer Member',
-    keys: 50,
-    price: 499,
-    perKey: 9.98,
-    highlight: false,
-    accent: '#0A0A0A',
-    bg: '#FFFFFF',
-    textColor: '#0A0A0A',
-    mutedColor: '#6B6B6B',
-    perkColor: '#6B6B6B',
-    perks: [
-      '50 keys included',
-      'Access to all Club homes',
-      'Household (up to 3 people)',
-      'Keys never expire',
-      'Free cancellation up to 48h before',
-      'Club support via email',
-    ],
-  },
-  {
-    name: 'Puglia Member',
-    keys: 150,
-    price: 1299,
-    perKey: 8.66,
-    highlight: true,
-    accent: '#C4882F',
-    bg: '#0A0A0A',
-    textColor: '#FFFFFF',
-    mutedColor: '#CCCCCC',
-    perkColor: '#EFEFEF',
-    perks: [
-      '150 keys included',
-      'Access to all Club homes',
-      'Household (up to 5 people)',
-      'Keys never expire',
-      'Free cancellation up to 48h before',
-      'Priority Club support',
-      'Extended-stay key savings (7+ days)',
-      'Early access to new homes',
-    ],
-  },
-  {
-    name: 'Founding Member',
-    keys: 500,
-    price: 3999,
-    perKey: 7.99,
-    highlight: false,
-    accent: '#0A0A0A',
-    bg: '#FFFFFF',
-    textColor: '#0A0A0A',
-    mutedColor: '#6B6B6B',
-    perkColor: '#6B6B6B',
-    perks: [
-      '500 keys included',
-      'Access to all Club homes',
-      'Unlimited household members',
-      'Keys never expire',
-      'Free cancellation up to 48h before',
-      'Dedicated Club concierge',
-      'Extended-stay key savings (7+ days)',
-      'Early access to new homes',
-      'Permanent "Founder" badge',
-      'A voice in how the Club grows',
-    ],
-  },
-]
-
-const HOMES_TABLE = [
-  { tier: 'Club Standard', keys: '2–4', examples: 'Dammusi, farmhouses, historic centre apartments' },
-  { tier: 'Club Premium',  keys: '4–6', examples: 'Trulli, mid-size masserie, sea-view homes' },
-  { tier: 'Club Luxury',   keys: '6–10', examples: 'Grand masserie, coastal towers, baroque palazzos' },
-]
+import { GROUP_BANDS, MEMBERSHIP_DURATIONS, quoteMembership, type GroupBand } from '@/types/membership'
 
 export function PricingPage() {
   const navigate = useNavigate()
+  const [groupBand, setGroupBand] = useState<GroupBand>('three_to_four')
+  const [weeks, setWeeks] = useState(2)
+
+  const quote = quoteMembership(groupBand, weeks)
 
   return (
     <div className="min-h-screen flex flex-col" style={{ background: '#FFFFFF' }}>
@@ -91,100 +21,138 @@ export function PricingPage() {
       <section style={{ background: '#F5F5F5', borderBottom: '1px solid #E5E5E5' }} className="py-16 text-center">
         <div className="max-w-2xl mx-auto px-6">
           <p className="text-caption font-semibold uppercase tracking-widest mb-4" style={{ color: '#C4882F' }}>Membership plans</p>
-          <h1 className="font-display text-display-lg font-bold mb-4" style={{ color: '#0A0A0A' }}>Simple. Transparent. Fair.</h1>
+          <h1 className="font-display text-display-lg font-bold mb-4" style={{ color: '#0A0A0A' }}>Build your membership.</h1>
           <p className="text-body-lg" style={{ color: '#6B6B6B' }}>
-            Pay once. Your keys are yours forever. No annual subscription, no surprises.
+            Pick how long, pick your group size. Every membership opens every home in the Club.
           </p>
         </div>
       </section>
 
-      {/* Plans */}
-      <section className="max-w-5xl mx-auto px-6 py-20">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {PLANS.map((p) => (
-            <div
-              key={p.name}
-              className={cn('rounded-2xl p-8 flex flex-col', p.highlight ? 'shadow-modal' : '')}
-              style={{
-                background: p.bg,
-                border: p.highlight ? `2px solid ${p.accent}` : '2px solid #E5E5E5',
-              }}
-            >
-              {p.highlight && (
-                <div className="self-start text-caption font-bold px-3 py-1 rounded-full mb-4" style={{ background: '#C4882F', color: '#0A0A0A' }}>
-                  Most popular
-                </div>
-              )}
-              <h3 className="font-display text-heading-md font-bold mb-1" style={{ color: p.textColor }}>
-                {p.name}
-              </h3>
-              <p className="text-body-sm mb-6" style={{ color: p.mutedColor }}>
-                {p.keys} keys · €{p.perKey.toFixed(2)} / key
+      {/* Configurator */}
+      <section className="max-w-4xl mx-auto px-6 py-20">
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
+          {/* Left: selectors */}
+          <div className="lg:col-span-3 space-y-8">
+            <div>
+              <p className="text-caption font-semibold uppercase tracking-widest mb-3" style={{ color: '#6B6B6B' }}>
+                1. Group size
               </p>
-              <p className="font-display text-display-lg font-bold mb-1" style={{ color: p.highlight ? '#C4882F' : p.accent }}>
-                €{p.price.toLocaleString('en-EU')}
+              <div className="grid grid-cols-2 gap-3">
+                {GROUP_BANDS.map((b) => (
+                  <button
+                    key={b.band}
+                    onClick={() => setGroupBand(b.band)}
+                    className="text-left px-4 py-3 rounded-xl border-2 transition-colors"
+                    style={{
+                      borderColor: groupBand === b.band ? '#0A0A0A' : '#E5E5E5',
+                      background: groupBand === b.band ? '#0A0A0A' : '#FFFFFF',
+                    }}
+                  >
+                    <p className="text-body-md font-semibold" style={{ color: groupBand === b.band ? '#FFFFFF' : '#0A0A0A' }}>
+                      {b.label}
+                    </p>
+                    <p className="text-caption" style={{ color: groupBand === b.band ? '#CCCCCC' : '#6B6B6B' }}>
+                      {b.guestRange}
+                    </p>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <p className="text-caption font-semibold uppercase tracking-widest mb-3" style={{ color: '#6B6B6B' }}>
+                2. Membership length
               </p>
-              <p className="text-caption mb-8" style={{ color: p.mutedColor }}>
-                one-time payment
+              <div className="grid grid-cols-3 gap-3">
+                {MEMBERSHIP_DURATIONS.map((d) => (
+                  <button
+                    key={d.weeks}
+                    onClick={() => setWeeks(d.weeks)}
+                    className="text-left px-4 py-3 rounded-xl border-2 transition-colors"
+                    style={{
+                      borderColor: weeks === d.weeks ? '#0A0A0A' : '#E5E5E5',
+                      background: weeks === d.weeks ? '#0A0A0A' : '#FFFFFF',
+                    }}
+                  >
+                    <p className="text-body-md font-semibold" style={{ color: weeks === d.weeks ? '#FFFFFF' : '#0A0A0A' }}>
+                      {d.label}
+                    </p>
+                    <p className="text-caption" style={{ color: weeks === d.weeks ? '#CCCCCC' : '#6B6B6B' }}>
+                      {d.days} keys
+                    </p>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="p-4 rounded-xl" style={{ background: '#F5F5F5', border: '1px solid #E5E5E5' }}>
+              <p className="text-body-sm" style={{ color: '#1A1A1A' }}>
+                <strong>Your group size is a baseline, not a ceiling.</strong> If the exact size you booked isn't available,
+                we place you in a larger home at no extra cost — think of it like an airline upgrading an overbooked seat.
+                You're never charged more, and you're never turned away.
               </p>
-              <ul className="space-y-3 mb-8 flex-1">
-                {p.perks.map((perk) => (
+            </div>
+          </div>
+
+          {/* Right: live quote */}
+          <div className="lg:col-span-2">
+            <div className="rounded-2xl p-6 sticky top-24" style={{ background: '#0A0A0A' }}>
+              <p className="text-caption font-semibold uppercase tracking-widest mb-2" style={{ color: '#C4882F' }}>
+                {quote.groupBand.label} guests · {quote.duration.label}
+              </p>
+              <p className="font-display text-display-lg font-bold mb-1" style={{ color: '#FFFFFF' }}>
+                €{quote.price.toLocaleString('en-EU')}
+              </p>
+              <p className="text-caption mb-6" style={{ color: '#CCCCCC' }}>
+                one-time payment · €{quote.pricePerDay}/day
+              </p>
+
+              <div className="flex items-center gap-2 mb-6 p-3 rounded-lg" style={{ background: 'rgba(255,255,255,0.08)' }}>
+                <span className="text-heading-md font-bold" style={{ color: '#C4882F' }}>{quote.days}</span>
+                <span className="text-body-sm" style={{ color: '#EFEFEF' }}>
+                  keys — spend them as 1 night now, 5 next month, however you like, at any home in the Club
+                </span>
+              </div>
+
+              <ul className="space-y-2.5 mb-6">
+                {quote.duration.perks.map((perk) => (
                   <li key={perk} className="flex items-start gap-2">
-                    <CheckIcon className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: p.highlight ? '#C4882F' : '#0A0A0A' }} />
-                    <span className="text-body-sm" style={{ color: p.perkColor }}>{perk}</span>
+                    <CheckIcon className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: '#C4882F' }} />
+                    <span className="text-body-sm" style={{ color: '#EFEFEF' }}>{perk}</span>
                   </li>
                 ))}
               </ul>
+
               <Button
                 size="md"
                 fullWidth
                 onClick={() => navigate('/auth/signup')}
-                style={
-                  p.highlight
-                    ? { background: '#C4882F', color: '#0A0A0A', border: 'none', fontWeight: 700 }
-                    : { background: 'transparent', color: '#0A0A0A', border: '1.5px solid #0A0A0A' }
-                }
+                style={{ background: '#C4882F', color: '#0A0A0A', border: 'none', fontWeight: 700 }}
               >
-                Choose this plan
+                Choose this membership
               </Button>
             </div>
-          ))}
+          </div>
         </div>
       </section>
 
-      {/* Keys required per home tier */}
+      {/* How keys work */}
       <section style={{ background: '#F5F5F5', borderTop: '1px solid #E5E5E5' }} className="py-16">
         <div className="max-w-3xl mx-auto px-6">
-          <h2 className="font-display text-heading-xl font-bold text-center mb-3" style={{ color: '#0A0A0A' }}>
-            How many keys per home?
+          <h2 className="font-display text-heading-xl font-bold text-center mb-8" style={{ color: '#0A0A0A' }}>
+            How your keys work
           </h2>
-          <p className="text-body-sm text-center mb-8" style={{ color: '#6B6B6B' }}>
-            Each home has a fixed key requirement — the same all year round.
-          </p>
-          <div className="rounded-2xl overflow-hidden" style={{ border: '1px solid #E5E5E5' }}>
-            <table className="w-full">
-              <thead>
-                <tr style={{ background: '#EFEFEF', borderBottom: '1px solid #E5E5E5' }}>
-                  <th className="text-left px-6 py-4 text-body-sm font-semibold" style={{ color: '#0A0A0A' }}>Tier</th>
-                  <th className="text-left px-6 py-4 text-body-sm font-semibold" style={{ color: '#0A0A0A' }}>Keys required</th>
-                  <th className="text-left px-6 py-4 text-body-sm font-semibold" style={{ color: '#0A0A0A' }}>Examples</th>
-                </tr>
-              </thead>
-              <tbody>
-                {HOMES_TABLE.map(({ tier, keys, examples }) => (
-                  <tr key={tier} style={{ borderBottom: '1px solid #E5E5E5', background: '#FFFFFF' }}>
-                    <td className="px-6 py-4 text-body-sm font-semibold" style={{ color: '#0A0A0A' }}>{tier}</td>
-                    <td className="px-6 py-4 text-body-sm font-bold" style={{ color: '#C4882F' }}>{keys}</td>
-                    <td className="px-6 py-4 text-body-sm" style={{ color: '#6B6B6B' }}>{examples}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-          <div className="mt-4 p-4 rounded-xl" style={{ background: '#EFEFEF', border: '1px solid #E5E5E5' }}>
-            <p className="text-body-sm" style={{ color: '#1A1A1A' }}>
-              <strong>Consistency:</strong> A home's key requirement never changes with the season — the same number of keys in November as in July. Stay 7 nights or more and your household's keys stretch 10–15% further. This is membership, not a rental — there's no dynamic pricing, ever.
-            </p>
+          <div className="space-y-4">
+            {[
+              { n: '1', text: '1 key = 1 night, at any home in the Club. There is no per-property rate and no seasonal pricing — a key is worth exactly the same everywhere, all year round.' },
+              { n: '2', text: 'Your keys don\'t expire and don\'t have to be used in one trip. Spend 1 night now and 5 next month, splitting your balance across as many stays and homes as you like.' },
+              { n: '3', text: 'Your group size sets your starting price, not a hard limit on which homes you can pick. It\'s membership, not a rental — there\'s nothing to game.' },
+            ].map(({ n, text }) => (
+              <div key={n} className="flex gap-4 p-5 rounded-card text-left" style={{ background: '#FFFFFF', border: '1px solid #E5E5E5' }}>
+                <span className="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-caption font-bold" style={{ background: '#0A0A0A', color: '#FFFFFF' }}>{n}</span>
+                <p className="text-body-sm" style={{ color: '#0A0A0A' }}>{text}</p>
+              </div>
+            ))}
           </div>
         </div>
       </section>

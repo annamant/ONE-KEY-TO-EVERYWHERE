@@ -27,7 +27,6 @@ function rowToProp(row: Record<string, unknown>) {
     sleeps: row.sleeps,
     bedrooms: row.bedrooms,
     bathrooms: row.bathrooms,
-    keysPerNight: row.keys_per_night,
     minStay: row.min_stay,
     maxStay: row.max_stay,
     tier: row.tier,
@@ -84,14 +83,12 @@ router.get('/', authenticate, (req, res, next) => {
       return
     }
 
-    const { region, sleeps, maxKeys, minKeys, query, amenities, checkIn, checkOut } = req.query as Record<string, string | undefined>
+    const { region, sleeps, query, amenities, checkIn, checkOut } = req.query as Record<string, string | undefined>
     let sql = "SELECT * FROM properties WHERE status = 'approved'"
     const params: unknown[] = []
 
-    if (region)  { sql += ' AND region = ?';              params.push(region) }
-    if (sleeps)  { sql += ' AND sleeps >= ?';             params.push(Number(sleeps)) }
-    if (maxKeys) { sql += ' AND keys_per_night <= ?';     params.push(Number(maxKeys)) }
-    if (minKeys) { sql += ' AND keys_per_night >= ?';     params.push(Number(minKeys)) }
+    if (region)  { sql += ' AND region = ?';  params.push(region) }
+    if (sleeps)  { sql += ' AND sleeps >= ?'; params.push(Number(sleeps)) }
     if (query) {
       const q = `%${query.toLowerCase()}%`
       sql += ' AND (lower(title) LIKE ? OR lower(city) LIKE ? OR lower(country) LIKE ? OR lower(description) LIKE ?)'
@@ -130,16 +127,16 @@ router.post('/', authenticate, requireRole('owner', 'admin'), (req, res, next) =
     db.prepare(`
       INSERT INTO properties
         (id,owner_id,title,slug,description,region,country,city,address,latitude,longitude,
-         sleeps,bedrooms,bathrooms,keys_per_night,min_stay,max_stay,tier,status,amenities,
+         sleeps,bedrooms,bathrooms,min_stay,max_stay,tier,status,amenities,
          house_rules,cover_image,images,blackout_dates,listing_quality_score,total_bookings,
          created_at,updated_at)
-      VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+      VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
     `).run(
       id, req.user!.userId,
       body.title, body.slug ?? id, body.description,
       body.region, body.country, body.city, body.address,
       body.latitude, body.longitude,
-      body.sleeps, body.bedrooms, body.bathrooms, body.keysPerNight,
+      body.sleeps, body.bedrooms, body.bathrooms,
       body.minStay ?? 1, body.maxStay ?? 30, body.tier,
       'pending_approval',
       JSON.stringify(body.amenities ?? []),
@@ -199,7 +196,7 @@ router.patch('/:id', authenticate, requireRole('owner', 'admin'), (req, res, nex
       region: 'region', country: 'country', city: 'city', address: 'address',
       latitude: 'latitude', longitude: 'longitude',
       sleeps: 'sleeps', bedrooms: 'bedrooms', bathrooms: 'bathrooms',
-      keysPerNight: 'keys_per_night', minStay: 'min_stay', maxStay: 'max_stay',
+      minStay: 'min_stay', maxStay: 'max_stay',
       tier: 'tier', coverImage: 'cover_image',
     }
     const jsonFields: Record<string, string> = {

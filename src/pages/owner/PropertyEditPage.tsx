@@ -34,7 +34,6 @@ export function PropertyEditPage() {
   const [bedrooms, setBedrooms] = useState('2')
   const [bathrooms, setBathrooms] = useState('1')
   const [tier, setTier] = useState<PropertyTier>('premium')
-  const [keysPerNight, setKeysPerNight] = useState('4')
   const [amenities, setAmenities] = useState<string[]>([])
   const [houseRules, setHouseRules] = useState('')
   const [minStay, setMinStay] = useState('2')
@@ -50,7 +49,6 @@ export function PropertyEditPage() {
       setBedrooms(String(property.bedrooms))
       setBathrooms(String(property.bathrooms))
       setTier(property.tier)
-      setKeysPerNight(String(property.keysPerNight))
       setAmenities(property.amenities)
       setHouseRules(property.houseRules.join('\n'))
       setMinStay(String(property.minStay))
@@ -97,7 +95,7 @@ export function PropertyEditPage() {
         title, description,
         sleeps: parseInt(sleeps), bedrooms: parseInt(bedrooms),
         bathrooms: parseInt(bathrooms), tier,
-        keysPerNight: parseInt(keysPerNight), amenities,
+        amenities,
         houseRules: houseRules.split('\n').filter(Boolean),
         minStay: parseInt(minStay), maxStay: parseInt(maxStay),
       })
@@ -146,20 +144,15 @@ export function PropertyEditPage() {
         <FormField label="Description">
           <Textarea value={description} onChange={(e) => setDescription(e.target.value)} rows={4} />
         </FormField>
-        <div className="grid grid-cols-2 gap-4">
-          <FormField label="Tier">
-            <Select value={tier} onChange={(e) => setTier(e.target.value as PropertyTier)}
-              options={[
-                { value: 'standard', label: 'Standard' },
-                { value: 'premium', label: 'Premium' },
-                { value: 'luxury', label: 'Luxury' },
-              ]}
-            />
-          </FormField>
-          <FormField label="Key rate">
-            <Input type="number" min="1" value={keysPerNight} onChange={(e) => setKeysPerNight(e.target.value)} />
-          </FormField>
-        </div>
+        <FormField label="Tier">
+          <Select value={tier} onChange={(e) => setTier(e.target.value as PropertyTier)}
+            options={[
+              { value: 'standard', label: 'Standard' },
+              { value: 'premium', label: 'Premium' },
+              { value: 'luxury', label: 'Luxury' },
+            ]}
+          />
+        </FormField>
         <div className="grid grid-cols-3 gap-3">
           <FormField label="Sleeps">
             <Input type="number" min="1" value={sleeps} onChange={(e) => setSleeps(e.target.value)} />

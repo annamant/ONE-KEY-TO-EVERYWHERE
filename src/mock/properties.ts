@@ -12,12 +12,6 @@ const mockProperties = {
     if (filters?.sleeps) {
       results = results.filter((p) => p.sleeps >= (filters.sleeps ?? 1))
     }
-    if (filters?.maxKeys) {
-      results = results.filter((p) => p.keysPerNight <= (filters.maxKeys ?? 999))
-    }
-    if (filters?.minKeys) {
-      results = results.filter((p) => p.keysPerNight >= (filters.minKeys ?? 0))
-    }
     if (filters?.query) {
       const q = filters.query.toLowerCase()
       results = results.filter(

@@ -33,7 +33,6 @@ interface FormData {
   bedrooms: string
   bathrooms: string
   tier: PropertyTier
-  keysPerNight: string
   minStay: string
   maxStay: string
   amenities: string[]
@@ -43,7 +42,7 @@ interface FormData {
 
 const initialForm: FormData = {
   title: '', description: '', region: '', country: '', city: '', address: '',
-  sleeps: '4', bedrooms: '2', bathrooms: '1', tier: 'premium', keysPerNight: '4',
+  sleeps: '4', bedrooms: '2', bathrooms: '1', tier: 'premium',
   minStay: '2', maxStay: '14', amenities: [], houseRules: '', images: [],
 }
 
@@ -98,7 +97,6 @@ export function PropertyOnboardPage() {
         bedrooms: parseInt(form.bedrooms),
         bathrooms: parseInt(form.bathrooms),
         tier: form.tier,
-        keysPerNight: parseInt(form.keysPerNight),
         amenities: form.amenities,
         houseRules: form.houseRules.split('\n').filter(Boolean),
         coverImage: imageUrls[0] ?? '',
@@ -168,9 +166,9 @@ export function PropertyOnboardPage() {
                 />
               </FormField>
             </div>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-              {(['sleeps', 'bedrooms', 'bathrooms', 'keysPerNight'] as const).map((f) => (
-                <FormField key={f} label={f === 'keysPerNight' ? 'Key rate' : f.charAt(0).toUpperCase() + f.slice(1)} required={f === 'sleeps'}>
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+              {(['sleeps', 'bedrooms', 'bathrooms'] as const).map((f) => (
+                <FormField key={f} label={f.charAt(0).toUpperCase() + f.slice(1)} required={f === 'sleeps'}>
                   <Input type="number" min="1" value={form[f]} onChange={(e) => set(f, e.target.value)} />
                 </FormField>
               ))}
@@ -262,7 +260,6 @@ export function PropertyOnboardPage() {
                 { label: 'Location', value: `${form.city}, ${form.country}` },
                 { label: 'Sleeps', value: form.sleeps },
                 { label: 'Bedrooms', value: form.bedrooms },
-                { label: 'Key rate', value: form.keysPerNight },
                 { label: 'Tier', value: form.tier },
                 { label: 'Amenities', value: form.amenities.join(', ') || 'None selected' },
               ].map(({ label, value }) => (

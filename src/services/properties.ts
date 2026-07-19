@@ -6,8 +6,6 @@ export const propertyService = {
     const params = new URLSearchParams()
     if (filters?.region)                  params.set('region', filters.region)
     if (filters?.sleeps)                  params.set('sleeps', String(filters.sleeps))
-    if (filters?.maxKeys)                 params.set('maxKeys', String(filters.maxKeys))
-    if (filters?.minKeys)                 params.set('minKeys', String(filters.minKeys))
     if (filters?.query)                   params.set('query', filters.query)
     if (filters?.amenities?.length)       params.set('amenities', filters.amenities!.join(','))
     if (filters?.checkIn)                 params.set('checkIn', filters.checkIn)

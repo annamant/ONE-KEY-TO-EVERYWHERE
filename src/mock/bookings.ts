@@ -54,7 +54,6 @@ const mockBookings = {
     if (!property) throw new Error('Property not found')
 
     const { total: keysCharged, nights } = calculateKeyCost(
-      property,
       params.checkIn,
       params.checkOut
     )
@@ -157,7 +156,6 @@ const mockBookings = {
     if (!property) throw new Error('Property not found')
 
     const { total: newKeysCharged, nights: newNights } = calculateKeyCost(
-      property,
       newDates.checkIn,
       newDates.checkOut
     )

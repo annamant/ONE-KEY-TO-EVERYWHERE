@@ -106,21 +106,9 @@ export function BookingCheckoutPage() {
         <h3 className="text-body-md font-semibold text-text-primary mb-4">Key Cost Breakdown</h3>
         <div className="space-y-3">
           <div className="flex justify-between text-body-sm">
-            <span className="text-text-muted">{state.cost.baseKeysPerNight} keys × {state.cost.nights} days</span>
-            <span>{state.cost.baseKeysPerNight * state.cost.nights} keys</span>
+            <span className="text-text-muted">{state.cost.nights} nights × 1 key</span>
+            <span>{state.cost.total} keys</span>
           </div>
-          {state.cost.seasonalMultiplier < 1 && (
-            <div className="flex justify-between text-body-sm text-success">
-              <span>Off-season discount ({Math.round((1 - state.cost.seasonalMultiplier) * 100)}% off)</span>
-              <span>−{Math.round(state.cost.baseKeysPerNight * state.cost.nights * (1 - state.cost.seasonalMultiplier))} keys</span>
-            </div>
-          )}
-          {state.cost.longStayMultiplier < 1 && (
-            <div className="flex justify-between text-body-sm text-success">
-              <span>Extended access discount ({Math.round((1 - state.cost.longStayMultiplier) * 100)}% off)</span>
-              <span>−{Math.round(state.cost.baseKeysPerNight * state.cost.nights * (1 - state.cost.longStayMultiplier))} keys</span>
-            </div>
-          )}
           <div className="border-t border-border pt-3 flex justify-between text-body-md font-semibold">
             <span>Total keys charged</span>
             <span className="text-okte-gold-700 flex items-center gap-1">
