@@ -20,7 +20,8 @@ export function PublicFooter() {
             <h4 className="font-semibold text-body-sm mb-4" style={{ color: '#FFFFFF' }}>The Club</h4>
             <ul className="space-y-2 text-body-sm">
               <li><Link to="/how-it-works" className="transition-colors hover:text-white">How It Works</Link></li>
-              <li><Link to="/waitlist" className="transition-colors hover:text-white">Apply to Join</Link></li>
+              <li><Link to="/pricing" className="transition-colors hover:text-white">Pricing</Link></li>
+              <li><Link to="/waitlist" className="transition-colors hover:text-white">Apply</Link></li>
             </ul>
           </div>
           <div>

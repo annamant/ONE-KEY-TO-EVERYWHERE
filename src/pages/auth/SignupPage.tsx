@@ -1,15 +1,23 @@
 import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '@/contexts/AuthContext'
 import { useToast } from '@/contexts/ToastContext'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
 import { FormField } from '@/components/forms/FormField'
 
+function safeReturnPath(pathname?: string) {
+  if (!pathname || !pathname.startsWith('/') || pathname.startsWith('//')) return null
+  return pathname
+}
+
 export function SignupPage() {
   const { signup } = useAuth()
   const { toast } = useToast()
   const navigate = useNavigate()
+  const location = useLocation()
+  const from = safeReturnPath((location.state as { from?: { pathname: string } })?.from?.pathname)
+  const fromPricing = from === '/pricing'
 
   const [form, setForm] = useState({
     firstName: '',
@@ -51,7 +59,7 @@ export function SignupPage() {
         role: 'member',
       })
       toast('Check your inbox to confirm your email, then we’ll review your membership.', 'success')
-      navigate('/member/pending', { replace: true })
+      navigate(from ?? '/member/pending', { replace: true })
     } catch (err) {
       setErrors({ form: err instanceof Error ? err.message : 'Signup failed' })
     } finally {
@@ -67,7 +75,11 @@ export function SignupPage() {
             <span className="text-accent font-bold text-heading-md">K</span>
           </div>
           <h1 className="text-heading-xl text-text-primary font-semibold">Apply for membership</h1>
-          <p className="text-body-sm text-text-muted mt-1">Create your Club member account</p>
+          <p className="text-body-sm text-text-muted mt-1">
+            {fromPricing
+              ? 'Create your account to view Club pricing'
+              : 'Create your Club member account'}
+          </p>
         </div>
 
         <div className="bg-surface rounded-card shadow-card p-6">
@@ -118,7 +130,13 @@ export function SignupPage() {
 
         <p className="text-center text-body-sm text-text-muted mt-6">
           Already have an account?{' '}
-          <Link to="/auth/login" className="text-primary hover:underline font-medium">Sign in</Link>
+          <Link
+            to="/auth/login"
+            state={from ? { from: { pathname: from } } : undefined}
+            className="text-primary hover:underline font-medium"
+          >
+            Sign in
+          </Link>
         </p>
       </div>
     </div>

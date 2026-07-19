@@ -128,7 +128,11 @@ export function LoginPage() {
         {!suspended && (
           <p className="text-center text-body-sm text-text-muted mt-6">
             Don't have an account?{' '}
-            <Link to="/auth/signup" className="text-primary hover:underline font-medium">
+            <Link
+              to="/auth/signup"
+              state={from ? { from: { pathname: from } } : undefined}
+              className="text-primary hover:underline font-medium"
+            >
               Sign up
             </Link>
           </p>

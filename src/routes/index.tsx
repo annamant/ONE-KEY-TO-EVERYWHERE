@@ -65,7 +65,14 @@ import { AdminRequestsPage } from '@/pages/admin/RequestsPage'
 export const router = createBrowserRouter([
   { path: '/', element: <LandingPage /> },
   { path: '/how-it-works', element: <HowItWorksPage /> },
-  { path: '/pricing', element: <PricingPage /> },
+  {
+    path: '/pricing',
+    element: (
+      <RequireAuth redirectTo="/auth/signup">
+        <PricingPage />
+      </RequireAuth>
+    ),
+  },
   { path: '/waitlist', element: <WaitlistPage /> },
   { path: '/open-doors', element: <OpenDoorsPage /> },
   {

@@ -1,13 +1,13 @@
-import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { useEffect, useId, useState } from 'react'
+import { Link, useLocation } from 'react-router-dom'
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
 import { useAuth } from '@/contexts/AuthContext'
-import { Button } from '@/components/ui/Button'
+import { cn } from '@/utils/classNames'
 
 const links = [
   { label: 'How It Works', path: '/how-it-works' },
   { label: 'Open Your Doors', path: '/open-doors' },
-  { label: 'Apply', path: '/waitlist' },
+  { label: 'Pricing', path: '/pricing' },
 ]
 
 interface PublicNavProps {
@@ -16,143 +16,219 @@ interface PublicNavProps {
 
 export function PublicNav({ transparent = false }: PublicNavProps) {
   const { currentUser } = useAuth()
-  const navigate = useNavigate()
+  const { pathname } = useLocation()
   const [mobileOpen, setMobileOpen] = useState(false)
+  const menuId = useId()
 
   const dashboardPath = currentUser ? `/${currentUser.role}/dashboard` : '/auth/login'
+  // When the mobile sheet is open, always use a solid surface for contrast.
+  const overlayMode = transparent && !mobileOpen
 
-  const headerStyle = transparent
-    ? { background: 'transparent', borderBottom: 'none' }
-    : { background: 'rgba(255,255,255,0.96)', borderBottom: '1px solid #E5E5E5' }
+  useEffect(() => {
+    if (!mobileOpen) return
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setMobileOpen(false)
+    }
+    window.addEventListener('keydown', onKeyDown)
+    return () => window.removeEventListener('keydown', onKeyDown)
+  }, [mobileOpen])
 
-  const logoColor = transparent ? '#FFFFFF' : '#0A0A0A'
-  const linkColor = transparent ? 'rgba(255,255,255,0.75)' : '#6B6B6B'
-  const linkHoverColor = transparent ? '#FFFFFF' : '#0A0A0A'
+  useEffect(() => {
+    setMobileOpen(false)
+  }, [pathname])
+
+  const navLinkClass = (path: string) =>
+    cn(
+      'text-caption font-semibold uppercase tracking-[0.1em] transition-colors',
+      'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 rounded-sm',
+      overlayMode
+        ? cn(
+            'focus-visible:ring-white/50',
+            pathname === path ? 'text-white' : 'text-white/75 hover:text-white',
+          )
+        : cn(
+            'focus-visible:ring-primary/40',
+            pathname === path ? 'text-primary' : 'text-text-muted hover:text-primary',
+          ),
+    )
+
+  const signInClass = cn(
+    'text-caption font-semibold uppercase tracking-[0.1em] transition-colors',
+    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 rounded-sm',
+    overlayMode
+      ? 'text-white/75 hover:text-white focus-visible:ring-white/50'
+      : 'text-text-muted hover:text-primary focus-visible:ring-primary/40',
+  )
+
+  const applyClass = cn(
+    'inline-flex items-center justify-center text-caption font-semibold uppercase tracking-[0.1em]',
+    'px-4 py-2 rounded transition-opacity hover:opacity-90',
+    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2',
+    overlayMode
+      ? 'bg-white text-primary focus-visible:ring-white/50'
+      : 'bg-primary text-white focus-visible:ring-primary/40',
+  )
+
+  const dashboardClass = cn(
+    'inline-flex items-center justify-center text-caption font-semibold uppercase tracking-[0.1em]',
+    'px-4 py-2 rounded transition-opacity hover:opacity-90',
+    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2',
+    overlayMode
+      ? 'bg-white/15 text-white border border-white/40 backdrop-blur-sm focus-visible:ring-white/50'
+      : 'bg-primary text-white focus-visible:ring-primary/40',
+  )
+
+  const headerSurface = overlayMode
+    ? 'absolute top-0 left-0 right-0 bg-transparent'
+    : transparent && mobileOpen
+      ? 'absolute top-0 left-0 right-0 border-b border-white/15 bg-okte-gray-900'
+      : 'sticky top-0 border-b border-border bg-white/96 backdrop-blur-sm'
 
   return (
-    <header
-      className={transparent ? 'absolute top-0 left-0 right-0 z-30' : 'sticky top-0 z-30 backdrop-blur'}
-      style={headerStyle}
-    >
+    <header className={cn('z-30', headerSurface)}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          {/* Logo */}
-          <Link to="/" className="flex items-center gap-3">
+          <Link
+            to="/"
+            className="flex items-center gap-3 rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary/40"
+          >
             <div
-              className="w-8 h-8 rounded-lg flex items-center justify-center"
-              style={{ background: transparent ? 'rgba(196,136,47,0.9)' : '#0A0A0A' }}
+              className={cn(
+                'w-8 h-8 rounded-lg flex items-center justify-center',
+                overlayMode || (transparent && mobileOpen) ? 'bg-accent' : 'bg-primary',
+              )}
             >
-              <span className="font-bold text-body-sm" style={{ color: transparent ? '#0A0A0A' : '#C4882F' }}>K</span>
+              <span
+                className={cn(
+                  'font-bold text-body-sm',
+                  overlayMode || (transparent && mobileOpen) ? 'text-primary' : 'text-accent',
+                )}
+              >
+                K
+              </span>
             </div>
             <span
-              className="font-bold text-body-sm tracking-wide uppercase"
-              style={{ color: logoColor, letterSpacing: '0.08em' }}
+              className={cn(
+                'font-bold text-body-sm tracking-[0.08em] uppercase',
+                overlayMode || (transparent && mobileOpen) ? 'text-white' : 'text-primary',
+              )}
             >
               One Key
             </span>
           </Link>
 
-          {/* Desktop nav */}
-          <nav className="hidden md:flex items-center gap-7">
+          <nav className="hidden md:flex items-center gap-7" aria-label="Primary">
             {links.map((l) => (
-              <Link
-                key={l.path}
-                to={l.path}
-                className="text-caption font-semibold uppercase tracking-wider transition-colors"
-                style={{ color: linkColor, letterSpacing: '0.1em' }}
-                onMouseEnter={(e) => (e.currentTarget.style.color = linkHoverColor)}
-                onMouseLeave={(e) => (e.currentTarget.style.color = linkColor)}
-              >
+              <Link key={l.path} to={l.path} className={navLinkClass(l.path)} aria-current={pathname === l.path ? 'page' : undefined}>
                 {l.label}
               </Link>
             ))}
           </nav>
 
-          {/* CTA */}
           <div className="hidden md:flex items-center gap-3">
             {currentUser ? (
-              <Button
-                onClick={() => navigate(dashboardPath)}
-                size="sm"
-                style={
-                  transparent
-                    ? { background: 'rgba(255,255,255,0.15)', color: '#FFFFFF', border: '1px solid rgba(255,255,255,0.4)', backdropFilter: 'blur(4px)' }
-                    : { background: '#0A0A0A', color: '#FFFFFF', border: 'none' }
-                }
-              >
+              <Link to={dashboardPath} className={dashboardClass}>
                 Dashboard
-              </Button>
+              </Link>
             ) : (
               <>
-                <button
-                  onClick={() => navigate('/auth/login')}
-                  className="text-caption font-semibold uppercase tracking-wider transition-colors"
-                  style={{ color: linkColor, letterSpacing: '0.1em', background: 'none', border: 'none', cursor: 'pointer' }}
-                  onMouseEnter={(e) => (e.currentTarget.style.color = linkHoverColor)}
-                  onMouseLeave={(e) => (e.currentTarget.style.color = linkColor)}
-                >
+                <Link to="/auth/login" className={signInClass}>
                   Sign In
-                </button>
-                <button
-                  onClick={() => navigate('/auth/signup')}
-                  className="text-caption font-semibold uppercase tracking-wider px-4 py-2 rounded transition-colors"
-                  style={
-                    transparent
-                      ? { color: '#0A0A0A', border: 'none', background: '#FFFFFF', cursor: 'pointer', letterSpacing: '0.1em' }
-                      : { color: '#FFFFFF', border: 'none', background: '#0A0A0A', cursor: 'pointer', letterSpacing: '0.1em' }
-                  }
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.opacity = '0.9'
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.opacity = '1'
-                  }}
-                >
-                  Sign Up
-                </button>
+                </Link>
+                <Link to="/waitlist" className={applyClass}>
+                  Apply
+                </Link>
               </>
             )}
           </div>
 
-          {/* Mobile toggle */}
           <button
-            onClick={() => setMobileOpen(!mobileOpen)}
-            className="md:hidden p-2 rounded-lg"
-            style={{ color: transparent ? '#FFFFFF' : '#6B6B6B' }}
+            type="button"
+            onClick={() => setMobileOpen((open) => !open)}
+            className={cn(
+              'md:hidden p-2 rounded-lg transition-colors',
+              'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2',
+              overlayMode || (transparent && mobileOpen)
+                ? 'text-white focus-visible:ring-white/50'
+                : 'text-text-muted focus-visible:ring-primary/40',
+            )}
+            aria-expanded={mobileOpen}
+            aria-controls={menuId}
+            aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
           >
             {mobileOpen ? <XMarkIcon className="w-5 h-5" /> : <Bars3Icon className="w-5 h-5" />}
           </button>
         </div>
       </div>
 
-      {/* Mobile menu */}
       {mobileOpen && (
         <div
-          className="md:hidden px-4 pb-4 space-y-1"
-          style={{ borderTop: '1px solid rgba(255,255,255,0.15)', background: transparent ? 'rgba(10,10,10,0.97)' : '#FFFFFF' }}
+          id={menuId}
+          className={cn(
+            'md:hidden px-4 pb-4 space-y-1 border-t',
+            transparent ? 'border-white/15 bg-okte-gray-900' : 'border-border bg-white',
+          )}
         >
-          {links.map((l) => (
-            <Link
-              key={l.path}
-              to={l.path}
-              onClick={() => setMobileOpen(false)}
-              className="block px-3 py-2 text-caption font-semibold uppercase tracking-wider rounded-lg"
-              style={{ color: transparent ? '#FFFFFF' : '#0A0A0A', letterSpacing: '0.1em' }}
-            >
-              {l.label}
-            </Link>
-          ))}
-          <div className="pt-2 space-y-2" style={{ borderTop: '1px solid rgba(255,255,255,0.15)' }}>
-            <Button variant="outline" fullWidth onClick={() => { navigate('/auth/login'); setMobileOpen(false) }}
-              style={transparent ? { borderColor: '#FFFFFF', color: '#FFFFFF' } : {}}
-            >
-              Sign In
-            </Button>
-            <Button fullWidth onClick={() => { navigate('/auth/signup'); setMobileOpen(false) }}
-              style={{ background: '#0A0A0A', color: '#FFFFFF', border: 'none' }}
-            >
-              Sign Up
-            </Button>
+          <nav aria-label="Mobile primary" className="space-y-1">
+            {links.map((l) => (
+              <Link
+                key={l.path}
+                to={l.path}
+                className={cn(
+                  'block px-3 py-2 text-caption font-semibold uppercase tracking-[0.1em] rounded-lg transition-colors',
+                  'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2',
+                  transparent
+                    ? cn(
+                        'focus-visible:ring-white/50',
+                        pathname === l.path ? 'text-white bg-white/10' : 'text-white/85 hover:bg-white/5',
+                      )
+                    : cn(
+                        'focus-visible:ring-primary/40',
+                        pathname === l.path ? 'text-primary bg-okte-gray-50' : 'text-primary hover:bg-okte-gray-50',
+                      ),
+                )}
+                aria-current={pathname === l.path ? 'page' : undefined}
+              >
+                {l.label}
+              </Link>
+            ))}
+          </nav>
+
+          <div className={cn('pt-2 space-y-2 border-t', transparent ? 'border-white/15' : 'border-border')}>
+            {currentUser ? (
+              <Link
+                to={dashboardPath}
+                className={cn(
+                  'flex w-full items-center justify-center text-caption font-semibold uppercase tracking-[0.1em] px-4 py-2.5 rounded',
+                  transparent ? 'bg-white text-primary' : 'bg-primary text-white',
+                )}
+              >
+                Dashboard
+              </Link>
+            ) : (
+              <>
+                <Link
+                  to="/auth/login"
+                  className={cn(
+                    'flex w-full items-center justify-center text-caption font-semibold uppercase tracking-[0.1em] px-4 py-2.5 rounded border transition-colors',
+                    transparent
+                      ? 'border-white text-white hover:bg-white/5'
+                      : 'border-border text-primary hover:bg-okte-gray-50',
+                  )}
+                >
+                  Sign In
+                </Link>
+                <Link
+                  to="/waitlist"
+                  className={cn(
+                    'flex w-full items-center justify-center text-caption font-semibold uppercase tracking-[0.1em] px-4 py-2.5 rounded',
+                    transparent ? 'bg-white text-primary' : 'bg-primary text-white',
+                  )}
+                >
+                  Apply
+                </Link>
+              </>
+            )}
           </div>
         </div>
       )}
