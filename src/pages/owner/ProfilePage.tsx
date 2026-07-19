@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/Input'
 import { Badge } from '@/components/ui/Badge'
 import { Card } from '@/components/ui/Card'
 import { FormField } from '@/components/forms/FormField'
+import { ChangePasswordCard } from '@/components/forms/ChangePasswordCard'
 import { Divider } from '@/components/ui/Divider'
 import { formatDate } from '@/utils/format'
 
@@ -88,6 +89,8 @@ export function OwnerProfilePage() {
           </div>
         </form>
       </Card>
+
+      <ChangePasswordCard />
 
       <Card>
         <h2 className="text-heading-md text-text-primary font-semibold mb-4">Club Membership</h2>

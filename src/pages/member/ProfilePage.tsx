@@ -9,6 +9,7 @@ import { Input } from '@/components/ui/Input'
 import { Badge } from '@/components/ui/Badge'
 import { Card } from '@/components/ui/Card'
 import { FormField } from '@/components/forms/FormField'
+import { ChangePasswordCard } from '@/components/forms/ChangePasswordCard'
 import { Divider } from '@/components/ui/Divider'
 import { formatDate } from '@/utils/format'
 
@@ -93,6 +94,8 @@ export function MemberProfilePage() {
           </div>
         </form>
       </Card>
+
+      <ChangePasswordCard />
 
       {/* Account actions */}
       <Card>

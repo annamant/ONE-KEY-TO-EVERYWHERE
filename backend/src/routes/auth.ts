@@ -253,6 +253,53 @@ router.post('/reset-password', (req, res, next) => {
   }
 })
 
+// POST /api/auth/change-password — authenticated user changes their own password
+router.post('/change-password', authenticate, (req, res, next) => {
+  try {
+    const { currentPassword, newPassword } = req.body as {
+      currentPassword?: string
+      newPassword?: string
+    }
+    if (!currentPassword || !newPassword) {
+      res.status(400).json({ error: 'currentPassword and newPassword are required' })
+      return
+    }
+    if (newPassword.length < MIN_PASSWORD || newPassword.length > MAX_PASSWORD) {
+      res.status(400).json({
+        error: `Password must be between ${MIN_PASSWORD} and ${MAX_PASSWORD} characters`,
+      })
+      return
+    }
+    if (currentPassword === newPassword) {
+      res.status(400).json({ error: 'New password must be different from your current password' })
+      return
+    }
+
+    const db = getDb()
+    const row = db.prepare('SELECT id, password_hash FROM users WHERE id = ?')
+      .get(req.user!.userId) as { id: string; password_hash: string } | undefined
+    if (!row) {
+      res.status(404).json({ error: 'User not found' })
+      return
+    }
+
+    const valid = bcrypt.compareSync(currentPassword, row.password_hash)
+    if (!valid) {
+      res.status(401).json({ error: 'Current password is incorrect' })
+      return
+    }
+
+    const hash = bcrypt.hashSync(newPassword, 10)
+    const now = new Date().toISOString()
+    db.prepare('UPDATE users SET password_hash = ?, updated_at = ? WHERE id = ?')
+      .run(hash, now, row.id)
+
+    res.json({ ok: true })
+  } catch (e) {
+    next(e)
+  }
+})
+
 // POST /api/auth/verify-email — confirm email address with a token from the email
 router.post('/verify-email', (req, res, next) => {
   try {
