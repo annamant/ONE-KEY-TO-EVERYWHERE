@@ -27,9 +27,10 @@ function rowToUser(row: Record<string, unknown>) {
 
 function creditPackage(db: ReturnType<typeof getDb>, userId: string, units: number, adminId: string, note: string) {
   const settings = getSettings()
-  if (units < settings.minKeys || units > settings.maxKeys) {
+  // Package products include 1-week (7 units); allow any positive credit up to maxKeys.
+  if (!Number.isInteger(units) || units < 1 || units > settings.maxKeys) {
     throw Object.assign(
-      new Error(`Package credit must be between ${settings.minKeys} and ${settings.maxKeys} units`),
+      new Error(`Package credit must be an integer between 1 and ${settings.maxKeys} units`),
       { status: 400 }
     )
   }
@@ -78,15 +79,45 @@ router.get('/requests', authenticate, requireRole('admin'), (req, res, next) => 
       ORDER BY created_at DESC
     `).all() as Record<string, unknown>[]).map(rowToMemberEntry)
 
+    const packageRequests = (db.prepare(`
+      SELECT r.*, u.email, u.first_name, u.last_name, u.status AS user_status
+      FROM package_purchase_requests r
+      JOIN users u ON u.id = r.user_id
+      WHERE r.status = 'pending'
+      ORDER BY r.created_at DESC
+    `).all() as Record<string, unknown>[]).map((row) => ({
+      id: row.id,
+      userId: row.user_id,
+      kind: row.kind,
+      groupBand: row.group_band,
+      weeks: row.weeks ?? null,
+      months: row.months ?? null,
+      units: row.units,
+      priceEur: row.price_eur,
+      label: row.label,
+      status: row.status,
+      adminNote: row.admin_note ?? null,
+      createdAt: row.created_at,
+      updatedAt: row.updated_at,
+      member: {
+        email: row.email,
+        firstName: row.first_name,
+        lastName: row.last_name,
+        status: row.user_status,
+      },
+    }))
+
     res.json({
       pendingMembers,
       ownerWaitlist,
       memberWaitlist,
+      packageRequests,
       counts: {
         pendingMembers: pendingMembers.length,
         ownerWaitlist: ownerWaitlist.length,
         memberWaitlist: memberWaitlist.length,
-        total: pendingMembers.length + ownerWaitlist.length + memberWaitlist.length,
+        packageRequests: packageRequests.length,
+        total: pendingMembers.length + ownerWaitlist.length + memberWaitlist.length + packageRequests.length,
       },
     })
   } catch (e) { next(e) }

@@ -14,11 +14,12 @@ import {
   HomeModernIcon,
   KeyIcon,
   InboxStackIcon,
+  ShoppingBagIcon,
 } from '@heroicons/react/24/outline'
 import { formatDate } from '@/utils/format'
 import type { BadgeColor } from '@/components/ui/Badge'
 
-type Tab = 'membership' | 'owners' | 'waitlist'
+type Tab = 'membership' | 'packages' | 'owners' | 'waitlist'
 
 const waitlistStatusColor: Record<string, BadgeColor> = {
   pending: 'amber',
@@ -78,12 +79,45 @@ export function AdminRequestsPage() {
     }
   }
 
+  const fulfillPackage = async (id: string) => {
+    setActing(id)
+    try {
+      await adminRequestsService.fulfillPackageRequest(id)
+      toast('Payment confirmed — membership credited', 'success')
+      refetch()
+    } catch {
+      toast('Could not credit package', 'error')
+    } finally {
+      setActing(null)
+    }
+  }
+
+  const rejectPackage = async (id: string) => {
+    setActing(id)
+    try {
+      await adminRequestsService.rejectPackageRequest(id)
+      toast('Package request rejected', 'success')
+      refetch()
+    } catch {
+      toast('Could not reject request', 'error')
+    } finally {
+      setActing(null)
+    }
+  }
+
   if (loading) return <PageSpinner />
 
-  const counts = data?.counts ?? { pendingMembers: 0, ownerWaitlist: 0, memberWaitlist: 0, total: 0 }
+  const counts = data?.counts ?? {
+    pendingMembers: 0,
+    ownerWaitlist: 0,
+    memberWaitlist: 0,
+    packageRequests: 0,
+    total: 0,
+  }
 
   const tabs: { id: Tab; label: string; count: number; icon: typeof UsersIcon }[] = [
     { id: 'membership', label: 'Membership applications', count: counts.pendingMembers, icon: KeyIcon },
+    { id: 'packages', label: 'Package purchases', count: counts.packageRequests, icon: ShoppingBagIcon },
     { id: 'owners', label: 'Owner waitlist', count: counts.ownerWaitlist, icon: HomeModernIcon },
     { id: 'waitlist', label: 'Member interest', count: counts.memberWaitlist, icon: UsersIcon },
   ]
@@ -93,7 +127,7 @@ export function AdminRequestsPage() {
       <div className="mb-6">
         <h1 className="text-heading-xl text-text-primary font-semibold">Pending Requests</h1>
         <p className="text-body-sm text-text-muted mt-0.5">
-          {counts.total} open {counts.total === 1 ? 'item' : 'items'} across membership, owner waitlist, and member interest
+          {counts.total} open {counts.total === 1 ? 'item' : 'items'} across applications, packages, and waitlists
         </p>
       </div>
 
@@ -162,6 +196,69 @@ export function AdminRequestsPage() {
                         variant="ghost"
                         size="sm"
                         onClick={() => navigate(`/admin/users/${u.id}`)}
+                      >
+                        View
+                      </Button>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </Card>
+          )}
+        </>
+      )}
+
+      {/* Package purchase requests */}
+      {tab === 'packages' && (
+        <>
+          {(data?.packageRequests ?? []).length === 0 ? (
+            <EmptyState
+              icon={<ShoppingBagIcon className="w-7 h-7" />}
+              heading="No pending package purchases"
+              subtext="When members request a membership package, they appear here for payment confirmation and credit."
+            />
+          ) : (
+            <Card padding="none">
+              <ul>
+                {(data?.packageRequests ?? []).map((req) => (
+                  <li
+                    key={req.id}
+                    className="flex items-center justify-between gap-4 px-5 py-4 border-b border-border last:border-0"
+                  >
+                    <div className="min-w-0">
+                      <p className="text-body-sm font-medium text-text-primary">
+                        {req.member?.firstName} {req.member?.lastName}
+                      </p>
+                      <p className="text-caption text-text-muted truncate">{req.member?.email}</p>
+                      <p className="text-body-sm text-text-primary mt-1">
+                        {req.label} · €{req.priceEur.toLocaleString('en-EU')} · {req.units} units
+                      </p>
+                      <p className="text-caption text-text-muted">
+                        Requested {formatDate(req.createdAt)}
+                        {req.member?.status === 'pending_verification' ? ' · member still pending approval' : ''}
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-2 flex-shrink-0">
+                      <Badge color="amber" size="sm" dot>Awaiting payment</Badge>
+                      <Button
+                        size="sm"
+                        loading={acting === req.id}
+                        onClick={() => fulfillPackage(req.id)}
+                      >
+                        Mark paid & credit
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        loading={acting === req.id}
+                        onClick={() => rejectPackage(req.id)}
+                      >
+                        Reject
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => navigate(`/admin/users/${req.userId}`)}
                       >
                         View
                       </Button>

@@ -158,3 +158,43 @@ export function quoteSeasonPackage(groupBand: GroupBand, months: number): Season
     discountPercent: Math.round(pkg.discount * 100),
   }
 }
+
+/** Stay units credited for a season package (calendar months × ~30 nights). */
+export function seasonPackageUnits(months: number): number {
+  return months * 30
+}
+
+export type PackageKind = 'weeks' | 'season'
+
+/** Selection payload used when a member requests / buys a package. */
+export interface PackageSelection {
+  kind: PackageKind
+  groupBand: GroupBand
+  weeks?: number
+  months?: number
+  units: number
+  price: number
+  label: string
+}
+
+export function selectionFromWeekQuote(quote: MembershipQuote): PackageSelection {
+  return {
+    kind: 'weeks',
+    groupBand: quote.groupBand.band,
+    weeks: quote.duration.weeks,
+    units: quote.duration.units,
+    price: quote.price,
+    label: `${quote.duration.label} · ${quote.groupBand.label} guests`,
+  }
+}
+
+export function selectionFromSeasonQuote(quote: SeasonQuote): PackageSelection {
+  return {
+    kind: 'season',
+    groupBand: quote.groupBand.band,
+    months: quote.package.months,
+    units: seasonPackageUnits(quote.package.months),
+    price: quote.price,
+    label: `${quote.package.label} · ${quote.groupBand.label} guests`,
+  }
+}

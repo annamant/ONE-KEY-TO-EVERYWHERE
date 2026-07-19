@@ -126,9 +126,14 @@ export function BookingCheckoutPage() {
             </div>
           </div>
           {!covered ? (
-            <p className="text-caption text-danger mt-2">
-              Your membership doesn't cover this stay. Choose shorter dates or extend your membership.
-            </p>
+            <div className="mt-3 space-y-3">
+              <p className="text-caption text-danger">
+                Your membership doesn&apos;t cover this stay. Choose shorter dates or buy / extend a membership package.
+              </p>
+              <Button size="sm" onClick={() => navigate('/member/packages')}>
+                View membership packages
+              </Button>
+            </div>
           ) : (
             <p className="text-caption text-text-muted mt-2">
               After this stay: {formatMembershipRemaining(afterBalance).replace(/^A/, 'a').replace('Your m', 'your m')}
@@ -141,14 +146,19 @@ export function BookingCheckoutPage() {
         <Button variant="outline" onClick={() => navigate(-1)} fullWidth>
           Go Back
         </Button>
-        <Button
-          fullWidth
-          disabled={!covered}
-          loading={confirming}
-          onClick={handleConfirm}
-        >
-          Confirm Booking
-        </Button>
+        {!covered ? (
+          <Button fullWidth onClick={() => navigate('/member/packages')}>
+            Get a membership
+          </Button>
+        ) : (
+          <Button
+            fullWidth
+            loading={confirming}
+            onClick={handleConfirm}
+          >
+            Confirm Booking
+          </Button>
+        )}
       </div>
 
       <p className="text-caption text-text-muted text-center mt-3">

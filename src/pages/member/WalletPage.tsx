@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom'
 import { ArrowDownTrayIcon } from '@heroicons/react/24/outline'
 import { SparklesIcon } from '@heroicons/react/24/solid'
 import { useAuth } from '@/contexts/AuthContext'
@@ -27,6 +28,7 @@ const entryConfig: Record<LedgerEntryType, { label: string; color: BadgeColor }>
 
 export function WalletPage() {
   const { currentUser } = useAuth()
+  const navigate = useNavigate()
 
   const { data: wallet, loading: walletLoading } = useMockApi(
     () => mockLedger.getWallet(currentUser!.id),
@@ -40,22 +42,40 @@ export function WalletPage() {
   const remainingPct = wallet
     ? membershipRemainingPercent(wallet.balance, wallet.totalCredited)
     : 0
+  const needsPackage = !walletLoading && (wallet?.balance ?? 0) <= 0
 
   return (
     <div className="page-content">
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-between mb-6 gap-3 flex-wrap">
         <div>
           <h1 className="text-heading-xl text-text-primary font-semibold">Membership</h1>
           <p className="text-body-sm text-text-muted mt-0.5">How much of your membership you still have</p>
         </div>
-        <Button
-          variant="outline"
-          leftIcon={<ArrowDownTrayIcon className="w-4 h-4" />}
-          onClick={() => mockLedger.exportCsv(currentUser!.id)}
-        >
-          Export history
-        </Button>
+        <div className="flex gap-2">
+          <Button onClick={() => navigate('/member/packages')}>
+            {needsPackage ? 'Buy a membership' : 'Extend membership'}
+          </Button>
+          <Button
+            variant="outline"
+            leftIcon={<ArrowDownTrayIcon className="w-4 h-4" />}
+            onClick={() => mockLedger.exportCsv(currentUser!.id)}
+          >
+            Export history
+          </Button>
+        </div>
       </div>
+
+      {needsPackage && (
+        <Card className="mb-6 border border-amber-200 bg-amber-50">
+          <p className="text-body-sm font-medium text-text-primary mb-1">No membership balance yet</p>
+          <p className="text-caption text-text-muted mb-3">
+            Choose a package to request membership. After payment, we credit your account so you can book.
+          </p>
+          <Button size="sm" onClick={() => navigate('/member/packages')}>
+            View packages
+          </Button>
+        </Card>
+      )}
 
       <div className="mb-8">
         {walletLoading ? (

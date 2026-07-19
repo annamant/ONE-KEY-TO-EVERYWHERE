@@ -199,6 +199,28 @@ CREATE TABLE IF NOT EXISTS settings (
   updated_by  TEXT REFERENCES users(id)
 );
 
+-- Member package purchase requests (pre-Stripe manual payment workflow)
+CREATE TABLE IF NOT EXISTS package_purchase_requests (
+  id           TEXT PRIMARY KEY,
+  user_id      TEXT NOT NULL REFERENCES users(id),
+  kind         TEXT NOT NULL CHECK(kind IN ('weeks','season')),
+  group_band   TEXT NOT NULL,
+  weeks        INTEGER,
+  months       INTEGER,
+  units        INTEGER NOT NULL,
+  price_eur    INTEGER NOT NULL,
+  label        TEXT NOT NULL,
+  status       TEXT NOT NULL DEFAULT 'pending' CHECK(status IN ('pending','fulfilled','cancelled','rejected')),
+  admin_note   TEXT,
+  fulfilled_by TEXT REFERENCES users(id),
+  fulfilled_at TEXT,
+  created_at   TEXT NOT NULL,
+  updated_at   TEXT NOT NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_package_requests_user ON package_purchase_requests(user_id);
+CREATE INDEX IF NOT EXISTS idx_package_requests_status ON package_purchase_requests(status);
+
 CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
 CREATE INDEX IF NOT EXISTS idx_users_role_status ON users(role, status);
 CREATE INDEX IF NOT EXISTS idx_properties_owner_status ON properties(owner_id, status);

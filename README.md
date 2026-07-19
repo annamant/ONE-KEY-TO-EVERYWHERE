@@ -49,8 +49,11 @@ Empty local DB auto-seeds a **dev** admin (`mantova.a@gmail.com` / `Password1234
 
 Launch uses a **manual** credit workflow:
 
-1. Member signs up and is approved (`POST /api/admin/members/:id/approve`).
-2. After payment (bank transfer / invoice), admin credits units via Ledger UI or:
+1. Member signs up (and is approved if still pending).
+2. Member chooses a package at `/member/packages` (also linked from checkout, wallet, dashboard, and pending status).
+3. That creates a `package_purchase_requests` row (`POST /api/ledger/package-requests`).
+4. After payment (bank transfer / invoice), admin opens **Requests → Package purchases** and clicks **Mark paid & credit**, or:
+   - `POST /api/ledger/admin/package-requests/:id/fulfill`
    - `POST /api/ledger/admin/package-credit` `{ userId, units, note }`
    - Optional: pass `units` on approve to credit in the same step.
 

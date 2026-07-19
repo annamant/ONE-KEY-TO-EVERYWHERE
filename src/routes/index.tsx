@@ -33,6 +33,7 @@ const BookingConfirmPage = lazy(() => import('@/pages/member/BookingConfirmPage'
 const BookingsPage = lazy(() => import('@/pages/member/BookingsPage').then((m) => ({ default: m.BookingsPage })))
 const BookingDetailPage = lazy(() => import('@/pages/member/BookingDetailPage').then((m) => ({ default: m.BookingDetailPage })))
 const WalletPage = lazy(() => import('@/pages/member/WalletPage').then((m) => ({ default: m.WalletPage })))
+const PackagesPage = lazy(() => import('@/pages/member/PackagesPage').then((m) => ({ default: m.PackagesPage })))
 const HouseholdPage = lazy(() => import('@/pages/member/HouseholdPage').then((m) => ({ default: m.HouseholdPage })))
 const HouseholdInvitePage = lazy(() => import('@/pages/member/HouseholdInvitePage').then((m) => ({ default: m.HouseholdInvitePage })))
 const MemberProfilePage = lazy(() => import('@/pages/member/ProfilePage').then((m) => ({ default: m.MemberProfilePage })))
@@ -115,6 +116,7 @@ export const router = createBrowserRouter([
       { index: true, element: <Navigate to="/member/dashboard" replace /> },
       { path: 'dashboard', element: <L><MemberDashboardPage /></L> },
       { path: 'pending', element: <L><PendingApprovalPage /></L> },
+      { path: 'packages', element: <L><PackagesPage /></L> },
       { path: 'search', element: <RequireActive><L><SearchPage /></L></RequireActive> },
       { path: 'properties/:id', element: <RequireActive><L><PropertyDetailPage /></L></RequireActive> },
       { path: 'booking/checkout', element: <RequireActive><L><BookingCheckoutPage /></L></RequireActive> },

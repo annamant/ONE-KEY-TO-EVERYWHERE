@@ -105,6 +105,9 @@ export function PendingApprovalPage() {
 
         {!justApproved && (
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
+            <Button onClick={() => navigate('/member/packages')}>
+              Choose a package
+            </Button>
             <Button variant="outline" onClick={() => navigate('/member/profile')}>
               Edit profile
             </Button>

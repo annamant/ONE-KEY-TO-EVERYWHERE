@@ -8,6 +8,7 @@ import {
   UserGroupIcon,
   UserCircleIcon,
   ClockIcon,
+  ShoppingBagIcon,
 } from '@heroicons/react/24/outline'
 import { Sidebar, type NavItem } from './Sidebar'
 import { TopBar } from './TopBar'
@@ -19,6 +20,7 @@ const fullNav: NavItem[] = [
   { label: 'Dashboard', path: '/member/dashboard', icon: HomeIcon },
   { label: 'Search', path: '/member/search', icon: MagnifyingGlassIcon },
   { label: 'Bookings', path: '/member/bookings', icon: CalendarDaysIcon },
+  { label: 'Packages', path: '/member/packages', icon: ShoppingBagIcon },
   { label: 'Membership', path: '/member/wallet', icon: SparklesIcon },
   { label: 'Household', path: '/member/household', icon: UserGroupIcon },
   { label: 'Profile', path: '/member/profile', icon: UserCircleIcon },
@@ -26,6 +28,7 @@ const fullNav: NavItem[] = [
 
 const pendingNav: NavItem[] = [
   { label: 'Status', path: '/member/pending', icon: ClockIcon },
+  { label: 'Packages', path: '/member/packages', icon: ShoppingBagIcon },
   { label: 'Profile', path: '/member/profile', icon: UserCircleIcon },
 ]
 

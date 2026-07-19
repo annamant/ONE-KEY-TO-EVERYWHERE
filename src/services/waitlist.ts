@@ -1,5 +1,6 @@
 import { api } from './apiClient'
 import type { User } from '@/types'
+import type { PackagePurchaseRequest } from './packages'
 
 export type OwnerWaitlistEntry = {
   id: string
@@ -30,10 +31,12 @@ export type AdminRequestsSummary = {
   pendingMembers: User[]
   ownerWaitlist: OwnerWaitlistEntry[]
   memberWaitlist: MemberWaitlistEntry[]
+  packageRequests: PackagePurchaseRequest[]
   counts: {
     pendingMembers: number
     ownerWaitlist: number
     memberWaitlist: number
+    packageRequests: number
     total: number
   }
 }
@@ -63,4 +66,10 @@ export const adminRequestsService = {
     api.patch<MemberWaitlistEntry>(`/admin/member-waitlist/${id}`, patch),
 
   approveMember: (id: string) => api.post<User>(`/admin/members/${id}/approve`),
+
+  fulfillPackageRequest: (id: string, note?: string) =>
+    api.post<PackagePurchaseRequest>(`/ledger/admin/package-requests/${id}/fulfill`, { note }),
+
+  rejectPackageRequest: (id: string, note?: string) =>
+    api.post<PackagePurchaseRequest>(`/ledger/admin/package-requests/${id}/reject`, { note }),
 }

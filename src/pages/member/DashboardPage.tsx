@@ -41,10 +41,12 @@ export function MemberDashboardPage() {
     ? membershipRemainingPercent(wallet.balance, wallet.totalCredited)
     : 0
 
+  const needsPackage = !walletLoading && (wallet?.balance ?? 0) <= 0
+
   const quickActions = [
     { icon: MagnifyingGlassIcon, label: 'Find a Stay', sub: 'Browse Club homes', path: '/member/search', color: 'bg-okte-navy-50 text-primary' },
     { icon: CalendarDaysIcon, label: 'My Bookings', sub: 'View reservations', path: '/member/bookings', color: 'bg-blue-50 text-blue-600' },
-    { icon: SparklesIcon, label: 'Membership', sub: 'See what\'s remaining', path: '/member/wallet', color: 'bg-okte-gold-50 text-okte-gold-600' },
+    { icon: SparklesIcon, label: needsPackage ? 'Get membership' : 'Membership', sub: needsPackage ? 'Buy a package' : 'See what\'s remaining', path: needsPackage ? '/member/packages' : '/member/wallet', color: 'bg-okte-gold-50 text-okte-gold-600' },
     { icon: UserGroupIcon, label: 'Household', sub: 'Family & friends', path: '/member/household', color: 'bg-purple-50 text-purple-600' },
   ]
 
@@ -86,11 +88,16 @@ export function MemberDashboardPage() {
             variant="secondary"
             size="sm"
             className="bg-white/10 text-white border-white/20 hover:bg-white/20"
-            onClick={() => navigate('/member/wallet')}
+            onClick={() => navigate(needsPackage ? '/member/packages' : '/member/wallet')}
           >
-            View details
+            {needsPackage ? 'Buy a package' : 'View details'}
           </Button>
         </div>
+        {needsPackage && (
+          <p className="text-caption text-okte-navy-200 mt-4 relative">
+            You need an active membership package before you can confirm a booking.
+          </p>
+        )}
       </div>
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-8">
