@@ -9,7 +9,8 @@ export interface Booking {
   checkOut: string
   nights: number
   guests: number
-  keysCharged: number
+  /** Internal membership units used for this stay. Not shown to members as a currency. */
+  membershipUsed: number
   status: BookingStatus
   cancellationReason?: string
   cancelledAt?: string

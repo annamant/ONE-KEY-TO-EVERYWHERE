@@ -113,7 +113,7 @@ export function OwnerReservationsPage() {
                   <th className="text-left px-5 py-3 text-caption font-semibold text-text-muted uppercase tracking-wide">Property</th>
                   <th className="text-left px-5 py-3 text-caption font-semibold text-text-muted uppercase tracking-wide">Dates</th>
                   <th className="text-left px-5 py-3 text-caption font-semibold text-text-muted uppercase tracking-wide">Guests</th>
-                  <th className="text-left px-5 py-3 text-caption font-semibold text-text-muted uppercase tracking-wide">Keys</th>
+                  <th className="text-left px-5 py-3 text-caption font-semibold text-text-muted uppercase tracking-wide">Coverage</th>
                   <th className="text-left px-5 py-3 text-caption font-semibold text-text-muted uppercase tracking-wide">Status</th>
                   <th className="px-5 py-3" />
                 </tr>
@@ -131,7 +131,7 @@ export function OwnerReservationsPage() {
                       <td className="px-5 py-4 text-body-sm font-medium text-text-primary">{prop?.title ?? '—'}</td>
                       <td className="px-5 py-4 text-body-sm text-text-muted whitespace-nowrap">{formatDateRange(b.checkIn, b.checkOut)}</td>
                       <td className="px-5 py-4 text-body-sm text-text-muted">{b.guests}</td>
-                      <td className="px-5 py-4 text-body-sm font-medium text-okte-gold-600">{b.keysCharged}</td>
+                      <td className="px-5 py-4 text-body-sm font-medium text-okte-gold-600">Membership</td>
                       <td className="px-5 py-4">
                         <Badge color={statusColor[b.status] ?? 'gray'} size="sm">{b.status}</Badge>
                       </td>

@@ -1,9 +1,9 @@
 import { useParams, useNavigate } from 'react-router-dom'
-import { CheckCircleIcon, CalendarDaysIcon, KeyIcon } from '@heroicons/react/24/solid'
+import { CheckCircleIcon, CalendarDaysIcon, SparklesIcon } from '@heroicons/react/24/solid'
 import { MapPinIcon } from '@heroicons/react/24/outline'
 import { useMockApi } from '@/hooks/useMockApi'
 import { mockBookings, mockProperties } from '@/services'
-import { formatDateRange, formatKeys } from '@/utils/format'
+import { formatDateRange } from '@/utils/format'
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
 import { PageSpinner } from '@/components/ui/Spinner'
@@ -70,18 +70,17 @@ export function BookingConfirmPage() {
               <p className="text-caption text-text-muted">Dates</p>
               <p className="text-body-sm font-medium">
                 {formatDateRange(booking.checkIn, booking.checkOut)}
-                <span className="text-text-muted ml-1">· {booking.nights} days</span>
               </p>
             </div>
           </div>
 
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 rounded-lg bg-okte-gold-50 flex items-center justify-center">
-              <KeyIcon className="w-4 h-4 text-okte-gold-600" />
+              <SparklesIcon className="w-4 h-4 text-okte-gold-600" />
             </div>
             <div>
-              <p className="text-caption text-text-muted">Keys charged</p>
-              <p className="text-body-sm font-medium text-okte-gold-700">{formatKeys(booking.keysCharged)}</p>
+              <p className="text-caption text-text-muted">Coverage</p>
+              <p className="text-body-sm font-medium text-okte-gold-700">Included in membership</p>
             </div>
           </div>
 
@@ -98,7 +97,7 @@ export function BookingConfirmPage() {
           View All Bookings
         </Button>
         <Button variant="outline" fullWidth onClick={() => navigate('/member/wallet')}>
-          View Key Ledger
+          View membership
         </Button>
         <Button variant="ghost" fullWidth onClick={() => navigate('/member/search')}>
           Search More Properties

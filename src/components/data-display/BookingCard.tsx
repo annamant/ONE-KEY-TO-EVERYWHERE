@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router-dom'
 import { CalendarDaysIcon, MapPinIcon } from '@heroicons/react/24/outline'
 import { cn } from '@/utils/classNames'
 import { Badge } from '@/components/ui/Badge'
-import { formatDateRange, formatKeys } from '@/utils/format'
+import { formatDateRange } from '@/utils/format'
 import type { Booking, Property } from '@/types'
 import type { BadgeColor } from '@/components/ui/Badge'
 
@@ -57,12 +57,8 @@ export function BookingCard({ booking, property, className, basePath = '/member/
         <div className="flex items-center gap-1 text-body-sm text-text-muted">
           <CalendarDaysIcon className="w-4 h-4 flex-shrink-0" />
           <span className="text-body-sm">{formatDateRange(booking.checkIn, booking.checkOut)}</span>
-          <span className="text-text-subtle ml-1">· {booking.nights} days</span>
         </div>
-        <div className="mt-2 flex items-center gap-1">
-          <span className="text-caption font-semibold text-okte-gold-700">{formatKeys(booking.keysCharged)}</span>
-          <span className="text-caption text-text-muted">charged</span>
-        </div>
+        <p className="mt-2 text-caption text-okte-gold-700 font-semibold">Covered by membership</p>
       </div>
     </div>
   )

@@ -4,7 +4,7 @@ import {
   HomeIcon,
   MagnifyingGlassIcon,
   CalendarDaysIcon,
-  KeyIcon,
+  SparklesIcon,
   UserGroupIcon,
   UserCircleIcon,
   ClockIcon,
@@ -19,7 +19,7 @@ const fullNav: NavItem[] = [
   { label: 'Dashboard', path: '/member/dashboard', icon: HomeIcon },
   { label: 'Search', path: '/member/search', icon: MagnifyingGlassIcon },
   { label: 'Bookings', path: '/member/bookings', icon: CalendarDaysIcon },
-  { label: 'Wallet', path: '/member/wallet', icon: KeyIcon },
+  { label: 'Membership', path: '/member/wallet', icon: SparklesIcon },
   { label: 'Household', path: '/member/household', icon: UserGroupIcon },
   { label: 'Profile', path: '/member/profile', icon: UserCircleIcon },
 ]

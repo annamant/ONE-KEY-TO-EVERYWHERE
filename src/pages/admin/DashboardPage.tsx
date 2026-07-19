@@ -28,7 +28,7 @@ export function AdminDashboardPage() {
 
   const pendingProperties = (properties ?? []).filter((p) => p.status === 'pending_approval')
   const activeBookings = (bookings ?? []).filter((b) => ['confirmed', 'active'].includes(b.status))
-  const totalKeys = (ledgerEntries ?? []).filter((e) => e.amount > 0).reduce((s, e) => s + e.amount, 0)
+  const totalUnits = (ledgerEntries ?? []).filter((e) => e.amount > 0).reduce((s, e) => s + e.amount, 0)
 
   // Week-over-week user growth (new users this week vs last week)
   const nowMs = Date.now()
@@ -80,8 +80,8 @@ export function AdminDashboardPage() {
           iconBg="bg-success-light text-success"
         />
         <StatCard
-          label="Keys in Circulation"
-          value={totalKeys}
+          label="Membership in circulation"
+          value={totalUnits}
           icon={<KeyIcon className="w-5 h-5" />}
           iconBg="bg-okte-gold-50 text-okte-gold-600"
         />
@@ -216,7 +216,7 @@ export function AdminDashboardPage() {
                 <tr className="border-b border-border bg-okte-slate-50">
                   <th className="text-left px-5 py-3 text-caption font-semibold text-text-muted uppercase">ID</th>
                   <th className="text-left px-5 py-3 text-caption font-semibold text-text-muted uppercase">Dates</th>
-                  <th className="text-left px-5 py-3 text-caption font-semibold text-text-muted uppercase">Keys</th>
+                  <th className="text-left px-5 py-3 text-caption font-semibold text-text-muted uppercase">Units</th>
                   <th className="text-left px-5 py-3 text-caption font-semibold text-text-muted uppercase">Status</th>
                 </tr>
               </thead>
@@ -225,7 +225,7 @@ export function AdminDashboardPage() {
                   <tr key={b.id} className="border-b border-border last:border-0 hover:bg-okte-slate-50 cursor-pointer" onClick={() => navigate(`/admin/bookings`)}>
                     <td className="px-5 py-3 text-body-sm font-mono text-text-muted">{b.id.slice(0, 8)}</td>
                     <td className="px-5 py-3 text-body-sm text-text-muted whitespace-nowrap">{formatDateRange(b.checkIn, b.checkOut)}</td>
-                    <td className="px-5 py-3 text-body-sm font-medium text-okte-gold-600">{b.keysCharged}</td>
+                    <td className="px-5 py-3 text-body-sm font-medium text-okte-gold-600">{b.membershipUsed}</td>
                     <td className="px-5 py-3"><Badge color={statusColor[b.status] ?? 'gray'} size="sm">{b.status}</Badge></td>
                   </tr>
                 ))}

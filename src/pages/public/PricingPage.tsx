@@ -17,7 +17,6 @@ export function PricingPage() {
     <div className="min-h-screen flex flex-col" style={{ background: '#FFFFFF' }}>
       <PublicNav />
 
-      {/* Hero */}
       <section style={{ background: '#F5F5F5', borderBottom: '1px solid #E5E5E5' }} className="py-16 text-center">
         <div className="max-w-2xl mx-auto px-6">
           <p className="text-caption font-semibold uppercase tracking-widest mb-4" style={{ color: '#C4882F' }}>Membership plans</p>
@@ -28,10 +27,8 @@ export function PricingPage() {
         </div>
       </section>
 
-      {/* Configurator */}
       <section className="max-w-4xl mx-auto px-6 py-20">
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
-          {/* Left: selectors */}
           <div className="lg:col-span-3 space-y-8">
             <div>
               <p className="text-caption font-semibold uppercase tracking-widest mb-3" style={{ color: '#6B6B6B' }}>
@@ -63,7 +60,7 @@ export function PricingPage() {
               <p className="text-caption font-semibold uppercase tracking-widest mb-3" style={{ color: '#6B6B6B' }}>
                 2. Membership length
               </p>
-              <div className="grid grid-cols-3 gap-3">
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                 {MEMBERSHIP_DURATIONS.map((d) => (
                   <button
                     key={d.weeks}
@@ -77,9 +74,11 @@ export function PricingPage() {
                     <p className="text-body-md font-semibold" style={{ color: weeks === d.weeks ? '#FFFFFF' : '#0A0A0A' }}>
                       {d.label}
                     </p>
-                    <p className="text-caption" style={{ color: weeks === d.weeks ? '#CCCCCC' : '#6B6B6B' }}>
-                      {d.days} keys
-                    </p>
+                    {d.discount > 0 && (
+                      <p className="text-caption mt-0.5" style={{ color: weeks === d.weeks ? '#C4882F' : '#C4882F' }}>
+                        Save {Math.round(d.discount * 100)}%
+                      </p>
+                    )}
                   </button>
                 ))}
               </div>
@@ -94,7 +93,6 @@ export function PricingPage() {
             </div>
           </div>
 
-          {/* Right: live quote */}
           <div className="lg:col-span-2">
             <div className="rounded-2xl p-6 sticky top-24" style={{ background: '#0A0A0A' }}>
               <p className="text-caption font-semibold uppercase tracking-widest mb-2" style={{ color: '#C4882F' }}>
@@ -103,15 +101,26 @@ export function PricingPage() {
               <p className="font-display text-display-lg font-bold mb-1" style={{ color: '#FFFFFF' }}>
                 €{quote.price.toLocaleString('en-EU')}
               </p>
-              <p className="text-caption mb-6" style={{ color: '#CCCCCC' }}>
-                one-time payment · €{quote.pricePerDay}/day
-              </p>
+              {quote.discountPercent > 0 ? (
+                <p className="text-caption mb-6" style={{ color: '#CCCCCC' }}>
+                  <span style={{ textDecoration: 'line-through', opacity: 0.7 }}>
+                    €{quote.fullPrice.toLocaleString('en-EU')}
+                  </span>
+                  {' · '}
+                  <span style={{ color: '#C4882F' }}>Save {quote.discountPercent}%</span>
+                  {' · one-time membership'}
+                </p>
+              ) : (
+                <p className="text-caption mb-6" style={{ color: '#CCCCCC' }}>
+                  one-time membership
+                </p>
+              )}
 
-              <div className="flex items-center gap-2 mb-6 p-3 rounded-lg" style={{ background: 'rgba(255,255,255,0.08)' }}>
-                <span className="text-heading-md font-bold" style={{ color: '#C4882F' }}>{quote.days}</span>
-                <span className="text-body-sm" style={{ color: '#EFEFEF' }}>
-                  keys — spend them as 1 night now, 5 next month, however you like, at any home in the Club
-                </span>
+              <div className="mb-6 p-3 rounded-lg" style={{ background: 'rgba(255,255,255,0.08)' }}>
+                <p className="text-body-sm" style={{ color: '#EFEFEF' }}>
+                  Opens every home in the Club. Split your time across as many stays as you like —
+                  your membership doesn't expire.
+                </p>
               </div>
 
               <ul className="space-y-2.5 mb-6">
@@ -136,16 +145,15 @@ export function PricingPage() {
         </div>
       </section>
 
-      {/* How keys work */}
       <section style={{ background: '#F5F5F5', borderTop: '1px solid #E5E5E5' }} className="py-16">
         <div className="max-w-3xl mx-auto px-6">
           <h2 className="font-display text-heading-xl font-bold text-center mb-8" style={{ color: '#0A0A0A' }}>
-            How your keys work
+            How membership works
           </h2>
           <div className="space-y-4">
             {[
-              { n: '1', text: '1 key = 1 night, at any home in the Club. There is no per-property rate and no seasonal pricing — a key is worth exactly the same everywhere, all year round.' },
-              { n: '2', text: 'Your keys don\'t expire and don\'t have to be used in one trip. Spend 1 night now and 5 next month, splitting your balance across as many stays and homes as you like.' },
+              { n: '1', text: 'You join for a set length — from 1 week up to 12 months — sized for your group. Longer memberships from 3 months include a commitment discount. There is no per-home rate and no seasonal markup.' },
+              { n: '2', text: 'Use it whenever you like, across as many stays and homes as you want. Nothing forces you to take it all at once, and it doesn\'t expire.' },
               { n: '3', text: 'Your group size sets your starting price, not a hard limit on which homes you can pick. It\'s membership, not a rental — there\'s nothing to game.' },
             ].map(({ n, text }) => (
               <div key={n} className="flex gap-4 p-5 rounded-card text-left" style={{ background: '#FFFFFF', border: '1px solid #E5E5E5' }}>
@@ -157,7 +165,6 @@ export function PricingPage() {
         </div>
       </section>
 
-      {/* CTA */}
       <section className="py-16 text-center" style={{ background: '#0A0A0A' }}>
         <div className="max-w-xl mx-auto px-6">
           <h2 className="font-display text-heading-xl font-bold mb-6" style={{ color: '#FFFFFF' }}>

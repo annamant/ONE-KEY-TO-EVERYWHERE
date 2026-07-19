@@ -75,7 +75,7 @@ const mockLedger = {
   ): Promise<LedgerEntry> {
     await delay()
     const currentBalance = await mockLedger.getBalance(userId)
-    if (currentBalance < amount) throw new Error('Insufficient key balance')
+    if (currentBalance < amount) throw new Error('Membership does not cover this stay')
     const entry: LedgerEntry = {
       id: generateId('ledger'),
       userId,

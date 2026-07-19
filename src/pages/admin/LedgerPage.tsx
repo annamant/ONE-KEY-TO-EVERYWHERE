@@ -75,14 +75,14 @@ export function AdminLedgerPage() {
     }
   }
 
-  const totalKeys = (entries ?? []).reduce((s, e) => s + e.amount, 0)
+  const totalUnits = (entries ?? []).reduce((s, e) => s + e.amount, 0)
 
   return (
     <div className="page-content">
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-heading-xl text-text-primary font-semibold">Ledger</h1>
-          <p className="text-body-sm text-text-muted mt-0.5">{(entries ?? []).length} entries · {totalKeys} net keys</p>
+          <p className="text-body-sm text-text-muted mt-0.5">{(entries ?? []).length} entries · {totalUnits} net units</p>
         </div>
         <Button leftIcon={<PlusIcon className="w-4 h-4" />} onClick={() => setCorrectionOpen(true)}>
           Add Correction
@@ -175,7 +175,7 @@ export function AdminLedgerPage() {
                 options={[{ value: 'credit', label: 'Credit (+)' }, { value: 'debit', label: 'Debit (−)' }]}
               />
             </FormField>
-            <FormField label="Amount (keys)" required>
+            <FormField label="Amount (units)" required>
               <Input
                 type="number"
                 min="1"

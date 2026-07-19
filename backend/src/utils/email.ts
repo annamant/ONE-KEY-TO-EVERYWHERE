@@ -111,7 +111,7 @@ export function membershipApprovedEmail(firstName: string): EmailPayload {
       '',
       'Great news — your Club membership has been approved.',
       '',
-      'You can now log in and browse curated homes in Puglia, manage your key wallet, and book stays.',
+      'You can now log in and browse curated homes in Puglia, see your membership, and plan stays.',
       '',
       `Log in: ${APP_URL}/auth/login`,
       '',

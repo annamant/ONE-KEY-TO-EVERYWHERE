@@ -92,7 +92,7 @@ export function OwnerReservationDetailPage() {
               { label: 'Check-out', value: formatDate(booking.checkOut) },
               { label: 'Duration', value: `${nights} day${nights !== 1 ? 's' : ''}` },
               { label: 'Guests', value: String(booking.guests) },
-              { label: 'Keys charged', value: `${booking.keysCharged} keys` },
+              { label: 'Coverage', value: 'Membership' },
               { label: 'Booked on', value: formatDate(booking.createdAt) },
             ].map(({ label, value }) => (
               <div key={label} className="flex justify-between text-body-sm">

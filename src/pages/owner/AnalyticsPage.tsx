@@ -30,7 +30,7 @@ export function OwnerAnalyticsPage() {
   const myPropertyIds = new Set((properties ?? []).map((p) => p.id))
   const myBookings = (allBookings ?? []).filter((b) => myPropertyIds.has(b.propertyId))
   const activeBookings = myBookings.filter((b) => ['confirmed', 'active'].includes(b.status))
-  const totalKeys = myBookings.filter((b) => b.status !== 'cancelled').reduce((s, b) => s + b.keysCharged, 0)
+  const totalStays = myBookings.filter((b) => b.status !== 'cancelled').length
 
   // Monthly bookings
   const monthlyMap: Record<string, number> = {}
@@ -40,13 +40,13 @@ export function OwnerAnalyticsPage() {
   })
   const monthlyData = Object.entries(monthlyMap).map(([month, count]) => ({ month, count }))
 
-  // Monthly keys earned
-  const keysMap: Record<string, number> = {}
+  // Monthly stays hosted
+  const staysMap: Record<string, number> = {}
   myBookings.filter((b) => b.status !== 'cancelled').forEach((b) => {
     const m = format(parseISO(b.createdAt), 'MMM yy')
-    keysMap[m] = (keysMap[m] ?? 0) + b.keysCharged
+    staysMap[m] = (staysMap[m] ?? 0) + 1
   })
-  const keysData = Object.entries(keysMap).map(([month, keys]) => ({ month, keys }))
+  const staysData = Object.entries(staysMap).map(([month, stays]) => ({ month, stays }))
 
   // Bookings per property
   const propBookingMap: Record<string, number> = {}
@@ -90,8 +90,8 @@ export function OwnerAnalyticsPage() {
           iconBg="bg-blue-50 text-blue-600"
         />
         <StatCard
-          label="Keys Earned"
-          value={totalKeys}
+          label="Member stays hosted"
+          value={totalStays}
           icon={<KeyIcon className="w-5 h-5" />}
           iconBg="bg-okte-gold-50 text-okte-gold-600"
         />
@@ -122,17 +122,17 @@ export function OwnerAnalyticsPage() {
           )}
         </Card>
 
-        {/* Keys Earned */}
+        {/* Stays hosted */}
         <Card>
-          <h2 className="text-heading-md text-text-primary font-semibold mb-4">Keys Earned Over Time</h2>
-          {keysData.length > 0 ? (
+          <h2 className="text-heading-md text-text-primary font-semibold mb-4">Stays Hosted Over Time</h2>
+          {staysData.length > 0 ? (
             <ResponsiveContainer width="100%" height={220}>
-              <LineChart data={keysData}>
+              <LineChart data={staysData}>
                 <CartesianGrid strokeDasharray="3 3" stroke={tokens.colors.border} />
                 <XAxis dataKey="month" tick={{ fontSize: 11, fill: tokens.colors.textMuted }} />
                 <YAxis tick={{ fontSize: 11, fill: tokens.colors.textMuted }} />
                 <Tooltip />
-                <Line type="monotone" dataKey="keys" stroke={tokens.colors.accent} strokeWidth={2} dot={{ r: 3 }} name="Keys" />
+                <Line type="monotone" dataKey="stays" stroke={tokens.colors.accent} strokeWidth={2} dot={{ r: 3 }} name="Stays" />
               </LineChart>
             </ResponsiveContainer>
           ) : (

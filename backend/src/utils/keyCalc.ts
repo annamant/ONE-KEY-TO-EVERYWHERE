@@ -1,20 +1,26 @@
 /**
- * Key cost calculation — ported from src/utils/keyCalc.ts in the frontend.
- * 1 key = 1 night, at any Club home, with no per-property rate and no seasonal
- * variation. A stay's cost is simply how many nights it covers.
+ * How much membership a stay uses. Internal ledger units only —
+ * never exposed to members as a named currency.
  */
 
-function countNights(checkIn: string, checkOut: string): number {
+function countUnits(checkIn: string, checkOut: string): number {
   const msPerDay = 24 * 60 * 60 * 1000
   return Math.round((new Date(checkOut).getTime() - new Date(checkIn).getTime()) / msPerDay)
 }
 
-export interface KeyCostBreakdown {
-  nights: number
-  total: number
+export interface MembershipUse {
+  units: number
 }
 
-export function calculateKeyCost(checkIn: string, checkOut: string): KeyCostBreakdown {
-  const nights = countNights(checkIn, checkOut)
-  return { nights, total: nights }
+export function calculateMembershipUse(checkIn: string, checkOut: string): MembershipUse {
+  return { units: countUnits(checkIn, checkOut) }
 }
+
+/** @deprecated Use calculateMembershipUse */
+export function calculateKeyCost(checkIn: string, checkOut: string) {
+  const { units } = calculateMembershipUse(checkIn, checkOut)
+  return { nights: units, total: units }
+}
+
+/** @deprecated */
+export type KeyCostBreakdown = { nights: number; total: number }

@@ -1,15 +1,16 @@
 import { useNavigate, Navigate } from 'react-router-dom'
 import {
-  KeyIcon,
   MagnifyingGlassIcon,
   CalendarDaysIcon,
   UserGroupIcon,
+  SparklesIcon,
 } from '@heroicons/react/24/outline'
-import { KeyIcon as KeySolid } from '@heroicons/react/24/solid'
+import { SparklesIcon as SparklesSolid } from '@heroicons/react/24/solid'
 import { useAuth } from '@/contexts/AuthContext'
 import { useMockApi } from '@/hooks/useMockApi'
 import { mockLedger, mockBookings, mockProperties } from '@/services'
 import { formatDateRange } from '@/utils/format'
+import { formatMembershipRemaining, membershipRemainingPercent } from '@/utils/membershipRemaining'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { Badge } from '@/components/ui/Badge'
@@ -36,40 +37,48 @@ export function MemberDashboardPage() {
 
   const propMap = Object.fromEntries((properties ?? []).map((p) => [p.id, p]))
   const upcomingBookings = (bookings ?? []).filter((b) => ['confirmed', 'active'].includes(b.status)).slice(0, 3)
+  const remainingPct = wallet
+    ? membershipRemainingPercent(wallet.balance, wallet.totalCredited)
+    : 0
 
   const quickActions = [
-    { icon: MagnifyingGlassIcon, label: 'Find a Stay', sub: 'Browse available properties', path: '/member/search', color: 'bg-okte-navy-50 text-primary' },
+    { icon: MagnifyingGlassIcon, label: 'Find a Stay', sub: 'Browse Club homes', path: '/member/search', color: 'bg-okte-navy-50 text-primary' },
     { icon: CalendarDaysIcon, label: 'My Bookings', sub: 'View reservations', path: '/member/bookings', color: 'bg-blue-50 text-blue-600' },
-    { icon: KeyIcon, label: 'Key Wallet', sub: 'Manage your keys', path: '/member/wallet', color: 'bg-okte-gold-50 text-okte-gold-600' },
+    { icon: SparklesIcon, label: 'Membership', sub: 'See what\'s remaining', path: '/member/wallet', color: 'bg-okte-gold-50 text-okte-gold-600' },
     { icon: UserGroupIcon, label: 'Household', sub: 'Family & friends', path: '/member/household', color: 'bg-purple-50 text-purple-600' },
   ]
 
   return (
     <div className="page-content">
-      {/* Greeting */}
       <div className="mb-6">
         <h1 className="text-heading-xl text-text-primary font-semibold">
-          Welcome back, {currentUser?.firstName} 👋
+          Welcome back, {currentUser?.firstName}
         </h1>
-        <p className="text-body-sm text-text-muted mt-1">Here's your travel overview</p>
+        <p className="text-body-sm text-text-muted mt-1">Your Club at a glance</p>
       </div>
 
-      {/* Key Balance Hero */}
       <div className="bg-gradient-to-br from-okte-navy-900 via-okte-navy-800 to-okte-navy-700 rounded-xl p-6 text-white mb-6 relative overflow-hidden">
         <div className="absolute -right-8 -top-8 w-48 h-48 rounded-full bg-white/5" />
         <div className="absolute -right-4 top-12 w-32 h-32 rounded-full bg-white/5" />
         <div className="flex items-start justify-between relative">
-          <div>
+          <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-3">
-              <KeySolid className="w-4 h-4 text-accent" />
-              <span className="text-body-sm text-okte-navy-200">Key Balance</span>
+              <SparklesSolid className="w-4 h-4 text-accent" />
+              <span className="text-body-sm text-okte-navy-200">Membership remaining</span>
             </div>
             {walletLoading ? (
-              <Skeleton className="h-14 w-32 bg-white/10" />
+              <Skeleton className="h-10 w-48 bg-white/10" />
             ) : (
               <>
-                <p className="text-display-lg font-bold text-white">{wallet?.balance ?? 0}</p>
-                <p className="text-body-sm text-okte-navy-300 mt-1">keys available</p>
+                <p className="text-heading-xl font-bold text-white">
+                  {formatMembershipRemaining(wallet?.balance ?? 0)}
+                </p>
+                <div className="mt-4 h-2 rounded-full bg-white/10 overflow-hidden max-w-xs">
+                  <div
+                    className="h-full rounded-full bg-accent transition-all"
+                    style={{ width: `${remainingPct}%` }}
+                  />
+                </div>
               </>
             )}
           </div>
@@ -79,24 +88,11 @@ export function MemberDashboardPage() {
             className="bg-white/10 text-white border-white/20 hover:bg-white/20"
             onClick={() => navigate('/member/wallet')}
           >
-            View Ledger
+            View details
           </Button>
         </div>
-        {wallet && !walletLoading && (
-          <div className="mt-4 pt-4 border-t border-white/10 flex gap-6">
-            <div>
-              <p className="text-caption text-okte-navy-300">Total credited</p>
-              <p className="text-body-sm font-semibold text-white">{wallet.totalCredited} keys</p>
-            </div>
-            <div>
-              <p className="text-caption text-okte-navy-300">Total used</p>
-              <p className="text-body-sm font-semibold text-white">{wallet.totalDebited} keys</p>
-            </div>
-          </div>
-        )}
       </div>
 
-      {/* Quick Actions */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-8">
         {quickActions.map((action) => {
           const Icon = action.icon
@@ -119,7 +115,6 @@ export function MemberDashboardPage() {
         })}
       </div>
 
-      {/* Upcoming Bookings */}
       <div className="mb-8">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-heading-md text-text-primary font-semibold">Upcoming Stays</h2>
@@ -135,7 +130,7 @@ export function MemberDashboardPage() {
           <Card className="text-center py-8">
             <CalendarDaysIcon className="w-10 h-10 text-text-muted mx-auto mb-3" />
             <p className="text-body-sm font-medium text-text-primary mb-1">No upcoming stays</p>
-            <p className="text-caption text-text-muted mb-4">Browse available properties to plan your next trip.</p>
+            <p className="text-caption text-text-muted mb-4">Browse Club homes to plan your next trip.</p>
             <Button size="sm" onClick={() => navigate('/member/search')}>Find a Stay</Button>
           </Card>
         ) : (

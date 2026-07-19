@@ -22,9 +22,13 @@ export interface LedgerEntry {
   createdAt: string
 }
 
-export interface KeyWallet {
+/** Internal membership balance. Members see formatMembershipRemaining(), never raw units. */
+export interface MembershipWallet {
   userId: string
   balance: number
   totalCredited: number
   totalDebited: number
 }
+
+/** @deprecated Use MembershipWallet */
+export type KeyWallet = MembershipWallet

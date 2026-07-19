@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router-dom'
 import { Button } from '@/components/ui/Button'
 import { PublicNav } from '@/components/layout/PublicNav'
 import { PublicFooter } from '@/components/layout/PublicFooter'
-import { KeyIcon, HomeModernIcon, UserPlusIcon, SparklesIcon, CalendarDaysIcon } from '@heroicons/react/24/outline'
+import { HomeModernIcon, UserPlusIcon, SparklesIcon, CalendarDaysIcon, HeartIcon } from '@heroicons/react/24/outline'
 
 const MEMBER_STEPS = [
   {
@@ -13,12 +13,12 @@ const MEMBER_STEPS = [
   {
     icon: <CalendarDaysIcon className="w-6 h-6" />,
     title: 'Choose your length and group size',
-    desc: 'Membership is sold by the week — 1, 2, or 4 — and by group size. Pick a 1-week membership to try the Club, or 4 weeks if you travel often. Every length opens the same doors.',
+    desc: 'Membership is sold by length — from 1 week up to 12 months — and by group size. Longer plans from 3 months include a commitment discount. Every length opens the same doors.',
   },
   {
-    icon: <KeyIcon className="w-6 h-6" />,
-    title: 'Receive your keys',
-    desc: 'Your membership comes with a bank of keys — one per day of membership. They\'re yours to spend however you like: one night now, five next month, split across as many trips as you want. They don\'t expire.',
+    icon: <SparklesIcon className="w-6 h-6" />,
+    title: 'Your membership is yours',
+    desc: 'Once you\'re in, the Club is open to you. Use your membership whenever it suits you — one stay now, another later, split across as many homes as you like. It doesn\'t expire.',
   },
   {
     icon: <HomeModernIcon className="w-6 h-6" />,
@@ -26,47 +26,47 @@ const MEMBER_STEPS = [
     desc: 'Being part of the Club means access to every home, anywhere in the collection — not just one. One key to everywhere: that\'s where the name comes from.',
   },
   {
-    icon: <SparklesIcon className="w-6 h-6" />,
+    icon: <HeartIcon className="w-6 h-6" />,
     title: 'Bring those you love',
-    desc: 'Add family members or close ones to your household and share keys. Each member of your household can access Club homes independently.',
+    desc: 'Add family members or close ones to your household. Each member of your household can access Club homes independently under the same membership.',
   },
 ]
 
 const FAQS = [
   {
     q: 'Do I only get access to one home, or all of them?',
-    a: 'All of them — that\'s the whole point of the Club. Membership isn\'t tied to a single property. Every home in the Club is open to you at once, and you can move between them freely: use one home this month and a completely different one next month, or even split a single trip across more than one home. Your keys work everywhere in the Club, not in one place.',
+    a: 'All of them — that\'s the whole point of the Club. Membership isn\'t tied to a single property. Every home in the Club is open to you at once, and you can move between them freely: one home this month, a completely different one next month, or even split a single trip across more than one home.',
   },
   {
     q: 'What are the membership levels?',
-    a: 'Membership is built from two choices: how long — 1, 2, or 4 weeks — and your group size, from up to 2 guests to 7+. Together they decide your price and the size of your key bank. Every combination gives you the exact same access: all Club homes, at the same fixed cost per night.',
+    a: 'Membership is built from two choices: how long — from 1 week up to 12 months — and your group size, from up to 2 guests to 7+. Longer memberships from 3 months include a commitment discount. Every combination gives you the same access: all Club homes, with no per-home rate.',
   },
   {
-    q: 'Do keys expire?',
-    a: 'No. The keys you receive with your membership are yours. There is no expiry date, no penalty for not travelling every month. Use one night now and save the rest for later — you can wait for the right moment.',
+    q: 'Does my membership expire?',
+    a: 'No. Once you have it, it\'s yours. There is no expiry date, no penalty for not travelling every month. Use some of it now and save the rest for later — you can wait for the right moment.',
   },
   {
-    q: 'How many keys does a home cost?',
-    a: 'The same everywhere: 1 key per night, at any home in the Club. There\'s no per-property rate and nothing to compare between listings — the only thing that changes trip to trip is how many nights you stay.',
+    q: 'Do different homes cost different amounts?',
+    a: 'No. Membership covers every home in the Club the same way. There\'s nothing to compare between listings — the only thing that changes trip to trip is when you go and for how long.',
   },
   {
     q: 'Can I use a home built for a bigger group than I paid for?',
     a: 'Yes. Your group size sets your starting price, not a ceiling on what you can access. If the exact size you\'re looking for isn\'t available, we place you in a larger home at no extra cost — the same way an airline upgrades a passenger when economy is overbooked. You\'re never charged more, and you\'re never turned away.',
   },
   {
-    q: 'Can I share my keys with family?',
-    a: 'Yes. Create a household and invite whoever you wish. The key balance is shared and each household member can access Club homes independently.',
+    q: 'Can I share my membership with family?',
+    a: 'Yes. Create a household and invite whoever you wish. Membership is shared, and each household member can access Club homes independently.',
   },
   {
     q: 'How does a cancellation work?',
-    a: 'You can cancel with a full key refund up to 48 hours before access. After 48 hours a partial refund applies.',
+    a: 'You can cancel with a full return of membership up to 48 hours before access. After 48 hours a partial return applies.',
   },
   {
     q: 'Is the Club only for Ostuni?',
     a: 'For now, yes — and we say that with pride. Before expanding, we want to do one thing as well as it can possibly be done. Ostuni is where the Club begins.',
   },
   {
-    q: 'Why doesn\'t the number of keys change between summer and winter?',
+    q: 'Why doesn\'t the price change between summer and winter?',
     a: 'Because we believe Ostuni is beautiful all year round, and that owners deserve to welcome members in the off-season too. This isn\'t a rental — there\'s no dynamic pricing to game, no high season to exploit. Membership works the same way every month of the year.',
   },
   {
@@ -82,7 +82,6 @@ export function HowItWorksPage() {
     <div className="min-h-screen flex flex-col" style={{ background: '#FFFFFF' }}>
       <PublicNav />
 
-      {/* Hero */}
       <section style={{ background: '#F5F5F5', borderBottom: '1px solid #E5E5E5' }} className="py-16 text-center">
         <div className="max-w-2xl mx-auto px-6">
           <p className="text-caption font-semibold uppercase tracking-widest mb-4" style={{ color: '#C4882F' }}>How it works</p>
@@ -95,7 +94,6 @@ export function HowItWorksPage() {
         </div>
       </section>
 
-      {/* For members */}
       <section className="max-w-5xl mx-auto px-6 py-20">
         <div className="text-center mb-12">
           <span className="text-caption font-semibold uppercase tracking-widest" style={{ color: '#C4882F' }}>For members</span>
@@ -122,7 +120,6 @@ export function HowItWorksPage() {
         </div>
       </section>
 
-      {/* One key, every home */}
       <section style={{ background: '#F5F5F5', borderTop: '1px solid #E5E5E5', borderBottom: '1px solid #E5E5E5' }} className="py-16">
         <div className="max-w-3xl mx-auto px-6 text-center">
           <h2 className="font-display text-heading-xl font-bold mb-4" style={{ color: '#0A0A0A' }}>
@@ -135,17 +132,16 @@ export function HowItWorksPage() {
         </div>
       </section>
 
-      {/* Key currency explainer */}
       <section className="max-w-3xl mx-auto px-6 py-20 text-center">
         <h2 className="font-display text-heading-xl font-bold mb-6" style={{ color: '#0A0A0A' }}>
-          Keys, explained in four steps.
+          Membership, explained in four steps.
         </h2>
         <div className="space-y-4">
           {[
-            { n: '1', text: 'Choose your length — 1, 2, or 4 weeks — and your group size. That combination sets your one-time price and the size of your key bank: one key for every day of membership.' },
-            { n: '2', text: '1 key = 1 night, at any home in the Club — the same in January as in August. There\'s no per-property rate and no seasonal pricing, because this isn\'t a rental.' },
-            { n: '3', text: 'Every home in the Club is open to you at once — not just one. Move freely between them, staying wherever fits what you need, whenever you need it.' },
-            { n: '4', text: 'Spend your keys however you like: one night this weekend, five next month, all in one home or split across several. Your keys don\'t expire — nothing forces you to use them all at once.' },
+            { n: '1', text: 'Choose your length — from 1 week up to 12 months — and your group size. That combination sets your one-time membership price. From 3 months upward, a commitment discount applies.' },
+            { n: '2', text: 'Every home in the Club is open to you the same way — in January as in August. There\'s no per-home rate and no seasonal pricing, because this isn\'t a rental.' },
+            { n: '3', text: 'Move freely between homes, staying wherever fits what you need, whenever you need it.' },
+            { n: '4', text: 'Use your membership however you like: a short stay now, a longer one later, all in one home or split across several. It doesn\'t expire — nothing forces you to use it all at once.' },
           ].map(({ n, text }) => (
             <div key={n} className="flex gap-4 p-5 rounded-card text-left" style={{ background: '#F5F5F5', border: '1px solid #E5E5E5' }}>
               <span className="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-caption font-bold" style={{ background: '#0A0A0A', color: '#FFFFFF' }}>{n}</span>
@@ -165,7 +161,6 @@ export function HowItWorksPage() {
         </div>
       </section>
 
-      {/* FAQ */}
       <section style={{ background: '#F5F5F5', borderTop: '1px solid #E5E5E5' }} className="py-16">
         <div className="max-w-3xl mx-auto px-6">
           <h2 className="font-display text-heading-xl font-bold text-center mb-10" style={{ color: '#0A0A0A' }}>Frequently asked questions</h2>
@@ -180,7 +175,6 @@ export function HowItWorksPage() {
         </div>
       </section>
 
-      {/* CTA */}
       <section className="py-16 text-center" style={{ background: '#0A0A0A' }}>
         <div className="max-w-xl mx-auto px-6">
           <h2 className="font-display text-heading-xl font-bold mb-6" style={{ color: '#FFFFFF' }}>Ready to join the Club?</h2>

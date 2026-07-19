@@ -99,14 +99,14 @@ export function AdminSettingsPage() {
           </FormField>
         </Card>
 
-        {/* Key rules */}
+        {/* Membership rules (internal units) */}
         <Card className="space-y-4">
-          <h2 className="text-body-md font-semibold text-text-primary">Key Rules</h2>
+          <h2 className="text-body-md font-semibold text-text-primary">Membership Rules</h2>
           <div className="grid grid-cols-2 gap-4">
-            <FormField label="Max keys per purchase">
+            <FormField label="Max units per top-up">
               <Input type="number" min="1" value={maxKeys} onChange={(e) => setMaxKeys(e.target.value)} />
             </FormField>
-            <FormField label="Min keys per booking">
+            <FormField label="Min units per stay">
               <Input type="number" min="1" value={minKeys} onChange={(e) => setMinKeys(e.target.value)} />
             </FormField>
           </div>

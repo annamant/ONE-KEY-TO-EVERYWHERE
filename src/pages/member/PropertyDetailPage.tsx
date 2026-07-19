@@ -10,12 +10,12 @@ import {
   StarIcon,
   BuildingOfficeIcon,
 } from '@heroicons/react/24/outline'
-import { KeyIcon } from '@heroicons/react/24/solid'
+import { SparklesIcon } from '@heroicons/react/24/solid'
 import type { DateRange } from 'react-day-picker'
 import { useMockApi } from '@/hooks/useMockApi'
 import { mockProperties } from '@/services'
 import { useAuth } from '@/contexts/AuthContext'
-import { calculateKeyCost } from '@/utils/keyCalc'
+import { calculateMembershipUse } from '@/utils/keyCalc'
 import { formatDate } from '@/utils/format'
 import { getPropertyCoverImage } from '@/utils/property'
 import { Badge } from '@/components/ui/Badge'
@@ -56,7 +56,7 @@ export function PropertyDetailPage() {
 
   const blackoutDates = property.blackoutDates.map((d) => parseISO(d))
   const cost = dateRange?.from && dateRange?.to
-    ? calculateKeyCost(formatDate(dateRange.from, 'yyyy-MM-dd'), formatDate(dateRange.to, 'yyyy-MM-dd'))
+    ? calculateMembershipUse(formatDate(dateRange.from, 'yyyy-MM-dd'), formatDate(dateRange.to, 'yyyy-MM-dd'))
     : null
 
   const handleBook = () => {
@@ -194,9 +194,9 @@ export function PropertyDetailPage() {
           {/* Access rules */}
           <div className="bg-okte-slate-50 rounded-lg p-4">
             <p className="text-body-sm text-text-muted">
-              <strong className="text-text-primary">Min access:</strong> {property.minStay} days
+              <strong className="text-text-primary">Shortest stay:</strong> {property.minStay}
               {' · '}
-              <strong className="text-text-primary">Max access:</strong> {property.maxStay} days
+              <strong className="text-text-primary">Longest stay:</strong> {property.maxStay}
             </p>
           </div>
         </div>
@@ -206,11 +206,11 @@ export function PropertyDetailPage() {
           <div className="bg-surface rounded-card shadow-card p-5 sticky top-24">
             <div className="flex items-center justify-between mb-4">
               <div>
-                <span className="text-heading-lg font-bold text-text-primary">1</span>
-                <span className="text-body-sm text-text-muted ml-1">key per night</span>
+                <p className="text-heading-md font-bold text-text-primary">Included</p>
+                <p className="text-body-sm text-text-muted">with your membership</p>
               </div>
               <div className="flex items-center gap-1 bg-okte-gold-50 px-3 py-1 rounded-pill">
-                <KeyIcon className="w-4 h-4 text-okte-gold-600" />
+                <SparklesIcon className="w-4 h-4 text-okte-gold-600" />
                 <span className="text-body-sm font-semibold text-okte-gold-700">Same at every home</span>
               </div>
             </div>
@@ -247,15 +247,10 @@ export function PropertyDetailPage() {
             </div>
 
             {cost && (
-              <div className="border-t border-border pt-4 mb-4 space-y-2">
-                <div className="flex justify-between text-body-sm">
-                  <span className="text-text-muted">{cost.nights} nights from your key balance</span>
-                  <span>{cost.total} keys</span>
-                </div>
-                <div className="flex justify-between text-body-md font-semibold border-t border-border pt-2 mt-2">
-                  <span>Total</span>
-                  <span className="text-okte-gold-700">{cost.total} keys</span>
-                </div>
+              <div className="border-t border-border pt-4 mb-4">
+                <p className="text-body-sm text-text-muted">
+                  This stay is covered by your Club membership. No separate charge.
+                </p>
               </div>
             )}
 
@@ -264,11 +259,11 @@ export function PropertyDetailPage() {
               disabled={!dateRange?.from || !dateRange?.to}
               onClick={handleBook}
             >
-              {dateRange?.from && dateRange?.to ? 'Reserve Now' : 'Select dates to continue'}
+              {dateRange?.from && dateRange?.to ? 'Continue' : 'Select dates to continue'}
             </Button>
 
             {!dateRange?.from && (
-              <p className="text-caption text-text-muted text-center mt-2">No charge until you confirm</p>
+              <p className="text-caption text-text-muted text-center mt-2">Nothing is confirmed until you review</p>
             )}
           </div>
         </div>

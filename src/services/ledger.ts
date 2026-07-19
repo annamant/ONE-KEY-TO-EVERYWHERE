@@ -58,6 +58,6 @@ export const ledgerService = {
       booking_id: e.bookingId ?? '',
       admin_note: e.adminNote ?? '',
     }))
-    exportCsv(`key-statement-${Date.now()}.csv`, rows)
+    exportCsv(`membership-history-${Date.now()}.csv`, rows)
   },
 }

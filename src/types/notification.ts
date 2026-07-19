@@ -2,7 +2,11 @@ export type NotificationType =
   | 'booking_confirmed'
   | 'booking_cancelled'
   | 'booking_modified'
+  | 'membership_credited'
+  | 'membership_debited'
+  /** @deprecated */
   | 'keys_credited'
+  /** @deprecated */
   | 'keys_debited'
   | 'household_invite'
   | 'property_approved'

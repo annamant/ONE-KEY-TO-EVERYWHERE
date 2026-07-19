@@ -23,10 +23,12 @@ export function formatRelative(date: string | Date): string {
   return formatDistanceToNow(d, { addSuffix: true })
 }
 
-export function formatKeys(amount: number): string {
-  return `${amount} ${amount === 1 ? 'key' : 'keys'}`
+/** @deprecated Membership has no named currency — use formatMembershipRemaining. */
+export function formatKeys(_amount: number): string {
+  return 'Included in membership'
 }
 
+/** @deprecated */
 export function formatKeysCompact(amount: number): string {
   return amount.toString()
 }

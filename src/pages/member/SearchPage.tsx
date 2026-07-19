@@ -66,7 +66,7 @@ export function SearchPage() {
       {/* Header */}
       <div className="mb-6">
         <h1 className="text-heading-xl text-text-primary font-semibold mb-1">Find Your Stay</h1>
-        <p className="text-body-sm text-text-muted">Browse available properties and reserve with keys</p>
+        <p className="text-body-sm text-text-muted">Browse Club homes included with your membership</p>
       </div>
 
       {/* Search + Filter Bar */}

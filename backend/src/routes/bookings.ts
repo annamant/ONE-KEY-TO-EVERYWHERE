@@ -17,7 +17,7 @@ function rowToBooking(row: Record<string, unknown>) {
     checkOut: row.check_out,
     nights: row.nights,
     guests: row.guests,
-    keysCharged: row.keys_charged,
+    membershipUsed: row.keys_charged,
     status: row.status,
     cancellationReason: row.cancellation_reason ?? null,
     cancelledAt: row.cancelled_at ?? null,
@@ -99,7 +99,7 @@ router.post('/', authenticate, requireRole('member'), (req, res, next) => {
       const balance = wallet?.balance_after ?? 0
 
       if (balance < cost.total) {
-        throw Object.assign(new Error('Insufficient key balance'), { status: 402 })
+        throw Object.assign(new Error('Membership does not cover this stay'), { status: 402 })
       }
 
       const now = new Date().toISOString()
@@ -115,7 +115,7 @@ router.post('/', authenticate, requireRole('member'), (req, res, next) => {
         INSERT INTO ledger_entries (id,user_id,type,amount,balance_after,description,booking_id,created_at)
         VALUES (?,?,?,?,?,?,?,?)
       `).run(ledgerId, req.user!.userId, 'booking_debit', -cost.total, balance - cost.total,
-        `${prop.title} — ${cost.nights} days`, bookingId, now)
+        `${prop.title}`, bookingId, now)
 
       // Increment property total_bookings
       db.prepare('UPDATE properties SET total_bookings = total_bookings + 1, updated_at = ? WHERE id = ?').run(now, propertyId)
@@ -199,8 +199,8 @@ router.post('/:id/cancel', authenticate, (req, res, next) => {
         UPDATE bookings SET status = 'cancelled', cancellation_reason = ?, cancelled_at = ?, updated_at = ? WHERE id = ?
       `).run(reason ?? null, now, now, req.params.id)
 
-      // Refund keys
-      const keysCharged = row.keys_charged as number
+      // Return membership for cancelled stay
+      const membershipUsed = row.keys_charged as number
       const wallet = db.prepare(
         'SELECT balance_after FROM ledger_entries WHERE user_id = ? ORDER BY rowid DESC LIMIT 1'
       ).get(row.member_id as string) as { balance_after: number } | undefined
@@ -209,7 +209,7 @@ router.post('/:id/cancel', authenticate, (req, res, next) => {
       db.prepare(`
         INSERT INTO ledger_entries (id,user_id,type,amount,balance_after,description,booking_id,created_at)
         VALUES (?,?,?,?,?,?,?,?)
-      `).run(generateId('ledger'), row.member_id, 'cancellation_refund', keysCharged, balance + keysCharged,
+      `).run(generateId('ledger'), row.member_id, 'cancellation_refund', membershipUsed, balance + membershipUsed,
         'Refund: booking cancellation', req.params.id, now)
 
       return db.prepare('SELECT * FROM bookings WHERE id = ?').get(req.params.id) as Record<string, unknown>

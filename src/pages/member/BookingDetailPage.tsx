@@ -4,7 +4,7 @@ import {
   CalendarDaysIcon,
   MapPinIcon,
   UserGroupIcon,
-  KeyIcon,
+  SparklesIcon,
   PencilIcon,
   XCircleIcon,
 } from '@heroicons/react/24/outline'
@@ -12,7 +12,7 @@ import type { DateRange } from 'react-day-picker'
 import { useMockApi } from '@/hooks/useMockApi'
 import { mockBookings, mockProperties } from '@/services'
 import { useToast } from '@/contexts/ToastContext'
-import { formatDateRange, formatDate, formatKeys } from '@/utils/format'
+import { formatDateRange, formatDate } from '@/utils/format'
 import { Badge } from '@/components/ui/Badge'
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
@@ -154,11 +154,11 @@ export function BookingDetailPage() {
           </div>
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-okte-gold-50 flex items-center justify-center">
-              <KeyIcon className="w-5 h-5 text-okte-gold-600" />
+              <SparklesIcon className="w-5 h-5 text-okte-gold-600" />
             </div>
             <div>
-              <p className="text-caption text-text-muted">Keys charged</p>
-              <p className="text-body-sm font-medium text-okte-gold-700">{formatKeys(booking.keysCharged)}</p>
+              <p className="text-caption text-text-muted">Coverage</p>
+              <p className="text-body-sm font-medium text-okte-gold-700">Included in membership</p>
             </div>
           </div>
           {booking.cancellationReason && (
@@ -203,7 +203,7 @@ export function BookingDetailPage() {
         onConfirm={handleCancel}
         loading={cancelling}
         title="Cancel Booking"
-        message={`Are you sure you want to cancel this booking? ${formatKeys(booking.keysCharged)} will be refunded to your wallet.`}
+        message="Are you sure you want to cancel this booking? The membership used for this stay will be returned to you."
         confirmLabel="Yes, cancel booking"
       />
 
@@ -226,7 +226,7 @@ export function BookingDetailPage() {
         }
       >
         <p className="text-body-sm text-text-muted mb-4">
-          Select new dates. Your key balance will be adjusted accordingly.
+          Select new dates. Your membership will be adjusted if the length changes.
         </p>
         <DateRangePicker
           value={newDates}

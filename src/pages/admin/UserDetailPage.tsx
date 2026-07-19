@@ -167,9 +167,9 @@ export function AdminUserDetailPage() {
       {/* Key balance */}
       {user.role === 'member' && (
         <Card className="mb-4">
-          <h3 className="text-body-md font-semibold text-text-primary mb-2">Key Balance</h3>
+          <h3 className="text-body-md font-semibold text-text-primary mb-2">Membership balance</h3>
           <p className="text-heading-md font-bold text-okte-gold-600">
-            {(ledger ?? []).length > 0 ? (ledger ?? [])[0].balanceAfter : 0} keys
+            {(ledger ?? []).length > 0 ? (ledger ?? [])[0].balanceAfter : 0} units
           </p>
           <p className="text-caption text-text-muted">{(ledger ?? []).length} ledger entries</p>
         </Card>
@@ -189,7 +189,7 @@ export function AdminUserDetailPage() {
                 <tr className="border-b border-border bg-okte-slate-50">
                   <th className="text-left px-5 py-3 text-caption font-semibold text-text-muted uppercase">ID</th>
                   <th className="text-left px-5 py-3 text-caption font-semibold text-text-muted uppercase">Dates</th>
-                  <th className="text-left px-5 py-3 text-caption font-semibold text-text-muted uppercase">Keys</th>
+                  <th className="text-left px-5 py-3 text-caption font-semibold text-text-muted uppercase">Units</th>
                   <th className="text-left px-5 py-3 text-caption font-semibold text-text-muted uppercase">Status</th>
                 </tr>
               </thead>
@@ -198,7 +198,7 @@ export function AdminUserDetailPage() {
                   <tr key={b.id} className="border-b border-border last:border-0">
                     <td className="px-5 py-3 text-body-sm font-mono text-text-muted">{b.id.slice(0, 8)}</td>
                     <td className="px-5 py-3 text-body-sm text-text-muted whitespace-nowrap">{formatDateRange(b.checkIn, b.checkOut)}</td>
-                    <td className="px-5 py-3 text-body-sm font-medium text-okte-gold-600">{b.keysCharged}</td>
+                    <td className="px-5 py-3 text-body-sm font-medium text-okte-gold-600">{b.membershipUsed}</td>
                     <td className="px-5 py-3"><Badge color={bookingColor[b.status] ?? 'gray'} size="sm">{b.status}</Badge></td>
                   </tr>
                 ))}

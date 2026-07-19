@@ -1,13 +1,21 @@
 import { differenceInDays, parseISO } from 'date-fns'
 
-// 1 key = 1 night, at any Club home, with no per-property rate and no seasonal
-// variation. A stay's cost is simply how many nights it covers.
-export interface KeyCostBreakdown {
-  nights: number
-  total: number
+/** How much membership a stay uses. Internal only — never shown as a currency. */
+export interface MembershipUse {
+  /** Length of stay in calendar overnight units (internal ledger amount). */
+  units: number
 }
 
-export function calculateKeyCost(checkIn: string, checkOut: string): KeyCostBreakdown {
-  const nights = differenceInDays(parseISO(checkOut), parseISO(checkIn))
-  return { nights, total: nights }
+export function calculateMembershipUse(checkIn: string, checkOut: string): MembershipUse {
+  const units = differenceInDays(parseISO(checkOut), parseISO(checkIn))
+  return { units }
 }
+
+/** @deprecated Use calculateMembershipUse */
+export const calculateKeyCost = (checkIn: string, checkOut: string) => {
+  const { units } = calculateMembershipUse(checkIn, checkOut)
+  return { nights: units, total: units }
+}
+
+/** @deprecated Use MembershipUse */
+export type KeyCostBreakdown = { nights: number; total: number }

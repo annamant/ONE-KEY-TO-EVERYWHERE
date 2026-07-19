@@ -34,7 +34,7 @@ export function OwnerDashboardPage() {
   const myPropertyIds = new Set((properties ?? []).map((p) => p.id))
   const myBookings = (allBookings ?? []).filter((b) => myPropertyIds.has(b.propertyId))
   const activeBookings = myBookings.filter((b) => ['confirmed', 'active'].includes(b.status))
-  const totalKeys = myBookings.filter((b) => b.status !== 'cancelled').reduce((s, b) => s + b.keysCharged, 0)
+  const totalStays = myBookings.filter((b) => b.status !== 'cancelled').length
   const approvedProps = (properties ?? []).filter((p) => p.status === 'approved').length
 
   // Monthly chart data
@@ -76,8 +76,8 @@ export function OwnerDashboardPage() {
           deltaLabel="vs last month"
         />
         <StatCard
-          label="Keys Earned"
-          value={totalKeys}
+          label="Member stays hosted"
+          value={totalStays}
           icon={<KeyIcon className="w-5 h-5" />}
           iconBg="bg-okte-gold-50 text-okte-gold-600"
         />
@@ -139,7 +139,7 @@ export function OwnerDashboardPage() {
                     </div>
                     <div className="text-right">
                       <Badge color={statusColor[b.status] ?? 'gray'} size="sm">{b.status}</Badge>
-                      <p className="text-caption text-okte-gold-600 font-medium mt-1">{b.keysCharged} keys</p>
+                      <p className="text-caption text-okte-gold-600 font-medium mt-1">Membership stay</p>
                     </div>
                   </li>
                 )

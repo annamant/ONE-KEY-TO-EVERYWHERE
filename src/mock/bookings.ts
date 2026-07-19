@@ -3,7 +3,7 @@ import { db, delay, generateId } from './db'
 import { mockLedger } from './ledger'
 import { mockProperties } from './properties'
 import { mockNotifications } from './notifications'
-import { calculateKeyCost } from '@/utils/keyCalc'
+import { calculateMembershipUse } from '@/utils/keyCalc'
 import { formatDateRange } from '@/utils/format'
 
 const mockBookings = {
@@ -53,16 +53,12 @@ const mockBookings = {
     const property = db.properties.find((p) => p.id === params.propertyId)
     if (!property) throw new Error('Property not found')
 
-    const { total: keysCharged, nights } = calculateKeyCost(
-      params.checkIn,
-      params.checkOut
-    )
+    const { units } = calculateMembershipUse(params.checkIn, params.checkOut)
 
-    // Debit keys (throws if insufficient)
     await mockLedger.debit(
       params.memberId,
-      keysCharged,
-      `${property.title} — ${nights} days`,
+      units,
+      `${property.title} — ${formatDateRange(params.checkIn, params.checkOut)}`,
       undefined,
       'booking_debit'
     )
@@ -75,9 +71,9 @@ const mockBookings = {
       householdId: params.householdId,
       checkIn: params.checkIn,
       checkOut: params.checkOut,
-      nights,
+      nights: units,
       guests: params.guests,
-      keysCharged,
+      membershipUsed: units,
       status: 'confirmed',
       confirmedAt: now,
       createdAt: now,
@@ -85,14 +81,11 @@ const mockBookings = {
     }
     db.bookings.push(booking)
 
-    // Update ledger entry with booking id
     const lastEntry = db.ledgerEntries[db.ledgerEntries.length - 1]
     lastEntry.bookingId = booking.id
 
-    // Increment property total bookings
     property.totalBookings++
 
-    // Send notifications
     await mockNotifications.push(params.memberId, {
       type: 'booking_confirmed',
       title: 'Booking Confirmed',
@@ -115,14 +108,14 @@ const mockBookings = {
     if (!booking) throw new Error('Booking not found')
     if (booking.status === 'cancelled') throw new Error('Already cancelled')
 
-    const refundAmount = booking.keysCharged
+    const refundAmount = booking.membershipUsed
     const property = db.properties.find((p) => p.id === booking.propertyId)
     const propertyName = property?.title ?? 'property'
 
     await mockLedger.credit(
       booking.memberId,
       refundAmount,
-      `Refund: ${propertyName} cancellation`,
+      `Returned: ${propertyName} cancellation`,
       'cancellation_refund'
     )
 
@@ -135,7 +128,7 @@ const mockBookings = {
     await mockNotifications.push(booking.memberId, {
       type: 'booking_cancelled',
       title: 'Booking Cancelled',
-      body: `Your ${propertyName} booking has been cancelled. ${refundAmount} keys refunded.`,
+      body: `Your ${propertyName} booking has been cancelled. Membership for this stay has been returned.`,
       link: '/member/wallet',
     })
 
@@ -155,17 +148,14 @@ const mockBookings = {
     const property = db.properties.find((p) => p.id === booking.propertyId)
     if (!property) throw new Error('Property not found')
 
-    const { total: newKeysCharged, nights: newNights } = calculateKeyCost(
-      newDates.checkIn,
-      newDates.checkOut
-    )
-    const diff = newKeysCharged - booking.keysCharged
+    const { units: newUnits } = calculateMembershipUse(newDates.checkIn, newDates.checkOut)
+    const diff = newUnits - booking.membershipUsed
 
     if (diff > 0) {
       await mockLedger.debit(
         booking.memberId,
         diff,
-        `Modification: ${property.title} — key top-up`,
+        `Modification: ${property.title}`,
         booking.id,
         'modification_debit'
       )
@@ -173,15 +163,15 @@ const mockBookings = {
       await mockLedger.credit(
         booking.memberId,
         Math.abs(diff),
-        `Modification: ${property.title} — key refund`,
+        `Modification: ${property.title}`,
         'modification_refund'
       )
     }
 
     booking.checkIn = newDates.checkIn
     booking.checkOut = newDates.checkOut
-    booking.nights = newNights
-    booking.keysCharged = newKeysCharged
+    booking.nights = newUnits
+    booking.membershipUsed = newUnits
     booking.updatedAt = new Date().toISOString()
 
     return booking
