@@ -1,70 +1,75 @@
-import { lazy, Suspense } from 'react'
+import { Suspense } from 'react'
 import { createBrowserRouter, Navigate, Outlet } from 'react-router-dom'
 import { RequireAuth } from './guards/RequireAuth'
 import { RequireRole } from './guards/RequireRole'
 import { RequireActive } from './guards/RequireActive'
 import { RedirectIfAuthed } from './guards/RedirectIfAuthed'
 import { PageSpinner } from '@/components/ui/Spinner'
+import { RouteErrorPage } from '@/components/feedback/RouteErrorPage'
+import { lazyWithRetry } from '@/utils/lazyWithRetry'
 
 // Layouts (kept eager — shells wrap most navigations)
 import { MemberShell } from '@/components/layout/MemberShell'
 import { OwnerShell } from '@/components/layout/OwnerShell'
 import { AdminShell } from '@/components/layout/AdminShell'
 
-const LandingPage = lazy(() => import('@/pages/public/LandingPage').then((m) => ({ default: m.LandingPage })))
-const HowItWorksPage = lazy(() => import('@/pages/public/HowItWorksPage').then((m) => ({ default: m.HowItWorksPage })))
-const PricingPage = lazy(() => import('@/pages/public/PricingPage').then((m) => ({ default: m.PricingPage })))
-const WaitlistPage = lazy(() => import('@/pages/public/WaitlistPage').then((m) => ({ default: m.WaitlistPage })))
-const OpenDoorsPage = lazy(() => import('@/pages/public/OpenDoorsPage').then((m) => ({ default: m.OpenDoorsPage })))
-const NotFoundPage = lazy(() => import('@/pages/public/NotFoundPage').then((m) => ({ default: m.NotFoundPage })))
+const LandingPage = lazyWithRetry(() => import('@/pages/public/LandingPage').then((m) => ({ default: m.LandingPage })))
+const HowItWorksPage = lazyWithRetry(() => import('@/pages/public/HowItWorksPage').then((m) => ({ default: m.HowItWorksPage })))
+const PricingPage = lazyWithRetry(() => import('@/pages/public/PricingPage').then((m) => ({ default: m.PricingPage })))
+const WaitlistPage = lazyWithRetry(() => import('@/pages/public/WaitlistPage').then((m) => ({ default: m.WaitlistPage })))
+const OpenDoorsPage = lazyWithRetry(() => import('@/pages/public/OpenDoorsPage').then((m) => ({ default: m.OpenDoorsPage })))
+const NotFoundPage = lazyWithRetry(() => import('@/pages/public/NotFoundPage').then((m) => ({ default: m.NotFoundPage })))
 
-const LoginPage = lazy(() => import('@/pages/auth/LoginPage').then((m) => ({ default: m.LoginPage })))
-const SignupPage = lazy(() => import('@/pages/auth/SignupPage').then((m) => ({ default: m.SignupPage })))
-const RoleSelectPage = lazy(() => import('@/pages/auth/RoleSelectPage').then((m) => ({ default: m.RoleSelectPage })))
-const ForgotPasswordPage = lazy(() => import('@/pages/auth/ForgotPasswordPage').then((m) => ({ default: m.ForgotPasswordPage })))
-const ResetPasswordPage = lazy(() => import('@/pages/auth/ResetPasswordPage').then((m) => ({ default: m.ResetPasswordPage })))
-const VerifyEmailPage = lazy(() => import('@/pages/auth/VerifyEmailPage').then((m) => ({ default: m.VerifyEmailPage })))
+const LoginPage = lazyWithRetry(() => import('@/pages/auth/LoginPage').then((m) => ({ default: m.LoginPage })))
+const SignupPage = lazyWithRetry(() => import('@/pages/auth/SignupPage').then((m) => ({ default: m.SignupPage })))
+const RoleSelectPage = lazyWithRetry(() => import('@/pages/auth/RoleSelectPage').then((m) => ({ default: m.RoleSelectPage })))
+const ForgotPasswordPage = lazyWithRetry(() => import('@/pages/auth/ForgotPasswordPage').then((m) => ({ default: m.ForgotPasswordPage })))
+const ResetPasswordPage = lazyWithRetry(() => import('@/pages/auth/ResetPasswordPage').then((m) => ({ default: m.ResetPasswordPage })))
+const VerifyEmailPage = lazyWithRetry(() => import('@/pages/auth/VerifyEmailPage').then((m) => ({ default: m.VerifyEmailPage })))
 
-const MemberDashboardPage = lazy(() => import('@/pages/member/DashboardPage').then((m) => ({ default: m.MemberDashboardPage })))
-const SearchPage = lazy(() => import('@/pages/member/SearchPage').then((m) => ({ default: m.SearchPage })))
-const PropertyDetailPage = lazy(() => import('@/pages/member/PropertyDetailPage').then((m) => ({ default: m.PropertyDetailPage })))
-const BookingCheckoutPage = lazy(() => import('@/pages/member/BookingCheckoutPage').then((m) => ({ default: m.BookingCheckoutPage })))
-const BookingConfirmPage = lazy(() => import('@/pages/member/BookingConfirmPage').then((m) => ({ default: m.BookingConfirmPage })))
-const BookingsPage = lazy(() => import('@/pages/member/BookingsPage').then((m) => ({ default: m.BookingsPage })))
-const BookingDetailPage = lazy(() => import('@/pages/member/BookingDetailPage').then((m) => ({ default: m.BookingDetailPage })))
-const WalletPage = lazy(() => import('@/pages/member/WalletPage').then((m) => ({ default: m.WalletPage })))
-const PackagesPage = lazy(() => import('@/pages/member/PackagesPage').then((m) => ({ default: m.PackagesPage })))
-const HouseholdPage = lazy(() => import('@/pages/member/HouseholdPage').then((m) => ({ default: m.HouseholdPage })))
-const HouseholdInvitePage = lazy(() => import('@/pages/member/HouseholdInvitePage').then((m) => ({ default: m.HouseholdInvitePage })))
-const MemberProfilePage = lazy(() => import('@/pages/member/ProfilePage').then((m) => ({ default: m.MemberProfilePage })))
-const PendingApprovalPage = lazy(() => import('@/pages/member/PendingApprovalPage').then((m) => ({ default: m.PendingApprovalPage })))
+const MemberDashboardPage = lazyWithRetry(() => import('@/pages/member/DashboardPage').then((m) => ({ default: m.MemberDashboardPage })))
+const SearchPage = lazyWithRetry(() => import('@/pages/member/SearchPage').then((m) => ({ default: m.SearchPage })))
+const PropertyDetailPage = lazyWithRetry(() => import('@/pages/member/PropertyDetailPage').then((m) => ({ default: m.PropertyDetailPage })))
+const BookingCheckoutPage = lazyWithRetry(() => import('@/pages/member/BookingCheckoutPage').then((m) => ({ default: m.BookingCheckoutPage })))
+const BookingConfirmPage = lazyWithRetry(() => import('@/pages/member/BookingConfirmPage').then((m) => ({ default: m.BookingConfirmPage })))
+const BookingsPage = lazyWithRetry(() => import('@/pages/member/BookingsPage').then((m) => ({ default: m.BookingsPage })))
+const BookingDetailPage = lazyWithRetry(() => import('@/pages/member/BookingDetailPage').then((m) => ({ default: m.BookingDetailPage })))
+const WalletPage = lazyWithRetry(() => import('@/pages/member/WalletPage').then((m) => ({ default: m.WalletPage })))
+const PackagesPage = lazyWithRetry(() => import('@/pages/member/PackagesPage').then((m) => ({ default: m.PackagesPage })))
+const HouseholdPage = lazyWithRetry(() => import('@/pages/member/HouseholdPage').then((m) => ({ default: m.HouseholdPage })))
+const HouseholdInvitePage = lazyWithRetry(() => import('@/pages/member/HouseholdInvitePage').then((m) => ({ default: m.HouseholdInvitePage })))
+const MemberProfilePage = lazyWithRetry(() => import('@/pages/member/ProfilePage').then((m) => ({ default: m.MemberProfilePage })))
+const PendingApprovalPage = lazyWithRetry(() => import('@/pages/member/PendingApprovalPage').then((m) => ({ default: m.PendingApprovalPage })))
 
-const OwnerDashboardPage = lazy(() => import('@/pages/owner/DashboardPage').then((m) => ({ default: m.OwnerDashboardPage })))
-const OwnerPropertiesPage = lazy(() => import('@/pages/owner/PropertiesPage').then((m) => ({ default: m.OwnerPropertiesPage })))
-const PropertyOnboardPage = lazy(() => import('@/pages/owner/PropertyOnboardPage').then((m) => ({ default: m.PropertyOnboardPage })))
-const PropertyEditPage = lazy(() => import('@/pages/owner/PropertyEditPage').then((m) => ({ default: m.PropertyEditPage })))
-const PropertyCalendarPage = lazy(() => import('@/pages/owner/PropertyCalendarPage').then((m) => ({ default: m.PropertyCalendarPage })))
-const OwnerReservationsPage = lazy(() => import('@/pages/owner/ReservationsPage').then((m) => ({ default: m.OwnerReservationsPage })))
-const OwnerReservationDetailPage = lazy(() => import('@/pages/owner/ReservationDetailPage').then((m) => ({ default: m.OwnerReservationDetailPage })))
-const OwnerAnalyticsPage = lazy(() => import('@/pages/owner/AnalyticsPage').then((m) => ({ default: m.OwnerAnalyticsPage })))
-const OwnerProfilePage = lazy(() => import('@/pages/owner/ProfilePage').then((m) => ({ default: m.OwnerProfilePage })))
+const OwnerDashboardPage = lazyWithRetry(() => import('@/pages/owner/DashboardPage').then((m) => ({ default: m.OwnerDashboardPage })))
+const OwnerPropertiesPage = lazyWithRetry(() => import('@/pages/owner/PropertiesPage').then((m) => ({ default: m.OwnerPropertiesPage })))
+const PropertyOnboardPage = lazyWithRetry(() => import('@/pages/owner/PropertyOnboardPage').then((m) => ({ default: m.PropertyOnboardPage })))
+const PropertyEditPage = lazyWithRetry(() => import('@/pages/owner/PropertyEditPage').then((m) => ({ default: m.PropertyEditPage })))
+const PropertyCalendarPage = lazyWithRetry(() => import('@/pages/owner/PropertyCalendarPage').then((m) => ({ default: m.PropertyCalendarPage })))
+const OwnerReservationsPage = lazyWithRetry(() => import('@/pages/owner/ReservationsPage').then((m) => ({ default: m.OwnerReservationsPage })))
+const OwnerReservationDetailPage = lazyWithRetry(() => import('@/pages/owner/ReservationDetailPage').then((m) => ({ default: m.OwnerReservationDetailPage })))
+const OwnerAnalyticsPage = lazyWithRetry(() => import('@/pages/owner/AnalyticsPage').then((m) => ({ default: m.OwnerAnalyticsPage })))
+const OwnerProfilePage = lazyWithRetry(() => import('@/pages/owner/ProfilePage').then((m) => ({ default: m.OwnerProfilePage })))
 
-const AdminDashboardPage = lazy(() => import('@/pages/admin/DashboardPage').then((m) => ({ default: m.AdminDashboardPage })))
-const AdminUsersPage = lazy(() => import('@/pages/admin/UsersPage').then((m) => ({ default: m.AdminUsersPage })))
-const AdminUserDetailPage = lazy(() => import('@/pages/admin/UserDetailPage').then((m) => ({ default: m.AdminUserDetailPage })))
-const AdminPropertiesPage = lazy(() => import('@/pages/admin/PropertiesPage').then((m) => ({ default: m.AdminPropertiesPage })))
-const AdminPropertyReviewPage = lazy(() => import('@/pages/admin/PropertyReviewPage').then((m) => ({ default: m.AdminPropertyReviewPage })))
-const AdminBookingsPage = lazy(() => import('@/pages/admin/BookingsPage').then((m) => ({ default: m.AdminBookingsPage })))
-const AdminLedgerPage = lazy(() => import('@/pages/admin/LedgerPage').then((m) => ({ default: m.AdminLedgerPage })))
-const AdminSettingsPage = lazy(() => import('@/pages/admin/SettingsPage').then((m) => ({ default: m.AdminSettingsPage })))
-const AdminProfilePage = lazy(() => import('@/pages/admin/ProfilePage').then((m) => ({ default: m.AdminProfilePage })))
-const AdminRequestsPage = lazy(() => import('@/pages/admin/RequestsPage').then((m) => ({ default: m.AdminRequestsPage })))
+const AdminDashboardPage = lazyWithRetry(() => import('@/pages/admin/DashboardPage').then((m) => ({ default: m.AdminDashboardPage })))
+const AdminUsersPage = lazyWithRetry(() => import('@/pages/admin/UsersPage').then((m) => ({ default: m.AdminUsersPage })))
+const AdminUserDetailPage = lazyWithRetry(() => import('@/pages/admin/UserDetailPage').then((m) => ({ default: m.AdminUserDetailPage })))
+const AdminPropertiesPage = lazyWithRetry(() => import('@/pages/admin/PropertiesPage').then((m) => ({ default: m.AdminPropertiesPage })))
+const AdminPropertyReviewPage = lazyWithRetry(() => import('@/pages/admin/PropertyReviewPage').then((m) => ({ default: m.AdminPropertyReviewPage })))
+const AdminBookingsPage = lazyWithRetry(() => import('@/pages/admin/BookingsPage').then((m) => ({ default: m.AdminBookingsPage })))
+const AdminLedgerPage = lazyWithRetry(() => import('@/pages/admin/LedgerPage').then((m) => ({ default: m.AdminLedgerPage })))
+const AdminSettingsPage = lazyWithRetry(() => import('@/pages/admin/SettingsPage').then((m) => ({ default: m.AdminSettingsPage })))
+const AdminProfilePage = lazyWithRetry(() => import('@/pages/admin/ProfilePage').then((m) => ({ default: m.AdminProfilePage })))
+const AdminRequestsPage = lazyWithRetry(() => import('@/pages/admin/RequestsPage').then((m) => ({ default: m.AdminRequestsPage })))
 
 const L = ({ children }: { children: React.ReactNode }) => (
   <Suspense fallback={<PageSpinner />}>{children}</Suspense>
 )
 
 export const router = createBrowserRouter([
+  {
+    errorElement: <RouteErrorPage />,
+    children: [
   { path: '/', element: <L><LandingPage /></L> },
   { path: '/how-it-works', element: <L><HowItWorksPage /></L> },
   { path: '/pricing', element: <L><PricingPage /></L> },
@@ -175,4 +180,6 @@ export const router = createBrowserRouter([
     ],
   },
   { path: '*', element: <L><NotFoundPage /></L> },
+    ],
+  },
 ])
