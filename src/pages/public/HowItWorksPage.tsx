@@ -2,13 +2,18 @@ import { useNavigate } from 'react-router-dom'
 import { Button } from '@/components/ui/Button'
 import { PublicNav } from '@/components/layout/PublicNav'
 import { PublicFooter } from '@/components/layout/PublicFooter'
-import { KeyIcon, HomeModernIcon, UserPlusIcon, SparklesIcon } from '@heroicons/react/24/outline'
+import { KeyIcon, HomeModernIcon, UserPlusIcon, SparklesIcon, CalendarDaysIcon } from '@heroicons/react/24/outline'
 
 const MEMBER_STEPS = [
   {
     icon: <UserPlusIcon className="w-6 h-6" />,
     title: 'Apply and be accepted',
     desc: 'The Club is selective. You submit a profile, share your story, and wait for approval. You don\'t join by accident — that\'s the point.',
+  },
+  {
+    icon: <CalendarDaysIcon className="w-6 h-6" />,
+    title: 'Choose your membership level',
+    desc: 'From a short-term membership to try the Club, to a long-term membership for those who travel often — pick the level that matches your life. Every level opens the same doors.',
   },
   {
     icon: <KeyIcon className="w-6 h-6" />,
@@ -18,7 +23,7 @@ const MEMBER_STEPS = [
   {
     icon: <HomeModernIcon className="w-6 h-6" />,
     title: 'Access any home in the Club',
-    desc: 'Choose a home. Use your keys to access it. There is no seasonal "price" — each home has a fixed key rate. The same in winter as in summer.',
+    desc: 'Your keys aren\'t tied to one property — they open every home in the Club. Pick a trullo this weekend, a masseria for a family reunion, a coastal villa in August: whatever fits what you need, each time. Every home has a fixed key rate, the same in winter as in summer.',
   },
   {
     icon: <SparklesIcon className="w-6 h-6" />,
@@ -28,6 +33,14 @@ const MEMBER_STEPS = [
 ]
 
 const FAQS = [
+  {
+    q: 'Do I only get access to one home?',
+    a: 'No. Membership isn\'t tied to a single property. Every home in the Club is available to you, and you choose whichever one fits your plans each time you use your keys — a different home for a weekend away, a family gathering, or a longer stay.',
+  },
+  {
+    q: 'What are the membership levels?',
+    a: 'Membership levels range from short-term — a lighter commitment with a smaller key bundle, ideal for trying the Club — to long-term memberships built for those who travel often and want a larger bundle of keys. Every level gives you the exact same access: all Club homes, at the same fixed key rate.',
+  },
   {
     q: 'Do keys expire?',
     a: 'No. The keys you receive with your membership are yours. There is no expiry date, no penalty for not travelling every month. You can wait for the right moment.',
@@ -102,22 +115,47 @@ export function HowItWorksPage() {
         </div>
       </section>
 
+      {/* One key, every home */}
+      <section style={{ background: '#F5F5F5', borderTop: '1px solid #E5E5E5', borderBottom: '1px solid #E5E5E5' }} className="py-16">
+        <div className="max-w-3xl mx-auto px-6 text-center">
+          <h2 className="font-display text-heading-xl font-bold mb-4" style={{ color: '#0A0A0A' }}>
+            All the homes. Not just one.
+          </h2>
+          <p className="text-body-md" style={{ color: '#6B6B6B' }}>
+            A Club membership doesn't lock you into a single property. Your keys work across the entire Club collection —
+            every trullo, masseria, and coastal home is yours to choose from, every time. Book a different home for every
+            trip, depending on what the moment calls for: a quiet weekend, a family celebration, a long summer stay.
+          </p>
+        </div>
+      </section>
+
       {/* Key currency explainer */}
       <section className="max-w-3xl mx-auto px-6 py-20 text-center">
         <h2 className="font-display text-heading-xl font-bold mb-6" style={{ color: '#0A0A0A' }}>
-          Keys, explained in three steps.
+          Keys, explained in four steps.
         </h2>
         <div className="space-y-4">
           {[
-            { n: '1', text: 'With your membership you receive a number of keys. They are yours — they never expire.' },
+            { n: '1', text: 'Choose a membership level — from short-term to long-term — and receive a bundle of keys with it. They are yours: they never expire.' },
             { n: '2', text: 'Each Club home has a fixed key rate. The same in January as in August. No dynamic pricing, ever.' },
-            { n: '3', text: 'Choose a home, use your keys to access it. The longer your visit, the more you save. The Club rewards those who take their time, not those who rush.' },
+            { n: '3', text: 'Every home in the Club is open to you, not just one. Choose whichever home fits what you need each time you use your keys.' },
+            { n: '4', text: 'The longer your visit, the more you save. The Club rewards those who take their time, not those who rush.' },
           ].map(({ n, text }) => (
             <div key={n} className="flex gap-4 p-5 rounded-card text-left" style={{ background: '#F5F5F5', border: '1px solid #E5E5E5' }}>
               <span className="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-caption font-bold" style={{ background: '#0A0A0A', color: '#FFFFFF' }}>{n}</span>
               <p className="text-body-sm" style={{ color: '#0A0A0A' }}>{text}</p>
             </div>
           ))}
+        </div>
+        <div className="mt-8">
+          <Button
+            variant="outline"
+            size="md"
+            onClick={() => navigate('/pricing')}
+            style={{ borderColor: '#0A0A0A', color: '#0A0A0A' }}
+          >
+            Compare membership levels
+          </Button>
         </div>
       </section>
 
