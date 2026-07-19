@@ -21,12 +21,18 @@ export const ledgerService = {
     amount: number,
     description: string,
     type: LedgerEntryType = 'package_credit',
-    adminId?: string,
+    _adminId?: string,
     adminNote?: string
   ) =>
-    api.post<LedgerEntry>('/ledger/admin/correction', {
-      userId, amount, direction: 'credit', note: adminNote ?? description, type,
-    }),
+    type === 'package_credit'
+      ? api.post<LedgerEntry>('/ledger/admin/package-credit', {
+          userId,
+          units: amount,
+          note: adminNote ?? description,
+        })
+      : api.post<LedgerEntry>('/ledger/admin/correction', {
+          userId, amount, direction: 'credit', note: adminNote ?? description, type,
+        }),
 
   debit: (
     userId: string,

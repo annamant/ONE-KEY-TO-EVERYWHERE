@@ -4,6 +4,8 @@ import { authenticate } from '../middleware/auth'
 import { requireRole } from '../middleware/requireRole'
 import { sendEmail, membershipApprovedEmail } from '../utils/email'
 import { notifyUser } from '../utils/notifyAdmins'
+import { assertAllowedImageUrls, isAllowedImageUrl } from '../utils/cloudinary'
+import { clampString, optionalClampString } from '../utils/validate'
 
 const router = Router()
 
@@ -47,7 +49,6 @@ router.get('/', authenticate, requireRole('admin'), (req, res, next) => {
 router.get('/:id', authenticate, (req, res, next) => {
   try {
     const { id } = req.params
-    // users can only access own profile unless admin
     if (req.user!.role !== 'admin' && req.user!.userId !== id) {
       res.status(403).json({ error: 'Forbidden' })
       return
@@ -72,10 +73,17 @@ router.patch('/:id', authenticate, (req, res, next) => {
     const now = new Date().toISOString()
     const sets: string[] = ['updated_at = ?']
     const params: unknown[] = [now]
-    if (firstName !== undefined) { sets.push('first_name = ?'); params.push(firstName) }
-    if (lastName !== undefined)  { sets.push('last_name = ?');  params.push(lastName) }
-    if (phone !== undefined)     { sets.push('phone = ?');      params.push(phone) }
-    if (avatarUrl !== undefined) { sets.push('avatar_url = ?'); params.push(avatarUrl) }
+    if (firstName !== undefined) { sets.push('first_name = ?'); params.push(clampString(firstName, 80, 'firstName')) }
+    if (lastName !== undefined)  { sets.push('last_name = ?');  params.push(clampString(lastName, 80, 'lastName')) }
+    if (phone !== undefined)     { sets.push('phone = ?');      params.push(optionalClampString(phone, 40, 'phone') ?? null) }
+    if (avatarUrl !== undefined) {
+      if (avatarUrl && !isAllowedImageUrl(avatarUrl)) {
+        // Allow empty to clear; otherwise require Cloudinary (or https in dev)
+        assertAllowedImageUrls([avatarUrl], 'avatarUrl')
+      }
+      sets.push('avatar_url = ?')
+      params.push(avatarUrl || null)
+    }
     params.push(id)
     db.prepare(`UPDATE users SET ${sets.join(', ')} WHERE id = ?`).run(...params)
     const row = db.prepare('SELECT * FROM users WHERE id = ?').get(id) as Record<string, unknown>
@@ -103,8 +111,14 @@ router.post('/:id/role', authenticate, requireRole('admin'), (req, res, next) =>
       res.status(400).json({ error: 'User already has that role' }); return
     }
 
+    if (existing.role === 'admin' && role !== 'admin') {
+      const admins = db.prepare("SELECT COUNT(*) AS c FROM users WHERE role = 'admin' AND status != 'suspended'").get() as { c: number }
+      if (admins.c <= 1) {
+        res.status(400).json({ error: 'Cannot demote the last admin' }); return
+      }
+    }
+
     const now = new Date().toISOString()
-    // Promoting a suspended/pending user to admin implies activation
     const newStatus = role === 'admin' ? 'active' : existing.status
     db.prepare('UPDATE users SET role = ?, status = ?, updated_at = ? WHERE id = ?').run(role, newStatus, now, id)
     const row = db.prepare('SELECT * FROM users WHERE id = ?').get(id) as Record<string, unknown>
@@ -125,8 +139,18 @@ router.post('/:id/moderate', authenticate, requireRole('admin'), async (req, res
     const existing = db.prepare('SELECT * FROM users WHERE id = ?').get(id) as Record<string, unknown> | undefined
     if (!existing) { res.status(404).json({ error: 'User not found' }); return }
 
+    if (action === 'suspend' && existing.role === 'admin') {
+      const admins = db.prepare("SELECT COUNT(*) AS c FROM users WHERE role = 'admin' AND status != 'suspended'").get() as { c: number }
+      if (admins.c <= 1) {
+        res.status(400).json({ error: 'Cannot suspend the last admin' }); return
+      }
+    }
+
     const now = new Date().toISOString()
     if (action === 'verify' && existing.role === 'member') {
+      if (existing.status !== 'pending_verification') {
+        res.status(400).json({ error: 'Only pending members can be verified this way' }); return
+      }
       db.prepare('UPDATE users SET status = ?, email_verified_at = COALESCE(email_verified_at, ?), updated_at = ? WHERE id = ?')
         .run(newStatus, now, now, id)
     } else {

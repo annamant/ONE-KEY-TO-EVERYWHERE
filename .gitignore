@@ -9,3 +9,6 @@ dist/
 *.db
 *.db-shm
 *.db-wal
+
+# Transient Railway CLI artifacts
+.railway-config-pull-*/

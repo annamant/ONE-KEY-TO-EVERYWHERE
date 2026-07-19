@@ -27,8 +27,8 @@ export function OwnerDashboardPage() {
     [currentUser?.id]
   )
   const { data: allBookings } = useMockApi(
-    () => mockBookings.adminList(),
-    []
+    () => mockBookings.listForOwner(),
+    [currentUser?.id]
   )
 
   const myPropertyIds = new Set((properties ?? []).map((p) => p.id))
@@ -72,8 +72,6 @@ export function OwnerDashboardPage() {
           value={myBookings.filter((b) => b.status !== 'cancelled').length}
           icon={<CalendarDaysIcon className="w-5 h-5" />}
           iconBg="bg-blue-50 text-blue-600"
-          delta={12}
-          deltaLabel="vs last month"
         />
         <StatCard
           label="Member stays hosted"

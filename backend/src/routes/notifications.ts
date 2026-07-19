@@ -20,10 +20,18 @@ function rowToNotif(row: Record<string, unknown>) {
 // GET /api/notifications
 router.get('/', authenticate, (req, res, next) => {
   try {
+    const { limit, offset } = req.query as Record<string, string | undefined>
     const db = getDb()
+    const lim = Math.min(Math.max(Number(limit ?? 50), 1), 100)
+    const off = Math.max(Number(offset ?? 0), 0)
     const rows = db.prepare(
-      'SELECT * FROM notifications WHERE user_id = ? ORDER BY created_at DESC LIMIT 50'
-    ).all(req.user!.userId) as Record<string, unknown>[]
+      'SELECT * FROM notifications WHERE user_id = ? ORDER BY created_at DESC LIMIT ? OFFSET ?'
+    ).all(req.user!.userId, lim, off) as Record<string, unknown>[]
+    const unread = db.prepare(
+      'SELECT COUNT(*) AS c FROM notifications WHERE user_id = ? AND read = 0'
+    ).get(req.user!.userId) as { c: number }
+    // Keep array response for existing clients; expose unread via header
+    res.setHeader('X-Unread-Count', String(unread.c))
     res.json(rows.map(rowToNotif))
   } catch (e) { next(e) }
 })

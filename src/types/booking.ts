@@ -1,5 +1,14 @@
 export type BookingStatus = 'pending' | 'confirmed' | 'active' | 'completed' | 'cancelled' | 'no_show'
 
+export interface BookingGuest {
+  id: string
+  firstName: string
+  lastName: string
+  email: string
+  phone?: string | null
+  avatarUrl?: string | null
+}
+
 export interface Booking {
   id: string
   memberId: string
@@ -17,4 +26,6 @@ export interface Booking {
   confirmedAt?: string
   createdAt: string
   updatedAt: string
+  /** Present on owner/admin booking detail responses. */
+  guest?: BookingGuest | null
 }

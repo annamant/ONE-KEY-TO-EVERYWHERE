@@ -25,7 +25,7 @@ export function OwnerAnalyticsPage() {
     () => mockProperties.listByOwner(currentUser!.id),
     [currentUser?.id]
   )
-  const { data: allBookings } = useMockApi(() => mockBookings.adminList(), [])
+  const { data: allBookings } = useMockApi(() => mockBookings.listForOwner(), [currentUser?.id])
 
   const myPropertyIds = new Set((properties ?? []).map((p) => p.id))
   const myBookings = (allBookings ?? []).filter((b) => myPropertyIds.has(b.propertyId))

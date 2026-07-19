@@ -1,11 +1,9 @@
-// Re-export services with the same names as the mock modules.
-// This means changing `from '@/mock'` to `from '@/services'` is the only
-// change needed at all call sites.
-export { userService as mockUsers } from './users'
-export { propertyService as mockProperties } from './properties'
-export { bookingService as mockBookings } from './bookings'
-export { ledgerService as mockLedger } from './ledger'
-export { householdService as mockHouseholds } from './households'
-export { notificationService as mockNotifications } from './notifications'
+// Real API services. `mock*` aliases kept for existing call sites.
+export { userService, userService as mockUsers } from './users'
+export { propertyService, propertyService as mockProperties } from './properties'
+export { bookingService, bookingService as mockBookings } from './bookings'
+export { ledgerService, ledgerService as mockLedger } from './ledger'
+export { householdService, householdService as mockHouseholds } from './households'
+export { notificationService, notificationService as mockNotifications } from './notifications'
 export { waitlistService, adminRequestsService } from './waitlist'
 export { settingsService } from './settings'

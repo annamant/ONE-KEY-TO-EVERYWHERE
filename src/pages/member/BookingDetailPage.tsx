@@ -69,7 +69,7 @@ export function BookingDetailPage() {
     setCancelling(true)
     try {
       await mockBookings.cancel(id!)
-      toast('Booking cancelled. Keys refunded.', 'success')
+      toast('Booking cancelled. Refund applied per cancellation policy.', 'success')
       setCancelOpen(false)
       refetch()
     } catch (err) {

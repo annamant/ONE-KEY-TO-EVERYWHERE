@@ -67,3 +67,31 @@ export function publicIdFromUrl(url: string): string | null {
     return null
   }
 }
+
+/** Only allow image URLs hosted on our configured Cloudinary cloud. */
+export function isAllowedImageUrl(url: string): boolean {
+  if (!url || typeof url !== 'string') return false
+  const cloud = process.env.CLOUDINARY_CLOUD_NAME
+  if (!cloud) {
+    // In local/dev without Cloudinary, allow https URLs only for seed/demo data.
+    return process.env.NODE_ENV !== 'production' && /^https:\/\//i.test(url)
+  }
+  try {
+    const u = new URL(url)
+    return (
+      u.protocol === 'https:' &&
+      (u.hostname === 'res.cloudinary.com' || u.hostname.endsWith('.cloudinary.com')) &&
+      u.pathname.includes(`/${cloud}/`)
+    )
+  } catch {
+    return false
+  }
+}
+
+export function assertAllowedImageUrls(urls: string[], field: string): void {
+  for (const url of urls) {
+    if (!isAllowedImageUrl(url)) {
+      throw Object.assign(new Error(`${field} must be Cloudinary URLs from this account`), { status: 400 })
+    }
+  }
+}

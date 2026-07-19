@@ -3,6 +3,8 @@ import { getDb } from '../db/connection'
 import { authenticate } from '../middleware/auth'
 import { requireRole } from '../middleware/requireRole'
 import { generateId } from '../utils/generateId'
+import { getSettings } from '../utils/settings'
+import { clampString } from '../utils/validate'
 
 const router = Router()
 
@@ -82,28 +84,80 @@ router.post('/admin/correction', authenticate, requireRole('admin'), (req, res, 
     if (!userId || amount === undefined || !direction) {
       res.status(400).json({ error: 'userId, amount and direction are required' }); return
     }
-    const db = getDb()
-    const wallet = db.prepare(
-      'SELECT balance_after FROM ledger_entries WHERE user_id = ? ORDER BY rowid DESC LIMIT 1'
-    ).get(userId) as { balance_after: number } | undefined
-    const currentBalance = wallet?.balance_after ?? 0
-
-    const signed = direction === 'credit' ? Math.abs(amount) : -Math.abs(amount)
-    const newBalance = currentBalance + signed
-    if (newBalance < 0) {
-      res.status(400).json({ error: 'Correction would result in negative balance' }); return
+    if (!Number.isFinite(amount) || amount <= 0) {
+      res.status(400).json({ error: 'amount must be a positive number' }); return
+    }
+    if (direction !== 'credit' && direction !== 'debit') {
+      res.status(400).json({ error: 'direction must be credit or debit' }); return
     }
 
-    const now = new Date().toISOString()
-    const id = generateId('ledger')
-    const entryType = type ?? (direction === 'credit' ? 'admin_correction' : 'booking_debit')
-    db.prepare(`
-      INSERT INTO ledger_entries (id,user_id,type,amount,balance_after,description,booking_id,admin_id,admin_note,created_at)
-      VALUES (?,?,?,?,?,?,?,?,?,?)
-    `).run(id, userId, entryType, signed, newBalance, note ?? 'Admin correction', bookingId ?? null, req.user!.userId, note ?? null, now)
+    const db = getDb()
+    const apply = db.transaction(() => {
+      const wallet = db.prepare(
+        'SELECT balance_after FROM ledger_entries WHERE user_id = ? ORDER BY rowid DESC LIMIT 1'
+      ).get(userId) as { balance_after: number } | undefined
+      const currentBalance = wallet?.balance_after ?? 0
 
-    const row = db.prepare('SELECT * FROM ledger_entries WHERE id = ?').get(id) as Record<string, unknown>
-    res.status(201).json(rowToEntry(row))
+      const signed = direction === 'credit' ? Math.abs(amount) : -Math.abs(amount)
+      const newBalance = currentBalance + signed
+      if (newBalance < 0) {
+        throw Object.assign(new Error('Correction would result in negative balance'), { status: 400 })
+      }
+
+      const now = new Date().toISOString()
+      const id = generateId('ledger')
+      const entryType = type ?? (direction === 'credit' ? 'admin_correction' : 'booking_debit')
+      const desc = note ? clampString(note, 500, 'note') : 'Admin correction'
+      db.prepare(`
+        INSERT INTO ledger_entries (id,user_id,type,amount,balance_after,description,booking_id,admin_id,admin_note,created_at)
+        VALUES (?,?,?,?,?,?,?,?,?,?)
+      `).run(id, userId, entryType, signed, newBalance, desc, bookingId ?? null, req.user!.userId, note ?? null, now)
+
+      return db.prepare('SELECT * FROM ledger_entries WHERE id = ?').get(id) as Record<string, unknown>
+    })
+
+    res.status(201).json(rowToEntry(apply()))
+  } catch (e) { next(e) }
+})
+
+/**
+ * POST /api/ledger/admin/package-credit
+ * Manual membership purchase workflow (pre-Stripe): credit stay units after bank transfer.
+ */
+router.post('/admin/package-credit', authenticate, requireRole('admin'), (req, res, next) => {
+  try {
+    const { userId, units, note } = req.body as { userId?: string; units?: number; note?: string }
+    if (!userId || units === undefined) {
+      res.status(400).json({ error: 'userId and units are required' }); return
+    }
+    const settings = getSettings()
+    const n = Number(units)
+    if (!Number.isInteger(n) || n < settings.minKeys || n > settings.maxKeys) {
+      res.status(400).json({ error: `units must be an integer between ${settings.minKeys} and ${settings.maxKeys}` }); return
+    }
+
+    const db = getDb()
+    const user = db.prepare('SELECT id, role FROM users WHERE id = ?').get(userId) as { id: string; role: string } | undefined
+    if (!user || user.role !== 'member') {
+      res.status(400).json({ error: 'Package credit is only for members' }); return
+    }
+
+    const apply = db.transaction(() => {
+      const wallet = db.prepare(
+        'SELECT balance_after FROM ledger_entries WHERE user_id = ? ORDER BY rowid DESC LIMIT 1'
+      ).get(userId) as { balance_after: number } | undefined
+      const balance = wallet?.balance_after ?? 0
+      const now = new Date().toISOString()
+      const id = generateId('ledger')
+      const desc = note ? clampString(note, 500, 'note') : `Membership package credit (${n} units)`
+      db.prepare(`
+        INSERT INTO ledger_entries (id,user_id,type,amount,balance_after,description,booking_id,admin_id,admin_note,created_at)
+        VALUES (?,?,?,?,?,?,?,?,?,?)
+      `).run(id, userId, 'package_credit', n, balance + n, desc, null, req.user!.userId, desc, now)
+      return db.prepare('SELECT * FROM ledger_entries WHERE id = ?').get(id) as Record<string, unknown>
+    })
+
+    res.status(201).json(rowToEntry(apply()))
   } catch (e) { next(e) }
 })
 

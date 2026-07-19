@@ -11,6 +11,10 @@ export const bookingService = {
   listForProperty: (propertyId: string) =>
     api.get<Booking[]>(`/bookings/property/${propertyId}`),
 
+  /** Bookings across the authenticated owner's properties. */
+  listForOwner: () =>
+    api.get<Booking[]>('/bookings/owner'),
+
   adminList: (filters?: { status?: BookingStatus; memberId?: string; propertyId?: string }) => {
     const params = new URLSearchParams()
     if (filters?.status)     params.set('status', filters.status)

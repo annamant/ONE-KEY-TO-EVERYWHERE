@@ -198,3 +198,16 @@ CREATE TABLE IF NOT EXISTS settings (
   updated_at  TEXT NOT NULL,
   updated_by  TEXT REFERENCES users(id)
 );
+
+CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
+CREATE INDEX IF NOT EXISTS idx_users_role_status ON users(role, status);
+CREATE INDEX IF NOT EXISTS idx_properties_owner_status ON properties(owner_id, status);
+CREATE INDEX IF NOT EXISTS idx_properties_status ON properties(status);
+CREATE INDEX IF NOT EXISTS idx_bookings_member ON bookings(member_id);
+CREATE INDEX IF NOT EXISTS idx_bookings_property ON bookings(property_id);
+CREATE INDEX IF NOT EXISTS idx_bookings_status ON bookings(status);
+CREATE INDEX IF NOT EXISTS idx_ledger_user ON ledger_entries(user_id);
+CREATE INDEX IF NOT EXISTS idx_notifications_user_read ON notifications(user_id, read);
+CREATE INDEX IF NOT EXISTS idx_household_members_user ON household_members(user_id);
+CREATE INDEX IF NOT EXISTS idx_invite_tokens_household ON invite_tokens(household_id);
+CREATE INDEX IF NOT EXISTS idx_owner_waitlist_email ON owner_waitlist(email);

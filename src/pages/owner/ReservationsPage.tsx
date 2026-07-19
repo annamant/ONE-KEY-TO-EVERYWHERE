@@ -31,8 +31,8 @@ export function OwnerReservationsPage() {
     [currentUser?.id]
   )
   const { data: allBookings, loading: bookingsLoading } = useMockApi(
-    () => mockBookings.adminList(),
-    []
+    () => mockBookings.listForOwner(),
+    [currentUser?.id]
   )
 
   const myPropertyIds = new Set((properties ?? []).map((p) => p.id))

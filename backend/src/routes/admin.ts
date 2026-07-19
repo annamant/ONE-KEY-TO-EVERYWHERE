@@ -5,6 +5,8 @@ import { requireRole } from '../middleware/requireRole'
 import { rowToOwnerEntry, rowToMemberEntry } from './waitlist'
 import { sendEmail, membershipApprovedEmail } from '../utils/email'
 import { notifyUser } from '../utils/notifyAdmins'
+import { generateId } from '../utils/generateId'
+import { getSettings, validateSettingsPatch } from '../utils/settings'
 
 const router = Router()
 
@@ -21,6 +23,36 @@ function rowToUser(row: Record<string, unknown>) {
     createdAt: row.created_at,
     updatedAt: row.updated_at,
   }
+}
+
+function creditPackage(db: ReturnType<typeof getDb>, userId: string, units: number, adminId: string, note: string) {
+  const settings = getSettings()
+  if (units < settings.minKeys || units > settings.maxKeys) {
+    throw Object.assign(
+      new Error(`Package credit must be between ${settings.minKeys} and ${settings.maxKeys} units`),
+      { status: 400 }
+    )
+  }
+  const wallet = db.prepare(
+    'SELECT balance_after FROM ledger_entries WHERE user_id = ? ORDER BY rowid DESC LIMIT 1'
+  ).get(userId) as { balance_after: number } | undefined
+  const balance = wallet?.balance_after ?? 0
+  const now = new Date().toISOString()
+  db.prepare(`
+    INSERT INTO ledger_entries (id,user_id,type,amount,balance_after,description,booking_id,admin_id,admin_note,created_at)
+    VALUES (?,?,?,?,?,?,?,?,?,?)
+  `).run(
+    generateId('ledger'),
+    userId,
+    'package_credit',
+    units,
+    balance + units,
+    note,
+    null,
+    adminId,
+    note,
+    now,
+  )
 }
 
 // GET /api/admin/requests — all pending items for admin review
@@ -114,19 +146,31 @@ router.patch('/member-waitlist/:id', authenticate, requireRole('admin'), (req, r
   } catch (e) { next(e) }
 })
 
-// POST /api/admin/members/:id/approve — approve membership + send confirmation email
+/**
+ * POST /api/admin/members/:id/approve
+ * Body: { units?: number } — optional membership package credit (manual launch workflow).
+ */
 router.post('/members/:id/approve', authenticate, requireRole('admin'), async (req, res, next) => {
   try {
     const { id } = req.params
+    const { units } = req.body as { units?: number }
     const db = getDb()
     const row = db.prepare('SELECT * FROM users WHERE id = ?').get(id) as Record<string, unknown> | undefined
     if (!row) { res.status(404).json({ error: 'User not found' }); return }
     if (row.role !== 'member') { res.status(400).json({ error: 'Only member accounts can be approved' }); return }
-    if (row.status === 'active') { res.status(400).json({ error: 'Member is already active' }); return }
+    if (row.status !== 'pending_verification') {
+      res.status(400).json({ error: 'Only pending members can be approved' }); return
+    }
 
     const now = new Date().toISOString()
-    db.prepare('UPDATE users SET status = ?, email_verified_at = COALESCE(email_verified_at, ?), updated_at = ? WHERE id = ?')
-      .run('active', now, now, id)
+    db.transaction(() => {
+      db.prepare('UPDATE users SET status = ?, email_verified_at = COALESCE(email_verified_at, ?), updated_at = ? WHERE id = ?')
+        .run('active', now, now, id)
+      if (units !== undefined && units !== null) {
+        creditPackage(db, id, Number(units), req.user!.userId, `Membership package credit (${units} units)`)
+      }
+    })()
+
     const updated = db.prepare('SELECT * FROM users WHERE id = ?').get(id) as Record<string, unknown>
     const user = rowToUser(updated)
 
@@ -136,7 +180,9 @@ router.post('/members/:id/approve', authenticate, requireRole('admin'), async (r
     notifyUser(id, {
       type: 'membership_approved',
       title: 'Membership approved',
-      body: 'Your Club membership has been approved. You can now browse and book homes.',
+      body: units
+        ? `Your Club membership has been approved with ${units} stay units.`
+        : 'Your Club membership has been approved. An admin will credit your package after payment.',
       link: '/member/dashboard',
     })
 
@@ -158,21 +204,15 @@ router.get('/settings', authenticate, requireRole('admin'), (req, res, next) => 
 // PUT /api/admin/settings
 router.put('/settings', authenticate, requireRole('admin'), (req, res, next) => {
   try {
-    const body = req.body as Record<string, unknown>
-    const allowed = [
-      'platformName', 'supportEmail', 'defaultTier',
-      'maxKeys', 'minKeys', 'reviewDays', 'cancellationWindow', 'maintenanceMode',
-    ]
+    const patch = validateSettingsPatch(req.body as Record<string, unknown>)
     const db = getDb()
     const now = new Date().toISOString()
     const upsert = db.prepare(`
       INSERT INTO settings (key, value, updated_at, updated_by) VALUES (?,?,?,?)
       ON CONFLICT(key) DO UPDATE SET value = excluded.value, updated_at = excluded.updated_at, updated_by = excluded.updated_by
     `)
-    for (const key of allowed) {
-      if (body[key] !== undefined) {
-        upsert.run(key, String(body[key]), now, req.user!.userId)
-      }
+    for (const [key, value] of Object.entries(patch)) {
+      upsert.run(key, value, now, req.user!.userId)
     }
     res.json({ ok: true })
   } catch (e) { next(e) }

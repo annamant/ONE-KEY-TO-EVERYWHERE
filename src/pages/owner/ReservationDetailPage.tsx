@@ -1,12 +1,11 @@
 import { useParams, useNavigate } from 'react-router-dom'
-import { useToast } from '@/contexts/ToastContext'
 import { useMockApi } from '@/hooks/useMockApi'
-import { mockBookings, mockProperties, mockUsers } from '@/services'
+import { mockBookings, mockProperties } from '@/services'
 import { Badge } from '@/components/ui/Badge'
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
 import { PageSpinner } from '@/components/ui/Spinner'
-import { formatDateRange, formatDate, countNights } from '@/utils/format'
+import { formatDate, countNights } from '@/utils/format'
 import type { BadgeColor } from '@/components/ui/Badge'
 
 const statusColor: Record<string, BadgeColor> = {
@@ -16,17 +15,13 @@ const statusColor: Record<string, BadgeColor> = {
 export function OwnerReservationDetailPage() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
-  const { toast } = useToast()
 
-  const { data: booking, loading: bLoading, refetch } = useMockApi(() => mockBookings.getById(id!), [id])
+  const { data: booking, loading: bLoading } = useMockApi(() => mockBookings.getById(id!), [id])
   const { data: property } = useMockApi(
     () => booking ? mockProperties.getById(booking.propertyId) : Promise.resolve(null),
     [booking?.propertyId]
   )
-  const { data: guest } = useMockApi(
-    () => booking ? mockUsers.getById(booking.memberId) : Promise.resolve(null),
-    [booking?.memberId]
-  )
+  const guest = booking?.guest ?? null
 
   if (bLoading) return <PageSpinner />
   if (!booking) return (

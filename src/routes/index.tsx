@@ -1,80 +1,74 @@
+import { lazy, Suspense } from 'react'
 import { createBrowserRouter, Navigate, Outlet } from 'react-router-dom'
 import { RequireAuth } from './guards/RequireAuth'
 import { RequireRole } from './guards/RequireRole'
 import { RequireActive } from './guards/RequireActive'
 import { RedirectIfAuthed } from './guards/RedirectIfAuthed'
+import { PageSpinner } from '@/components/ui/Spinner'
 
-// Layouts
+// Layouts (kept eager — shells wrap most navigations)
 import { MemberShell } from '@/components/layout/MemberShell'
 import { OwnerShell } from '@/components/layout/OwnerShell'
 import { AdminShell } from '@/components/layout/AdminShell'
 
-// Public pages
-import { LandingPage } from '@/pages/public/LandingPage'
-import { HowItWorksPage } from '@/pages/public/HowItWorksPage'
-import { PricingPage } from '@/pages/public/PricingPage'
-import { WaitlistPage } from '@/pages/public/WaitlistPage'
-import { OpenDoorsPage } from '@/pages/public/OpenDoorsPage'
-import { NotFoundPage } from '@/pages/public/NotFoundPage'
+const LandingPage = lazy(() => import('@/pages/public/LandingPage').then((m) => ({ default: m.LandingPage })))
+const HowItWorksPage = lazy(() => import('@/pages/public/HowItWorksPage').then((m) => ({ default: m.HowItWorksPage })))
+const PricingPage = lazy(() => import('@/pages/public/PricingPage').then((m) => ({ default: m.PricingPage })))
+const WaitlistPage = lazy(() => import('@/pages/public/WaitlistPage').then((m) => ({ default: m.WaitlistPage })))
+const OpenDoorsPage = lazy(() => import('@/pages/public/OpenDoorsPage').then((m) => ({ default: m.OpenDoorsPage })))
+const NotFoundPage = lazy(() => import('@/pages/public/NotFoundPage').then((m) => ({ default: m.NotFoundPage })))
 
-// Auth pages
-import { LoginPage } from '@/pages/auth/LoginPage'
-import { SignupPage } from '@/pages/auth/SignupPage'
-import { RoleSelectPage } from '@/pages/auth/RoleSelectPage'
-import { ForgotPasswordPage } from '@/pages/auth/ForgotPasswordPage'
-import { ResetPasswordPage } from '@/pages/auth/ResetPasswordPage'
-import { VerifyEmailPage } from '@/pages/auth/VerifyEmailPage'
+const LoginPage = lazy(() => import('@/pages/auth/LoginPage').then((m) => ({ default: m.LoginPage })))
+const SignupPage = lazy(() => import('@/pages/auth/SignupPage').then((m) => ({ default: m.SignupPage })))
+const RoleSelectPage = lazy(() => import('@/pages/auth/RoleSelectPage').then((m) => ({ default: m.RoleSelectPage })))
+const ForgotPasswordPage = lazy(() => import('@/pages/auth/ForgotPasswordPage').then((m) => ({ default: m.ForgotPasswordPage })))
+const ResetPasswordPage = lazy(() => import('@/pages/auth/ResetPasswordPage').then((m) => ({ default: m.ResetPasswordPage })))
+const VerifyEmailPage = lazy(() => import('@/pages/auth/VerifyEmailPage').then((m) => ({ default: m.VerifyEmailPage })))
 
-// Member pages
-import { MemberDashboardPage } from '@/pages/member/DashboardPage'
-import { SearchPage } from '@/pages/member/SearchPage'
-import { PropertyDetailPage } from '@/pages/member/PropertyDetailPage'
-import { BookingCheckoutPage } from '@/pages/member/BookingCheckoutPage'
-import { BookingConfirmPage } from '@/pages/member/BookingConfirmPage'
-import { BookingsPage } from '@/pages/member/BookingsPage'
-import { BookingDetailPage } from '@/pages/member/BookingDetailPage'
-import { WalletPage } from '@/pages/member/WalletPage'
-import { HouseholdPage } from '@/pages/member/HouseholdPage'
-import { HouseholdInvitePage } from '@/pages/member/HouseholdInvitePage'
-import { MemberProfilePage } from '@/pages/member/ProfilePage'
-import { PendingApprovalPage } from '@/pages/member/PendingApprovalPage'
+const MemberDashboardPage = lazy(() => import('@/pages/member/DashboardPage').then((m) => ({ default: m.MemberDashboardPage })))
+const SearchPage = lazy(() => import('@/pages/member/SearchPage').then((m) => ({ default: m.SearchPage })))
+const PropertyDetailPage = lazy(() => import('@/pages/member/PropertyDetailPage').then((m) => ({ default: m.PropertyDetailPage })))
+const BookingCheckoutPage = lazy(() => import('@/pages/member/BookingCheckoutPage').then((m) => ({ default: m.BookingCheckoutPage })))
+const BookingConfirmPage = lazy(() => import('@/pages/member/BookingConfirmPage').then((m) => ({ default: m.BookingConfirmPage })))
+const BookingsPage = lazy(() => import('@/pages/member/BookingsPage').then((m) => ({ default: m.BookingsPage })))
+const BookingDetailPage = lazy(() => import('@/pages/member/BookingDetailPage').then((m) => ({ default: m.BookingDetailPage })))
+const WalletPage = lazy(() => import('@/pages/member/WalletPage').then((m) => ({ default: m.WalletPage })))
+const HouseholdPage = lazy(() => import('@/pages/member/HouseholdPage').then((m) => ({ default: m.HouseholdPage })))
+const HouseholdInvitePage = lazy(() => import('@/pages/member/HouseholdInvitePage').then((m) => ({ default: m.HouseholdInvitePage })))
+const MemberProfilePage = lazy(() => import('@/pages/member/ProfilePage').then((m) => ({ default: m.MemberProfilePage })))
+const PendingApprovalPage = lazy(() => import('@/pages/member/PendingApprovalPage').then((m) => ({ default: m.PendingApprovalPage })))
 
-// Owner pages
-import { OwnerDashboardPage } from '@/pages/owner/DashboardPage'
-import { OwnerPropertiesPage } from '@/pages/owner/PropertiesPage'
-import { PropertyOnboardPage } from '@/pages/owner/PropertyOnboardPage'
-import { PropertyEditPage } from '@/pages/owner/PropertyEditPage'
-import { PropertyCalendarPage } from '@/pages/owner/PropertyCalendarPage'
-import { OwnerReservationsPage } from '@/pages/owner/ReservationsPage'
-import { OwnerReservationDetailPage } from '@/pages/owner/ReservationDetailPage'
-import { OwnerAnalyticsPage } from '@/pages/owner/AnalyticsPage'
-import { OwnerProfilePage } from '@/pages/owner/ProfilePage'
+const OwnerDashboardPage = lazy(() => import('@/pages/owner/DashboardPage').then((m) => ({ default: m.OwnerDashboardPage })))
+const OwnerPropertiesPage = lazy(() => import('@/pages/owner/PropertiesPage').then((m) => ({ default: m.OwnerPropertiesPage })))
+const PropertyOnboardPage = lazy(() => import('@/pages/owner/PropertyOnboardPage').then((m) => ({ default: m.PropertyOnboardPage })))
+const PropertyEditPage = lazy(() => import('@/pages/owner/PropertyEditPage').then((m) => ({ default: m.PropertyEditPage })))
+const PropertyCalendarPage = lazy(() => import('@/pages/owner/PropertyCalendarPage').then((m) => ({ default: m.PropertyCalendarPage })))
+const OwnerReservationsPage = lazy(() => import('@/pages/owner/ReservationsPage').then((m) => ({ default: m.OwnerReservationsPage })))
+const OwnerReservationDetailPage = lazy(() => import('@/pages/owner/ReservationDetailPage').then((m) => ({ default: m.OwnerReservationDetailPage })))
+const OwnerAnalyticsPage = lazy(() => import('@/pages/owner/AnalyticsPage').then((m) => ({ default: m.OwnerAnalyticsPage })))
+const OwnerProfilePage = lazy(() => import('@/pages/owner/ProfilePage').then((m) => ({ default: m.OwnerProfilePage })))
 
-// Admin pages
-import { AdminDashboardPage } from '@/pages/admin/DashboardPage'
-import { AdminUsersPage } from '@/pages/admin/UsersPage'
-import { AdminUserDetailPage } from '@/pages/admin/UserDetailPage'
-import { AdminPropertiesPage } from '@/pages/admin/PropertiesPage'
-import { AdminPropertyReviewPage } from '@/pages/admin/PropertyReviewPage'
-import { AdminBookingsPage } from '@/pages/admin/BookingsPage'
-import { AdminLedgerPage } from '@/pages/admin/LedgerPage'
-import { AdminSettingsPage } from '@/pages/admin/SettingsPage'
-import { AdminProfilePage } from '@/pages/admin/ProfilePage'
-import { AdminRequestsPage } from '@/pages/admin/RequestsPage'
+const AdminDashboardPage = lazy(() => import('@/pages/admin/DashboardPage').then((m) => ({ default: m.AdminDashboardPage })))
+const AdminUsersPage = lazy(() => import('@/pages/admin/UsersPage').then((m) => ({ default: m.AdminUsersPage })))
+const AdminUserDetailPage = lazy(() => import('@/pages/admin/UserDetailPage').then((m) => ({ default: m.AdminUserDetailPage })))
+const AdminPropertiesPage = lazy(() => import('@/pages/admin/PropertiesPage').then((m) => ({ default: m.AdminPropertiesPage })))
+const AdminPropertyReviewPage = lazy(() => import('@/pages/admin/PropertyReviewPage').then((m) => ({ default: m.AdminPropertyReviewPage })))
+const AdminBookingsPage = lazy(() => import('@/pages/admin/BookingsPage').then((m) => ({ default: m.AdminBookingsPage })))
+const AdminLedgerPage = lazy(() => import('@/pages/admin/LedgerPage').then((m) => ({ default: m.AdminLedgerPage })))
+const AdminSettingsPage = lazy(() => import('@/pages/admin/SettingsPage').then((m) => ({ default: m.AdminSettingsPage })))
+const AdminProfilePage = lazy(() => import('@/pages/admin/ProfilePage').then((m) => ({ default: m.AdminProfilePage })))
+const AdminRequestsPage = lazy(() => import('@/pages/admin/RequestsPage').then((m) => ({ default: m.AdminRequestsPage })))
+
+const L = ({ children }: { children: React.ReactNode }) => (
+  <Suspense fallback={<PageSpinner />}>{children}</Suspense>
+)
 
 export const router = createBrowserRouter([
-  { path: '/', element: <LandingPage /> },
-  { path: '/how-it-works', element: <HowItWorksPage /> },
-  {
-    path: '/pricing',
-    element: (
-      <RequireAuth redirectTo="/auth/signup">
-        <PricingPage />
-      </RequireAuth>
-    ),
-  },
-  { path: '/waitlist', element: <WaitlistPage /> },
-  { path: '/open-doors', element: <OpenDoorsPage /> },
+  { path: '/', element: <L><LandingPage /></L> },
+  { path: '/how-it-works', element: <L><HowItWorksPage /></L> },
+  { path: '/pricing', element: <L><PricingPage /></L> },
+  { path: '/waitlist', element: <L><WaitlistPage /></L> },
+  { path: '/open-doors', element: <L><OpenDoorsPage /></L> },
   {
     path: '/auth',
     element: <Outlet />,
@@ -83,7 +77,7 @@ export const router = createBrowserRouter([
         path: 'login',
         element: (
           <RedirectIfAuthed>
-            <LoginPage />
+            <L><LoginPage /></L>
           </RedirectIfAuthed>
         ),
       },
@@ -91,7 +85,7 @@ export const router = createBrowserRouter([
         path: 'signup',
         element: (
           <RedirectIfAuthed>
-            <SignupPage />
+            <L><SignupPage /></L>
           </RedirectIfAuthed>
         ),
       },
@@ -99,13 +93,13 @@ export const router = createBrowserRouter([
         path: 'role-select',
         element: (
           <RequireAuth>
-            <RoleSelectPage />
+            <L><RoleSelectPage /></L>
           </RequireAuth>
         ),
       },
-      { path: 'forgot-password', element: <ForgotPasswordPage /> },
-      { path: 'reset-password', element: <ResetPasswordPage /> },
-      { path: 'verify-email', element: <VerifyEmailPage /> },
+      { path: 'forgot-password', element: <L><ForgotPasswordPage /></L> },
+      { path: 'reset-password', element: <L><ResetPasswordPage /></L> },
+      { path: 'verify-email', element: <L><VerifyEmailPage /></L> },
     ],
   },
   {
@@ -119,77 +113,18 @@ export const router = createBrowserRouter([
     ),
     children: [
       { index: true, element: <Navigate to="/member/dashboard" replace /> },
-      { path: 'dashboard', element: <MemberDashboardPage /> },
-      { path: 'pending', element: <PendingApprovalPage /> },
-      {
-        path: 'search',
-        element: (
-          <RequireActive>
-            <SearchPage />
-          </RequireActive>
-        ),
-      },
-      {
-        path: 'properties/:id',
-        element: (
-          <RequireActive>
-            <PropertyDetailPage />
-          </RequireActive>
-        ),
-      },
-      {
-        path: 'booking/checkout',
-        element: (
-          <RequireActive>
-            <BookingCheckoutPage />
-          </RequireActive>
-        ),
-      },
-      {
-        path: 'booking/confirmation/:id',
-        element: (
-          <RequireActive>
-            <BookingConfirmPage />
-          </RequireActive>
-        ),
-      },
-      {
-        path: 'bookings',
-        element: (
-          <RequireActive>
-            <BookingsPage />
-          </RequireActive>
-        ),
-      },
-      {
-        path: 'bookings/:id',
-        element: (
-          <RequireActive>
-            <BookingDetailPage />
-          </RequireActive>
-        ),
-      },
-      {
-        path: 'wallet',
-        element: (
-          <RequireActive>
-            <WalletPage />
-          </RequireActive>
-        ),
-      },
-      {
-        path: 'household',
-        element: (
-          <RequireActive>
-            <HouseholdPage />
-          </RequireActive>
-        ),
-      },
-      {
-        path: 'household/invite/:token',
-        element: <HouseholdInvitePage />,
-      },
-      { path: 'profile', element: <MemberProfilePage /> },
+      { path: 'dashboard', element: <L><MemberDashboardPage /></L> },
+      { path: 'pending', element: <L><PendingApprovalPage /></L> },
+      { path: 'search', element: <RequireActive><L><SearchPage /></L></RequireActive> },
+      { path: 'properties/:id', element: <RequireActive><L><PropertyDetailPage /></L></RequireActive> },
+      { path: 'booking/checkout', element: <RequireActive><L><BookingCheckoutPage /></L></RequireActive> },
+      { path: 'booking/confirmation/:id', element: <RequireActive><L><BookingConfirmPage /></L></RequireActive> },
+      { path: 'bookings', element: <RequireActive><L><BookingsPage /></L></RequireActive> },
+      { path: 'bookings/:id', element: <RequireActive><L><BookingDetailPage /></L></RequireActive> },
+      { path: 'wallet', element: <RequireActive><L><WalletPage /></L></RequireActive> },
+      { path: 'household', element: <RequireActive><L><HouseholdPage /></L></RequireActive> },
+      { path: 'household/invite/:token', element: <L><HouseholdInvitePage /></L> },
+      { path: 'profile', element: <L><MemberProfilePage /></L> },
     ],
   },
   {
@@ -203,15 +138,15 @@ export const router = createBrowserRouter([
     ),
     children: [
       { index: true, element: <Navigate to="/owner/dashboard" replace /> },
-      { path: 'dashboard', element: <OwnerDashboardPage /> },
-      { path: 'properties', element: <OwnerPropertiesPage /> },
-      { path: 'properties/new', element: <PropertyOnboardPage /> },
-      { path: 'properties/:id/edit', element: <PropertyEditPage /> },
-      { path: 'properties/:id/calendar', element: <PropertyCalendarPage /> },
-      { path: 'reservations', element: <OwnerReservationsPage /> },
-      { path: 'reservations/:id', element: <OwnerReservationDetailPage /> },
-      { path: 'analytics', element: <OwnerAnalyticsPage /> },
-      { path: 'profile', element: <OwnerProfilePage /> },
+      { path: 'dashboard', element: <L><OwnerDashboardPage /></L> },
+      { path: 'properties', element: <L><OwnerPropertiesPage /></L> },
+      { path: 'properties/new', element: <L><PropertyOnboardPage /></L> },
+      { path: 'properties/:id/edit', element: <L><PropertyEditPage /></L> },
+      { path: 'properties/:id/calendar', element: <L><PropertyCalendarPage /></L> },
+      { path: 'reservations', element: <L><OwnerReservationsPage /></L> },
+      { path: 'reservations/:id', element: <L><OwnerReservationDetailPage /></L> },
+      { path: 'analytics', element: <L><OwnerAnalyticsPage /></L> },
+      { path: 'profile', element: <L><OwnerProfilePage /></L> },
     ],
   },
   {
@@ -225,17 +160,17 @@ export const router = createBrowserRouter([
     ),
     children: [
       { index: true, element: <Navigate to="/admin/dashboard" replace /> },
-      { path: 'dashboard', element: <AdminDashboardPage /> },
-      { path: 'requests', element: <AdminRequestsPage /> },
-      { path: 'users', element: <AdminUsersPage /> },
-      { path: 'users/:id', element: <AdminUserDetailPage /> },
-      { path: 'properties', element: <AdminPropertiesPage /> },
-      { path: 'properties/:id/review', element: <AdminPropertyReviewPage /> },
-      { path: 'bookings', element: <AdminBookingsPage /> },
-      { path: 'ledger', element: <AdminLedgerPage /> },
-      { path: 'settings', element: <AdminSettingsPage /> },
-      { path: 'profile', element: <AdminProfilePage /> },
+      { path: 'dashboard', element: <L><AdminDashboardPage /></L> },
+      { path: 'requests', element: <L><AdminRequestsPage /></L> },
+      { path: 'users', element: <L><AdminUsersPage /></L> },
+      { path: 'users/:id', element: <L><AdminUserDetailPage /></L> },
+      { path: 'properties', element: <L><AdminPropertiesPage /></L> },
+      { path: 'properties/:id/review', element: <L><AdminPropertyReviewPage /></L> },
+      { path: 'bookings', element: <L><AdminBookingsPage /></L> },
+      { path: 'ledger', element: <L><AdminLedgerPage /></L> },
+      { path: 'settings', element: <L><AdminSettingsPage /></L> },
+      { path: 'profile', element: <L><AdminProfilePage /></L> },
     ],
   },
-  { path: '*', element: <NotFoundPage /> },
+  { path: '*', element: <L><NotFoundPage /></L> },
 ])

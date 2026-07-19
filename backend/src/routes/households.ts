@@ -2,10 +2,12 @@ import { Router } from 'express'
 import { getDb } from '../db/connection'
 import { authenticate } from '../middleware/auth'
 import { requireRole } from '../middleware/requireRole'
-import { generateId } from '../utils/generateId'
+import { generateId, generateSecureToken } from '../utils/generateId'
 import { sendEmail, householdInviteEmail, householdInviteUrl } from '../utils/email'
+import { clampString } from '../utils/validate'
 
 const router = Router()
+const VALID_ROLES = ['Manager', 'Booker', 'Viewer'] as const
 
 function buildHousehold(
   h: Record<string, unknown>,
@@ -22,6 +24,10 @@ function buildHousehold(
       role: m.role,
       status: m.status,
       joinedAt: m.joined_at,
+      firstName: m.first_name ?? null,
+      lastName: m.last_name ?? null,
+      email: m.email ?? null,
+      avatarUrl: m.avatar_url ?? null,
     })),
     invites: invites.map((i) => ({
       id: i.token,
@@ -41,9 +47,33 @@ function getHouseholdById(id: string) {
   const db = getDb()
   const h = db.prepare('SELECT * FROM households WHERE id = ?').get(id) as Record<string, unknown> | undefined
   if (!h) return null
-  const members = db.prepare('SELECT * FROM household_members WHERE household_id = ?').all(id) as Record<string, unknown>[]
+  const members = db.prepare(`
+    SELECT hm.*, u.first_name, u.last_name, u.email, u.avatar_url
+    FROM household_members hm
+    JOIN users u ON u.id = hm.user_id
+    WHERE hm.household_id = ?
+  `).all(id) as Record<string, unknown>[]
   const invites = db.prepare('SELECT * FROM invite_tokens WHERE household_id = ?').all(id) as Record<string, unknown>[]
   return buildHousehold(h, members, invites)
+}
+
+function assertHouseholdAccess(householdId: string, userId: string, role: string): void {
+  if (role === 'admin') return
+  const db = getDb()
+  const membership = db.prepare(
+    "SELECT 1 AS ok FROM household_members WHERE household_id = ? AND user_id = ? AND status = 'active'"
+  ).get(householdId, userId) as { ok: number } | undefined
+  if (!membership) {
+    throw Object.assign(new Error('Forbidden'), { status: 403 })
+  }
+}
+
+function countActiveManagers(householdId: string): number {
+  const db = getDb()
+  const row = db.prepare(
+    "SELECT COUNT(*) AS c FROM household_members WHERE household_id = ? AND status = 'active' AND role = 'Manager'"
+  ).get(householdId) as { c: number }
+  return row.c
 }
 
 // GET /api/households/mine
@@ -61,11 +91,10 @@ router.get('/mine', authenticate, requireRole('member'), (req, res, next) => {
 // POST /api/households
 router.post('/', authenticate, requireRole('member'), (req, res, next) => {
   try {
-    const { name } = req.body as { name?: string }
+    const name = clampString(req.body?.name, 80, 'name')
     if (!name) { res.status(400).json({ error: 'name is required' }); return }
 
     const db = getDb()
-    // Check user doesn't already belong to one
     const existing = db.prepare(
       "SELECT household_id FROM household_members WHERE user_id = ? AND status = 'active' LIMIT 1"
     ).get(req.user!.userId)
@@ -128,6 +157,10 @@ router.post('/accept-invite', authenticate, requireRole('member'), (req, res, ne
     if (invite.used_at) { res.status(400).json({ error: 'Invite already used' }); return }
     if (new Date(invite.expires_at as string) < new Date()) { res.status(400).json({ error: 'Invite expired' }); return }
 
+    if (req.user!.email.toLowerCase() !== String(invite.invitee_email).toLowerCase()) {
+      res.status(403).json({ error: 'This invite was sent to a different email address' }); return
+    }
+
     const existingHousehold = db.prepare(
       "SELECT household_id FROM household_members WHERE user_id = ? AND status = 'active' LIMIT 1"
     ).get(req.user!.userId) as { household_id: string } | undefined
@@ -171,6 +204,7 @@ router.post('/accept-invite', authenticate, requireRole('member'), (req, res, ne
 // GET /api/households/:id
 router.get('/:id', authenticate, (req, res, next) => {
   try {
+    assertHouseholdAccess(req.params.id, req.user!.userId, req.user!.role)
     const h = getHouseholdById(req.params.id)
     if (!h) { res.status(404).json({ error: 'Household not found' }); return }
     res.json(h)
@@ -180,8 +214,12 @@ router.get('/:id', authenticate, (req, res, next) => {
 // POST /api/households/:id/invite
 router.post('/:id/invite', authenticate, requireRole('member'), async (req, res, next) => {
   try {
-    const { email, role } = req.body as { email?: string; role?: string }
+    const email = clampString(req.body?.email, 254, 'email').toLowerCase()
+    const role = String(req.body?.role ?? '')
     if (!email || !role) { res.status(400).json({ error: 'email and role are required' }); return }
+    if (!VALID_ROLES.includes(role as typeof VALID_ROLES[number])) {
+      res.status(400).json({ error: 'role must be Manager, Booker, or Viewer' }); return
+    }
 
     const db = getDb()
     const membership = db.prepare(
@@ -191,7 +229,7 @@ router.post('/:id/invite', authenticate, requireRole('member'), async (req, res,
       res.status(403).json({ error: 'Only managers can invite' }); return
     }
 
-    const token = generateId('invite')
+    const token = generateSecureToken()
     const now = new Date().toISOString()
     const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString()
     db.prepare('INSERT INTO invite_tokens (token,household_id,role,invitee_email,expires_at,created_at) VALUES (?,?,?,?,?,?)').run(
@@ -229,12 +267,27 @@ router.delete('/:id/members/:memberId', authenticate, requireRole('member', 'adm
     if (req.user!.role !== 'admin' && (!membership || membership.role !== 'Manager')) {
       res.status(403).json({ error: 'Only managers or admins can remove members' }); return
     }
+
+    const household = db.prepare('SELECT owner_id FROM households WHERE id = ?').get(id) as { owner_id: string } | undefined
+    if (!household) { res.status(404).json({ error: 'Household not found' }); return }
+    if (memberId === household.owner_id) {
+      res.status(400).json({ error: 'Cannot remove the household creator' }); return
+    }
+
+    const target = db.prepare(
+      "SELECT role FROM household_members WHERE household_id = ? AND user_id = ? AND status = 'active'"
+    ).get(id, memberId) as { role: string } | undefined
+    if (!target) { res.status(404).json({ error: 'Member not found' }); return }
+    if (target.role === 'Manager' && countActiveManagers(id) <= 1) {
+      res.status(400).json({ error: 'Cannot remove the last manager' }); return
+    }
+
     const now = new Date().toISOString()
     db.prepare("UPDATE household_members SET status = 'removed' WHERE household_id = ? AND user_id = ?").run(id, memberId)
-    const target = db.prepare('SELECT first_name FROM users WHERE id = ?').get(memberId) as { first_name: string } | undefined
+    const targetUser = db.prepare('SELECT first_name FROM users WHERE id = ?').get(memberId) as { first_name: string } | undefined
     db.prepare('INSERT INTO household_audit (id,household_id,actor_id,target_id,action,detail,created_at) VALUES (?,?,?,?,?,?,?)').run(
       generateId('audit'), id, req.user!.userId, memberId, 'member_removed',
-      `${target?.first_name ?? 'Member'} removed from the household`, now
+      `${targetUser?.first_name ?? 'Member'} removed from the household`, now
     )
     res.status(204).send()
   } catch (e) { next(e) }
@@ -245,7 +298,7 @@ router.patch('/:id/members/:memberId/role', authenticate, requireRole('member', 
   try {
     const { id, memberId } = req.params
     const { role } = req.body as { role?: string }
-    if (!role || !['Manager','Booker','Viewer'].includes(role)) {
+    if (!role || !VALID_ROLES.includes(role as typeof VALID_ROLES[number])) {
       res.status(400).json({ error: 'Invalid role' }); return
     }
     const db = getDb()
@@ -255,15 +308,21 @@ router.patch('/:id/members/:memberId/role', authenticate, requireRole('member', 
     if (req.user!.role !== 'admin' && (!membership || membership.role !== 'Manager')) {
       res.status(403).json({ error: 'Only managers or admins can change roles' }); return
     }
-    const now = new Date().toISOString()
     const oldMember = db.prepare(
       "SELECT role FROM household_members WHERE household_id = ? AND user_id = ?"
     ).get(id, memberId) as { role: string } | undefined
+    if (!oldMember) { res.status(404).json({ error: 'Member not found' }); return }
+
+    if (oldMember.role === 'Manager' && role !== 'Manager' && countActiveManagers(id) <= 1) {
+      res.status(400).json({ error: 'Cannot demote the last manager' }); return
+    }
+
+    const now = new Date().toISOString()
     db.prepare("UPDATE household_members SET role = ? WHERE household_id = ? AND user_id = ?").run(role, id, memberId)
     const target = db.prepare('SELECT first_name FROM users WHERE id = ?').get(memberId) as { first_name: string } | undefined
     db.prepare('INSERT INTO household_audit (id,household_id,actor_id,target_id,action,detail,created_at) VALUES (?,?,?,?,?,?,?)').run(
       generateId('audit'), id, req.user!.userId, memberId, 'role_changed',
-      `${target?.first_name ?? 'Member'}'s role changed from ${oldMember?.role ?? '?'} to ${role}`, now
+      `${target?.first_name ?? 'Member'}'s role changed from ${oldMember.role} to ${role}`, now
     )
     res.status(204).send()
   } catch (e) { next(e) }
@@ -272,6 +331,7 @@ router.patch('/:id/members/:memberId/role', authenticate, requireRole('member', 
 // GET /api/households/:id/audit
 router.get('/:id/audit', authenticate, (req, res, next) => {
   try {
+    assertHouseholdAccess(req.params.id, req.user!.userId, req.user!.role)
     const db = getDb()
     const rows = db.prepare(
       'SELECT * FROM household_audit WHERE household_id = ? ORDER BY created_at DESC'

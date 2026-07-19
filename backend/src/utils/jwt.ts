@@ -2,7 +2,8 @@ import jwt from 'jsonwebtoken'
 import crypto from 'crypto'
 
 const SECRET = process.env.JWT_SECRET ?? 'okte-dev-secret-change-in-production'
-const EXPIRES_IN = '30d'
+/** Shorter session lifetime; status/role are re-checked from DB on each request. */
+const EXPIRES_IN = '7d'
 
 if (process.env.NODE_ENV === 'production' && !process.env.JWT_SECRET) {
   // Fail fast in production rather than silently signing tokens with a known secret.

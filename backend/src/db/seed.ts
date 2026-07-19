@@ -10,10 +10,19 @@ import { addDays, format } from 'date-fns'
 const now = new Date()
 const d = (offset: number) => format(addDays(now, offset), "yyyy-MM-dd'T'HH:mm:ss'Z'")
 
-const ADMIN_PASSWORD_HASH = bcrypt.hashSync('Password1234', 10)
+function adminPassword(): string {
+  const fromEnv = process.env.SEED_ADMIN_PASSWORD?.trim()
+  if (fromEnv) return fromEnv
+  if (process.env.NODE_ENV === 'production') {
+    throw new Error('SEED_ADMIN_PASSWORD must be set when seeding in production')
+  }
+  // Dev-only default — never used when NODE_ENV=production
+  return 'Password1234'
+}
 
 export function seedDatabase(reset = false): void {
   const db = getDb()
+  const ADMIN_PASSWORD_HASH = bcrypt.hashSync(adminPassword(), 10)
 
   if (reset) {
     db.exec(`
@@ -149,6 +158,9 @@ export function seedDatabase(reset = false): void {
   console.log('✓ Database seeded successfully')
   console.log(`  → 1 admin user (${admin.email})`)
   console.log(`  → ${properties.length} properties`)
+  if (process.env.NODE_ENV !== 'production' && !process.env.SEED_ADMIN_PASSWORD) {
+    console.log('  → Dev admin password: Password1234 (set SEED_ADMIN_PASSWORD to override)')
+  }
 }
 
 if (require.main === module) {

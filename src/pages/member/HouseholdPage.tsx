@@ -3,13 +3,12 @@ import {
   UserGroupIcon,
   PlusIcon,
   UserMinusIcon,
-  PencilIcon,
   ClipboardDocumentListIcon,
 } from '@heroicons/react/24/outline'
 import { useAuth } from '@/contexts/AuthContext'
 import { useToast } from '@/contexts/ToastContext'
 import { useMockApi } from '@/hooks/useMockApi'
-import { mockHouseholds, mockUsers } from '@/services'
+import { mockHouseholds } from '@/services'
 import { formatRelative } from '@/utils/format'
 import { Avatar } from '@/components/ui/Avatar'
 import { Badge } from '@/components/ui/Badge'
@@ -53,8 +52,6 @@ export function HouseholdPage() {
     () => household ? mockHouseholds.getAuditLog(household.id) : Promise.resolve([]),
     [household?.id]
   )
-  const { data: allUsers } = useMockApi(() => mockUsers.list(), [])
-  const userMap = Object.fromEntries((allUsers ?? []).map((u) => [u.id, u]))
 
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -137,7 +134,9 @@ export function HouseholdPage() {
   }
 
   const activeMembers = household.members.filter((m) => m.status === 'active')
-  const isManager = household.ownerId === currentUser!.id
+  const isManager = activeMembers.some(
+    (m) => m.userId === currentUser!.id && m.role === 'Manager'
+  )
 
   return (
     <div className="page-content">
@@ -180,17 +179,15 @@ export function HouseholdPage() {
             </thead>
             <tbody>
               {activeMembers.map((member) => {
-                const user = userMap[member.userId]
+                const displayName = [member.firstName, member.lastName].filter(Boolean).join(' ') || member.userId
                 return (
                   <tr key={member.userId} className="border-b border-border last:border-0">
                     <td className="px-5 py-3">
                       <div className="flex items-center gap-3">
-                        <Avatar src={user?.avatarUrl} name={user ? `${user.firstName} ${user.lastName}` : '?'} size="sm" />
+                        <Avatar src={member.avatarUrl ?? undefined} name={displayName} size="sm" />
                         <div>
-                          <p className="font-medium text-text-primary">
-                            {user ? `${user.firstName} ${user.lastName}` : member.userId}
-                          </p>
-                          <p className="text-caption text-text-muted">{user?.email}</p>
+                          <p className="font-medium text-text-primary">{displayName}</p>
+                          <p className="text-caption text-text-muted">{member.email}</p>
                         </div>
                       </div>
                     </td>

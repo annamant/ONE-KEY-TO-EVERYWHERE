@@ -2,9 +2,11 @@ import { Router } from 'express'
 import { getDb } from '../db/connection'
 import { authenticate } from '../middleware/auth'
 import { requireRole } from '../middleware/requireRole'
-import { imageUpload } from '../middleware/upload'
+import { imageUpload, isValidImageBuffer } from '../middleware/upload'
 import { generateId } from '../utils/generateId'
-import { destroyImage, publicIdFromUrl, uploadImageBuffer } from '../utils/cloudinary'
+import { assertAllowedImageUrls, destroyImage, publicIdFromUrl, uploadImageBuffer } from '../utils/cloudinary'
+import { clampString, optionalClampString } from '../utils/validate'
+import { notifyUser } from '../utils/notifyAdmins'
 
 const router = Router()
 
@@ -95,7 +97,7 @@ router.get('/', authenticate, (req, res, next) => {
       params.push(q, q, q, q)
     }
 
-    let rows = db.prepare(sql).all(...params) as Record<string, unknown>[]
+    const rows = db.prepare(sql).all(...params) as Record<string, unknown>[]
     let results = rows.map(rowToProp)
 
     // Amenities filter (post-query since stored as JSON)
@@ -121,6 +123,17 @@ router.get('/', authenticate, (req, res, next) => {
 router.post('/', authenticate, requireRole('owner', 'admin'), (req, res, next) => {
   try {
     const body = req.body as Record<string, unknown>
+    const title = clampString(body.title, 120, 'title')
+    const description = clampString(body.description, 8000, 'description')
+    const region = clampString(body.region, 80, 'region')
+    const country = clampString(body.country, 80, 'country')
+    const city = clampString(body.city, 80, 'city')
+    const address = clampString(body.address, 200, 'address')
+    const coverImage = optionalClampString(body.coverImage, 500, 'coverImage') ?? ''
+    const images = Array.isArray(body.images) ? (body.images as string[]) : []
+    if (coverImage) assertAllowedImageUrls([coverImage], 'coverImage')
+    if (images.length) assertAllowedImageUrls(images, 'images')
+
     const now = new Date().toISOString()
     const id = generateId('prop')
     const db = getDb()
@@ -133,16 +146,16 @@ router.post('/', authenticate, requireRole('owner', 'admin'), (req, res, next) =
       VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
     `).run(
       id, req.user!.userId,
-      body.title, body.slug ?? id, body.description,
-      body.region, body.country, body.city, body.address,
+      title, body.slug ?? id, description,
+      region, country, city, address,
       body.latitude, body.longitude,
       body.sleeps, body.bedrooms, body.bathrooms,
       body.minStay ?? 1, body.maxStay ?? 30, body.tier,
       'pending_approval',
       JSON.stringify(body.amenities ?? []),
       JSON.stringify(body.houseRules ?? []),
-      body.coverImage ?? '',
-      JSON.stringify(body.images ?? []),
+      coverImage,
+      JSON.stringify(images),
       JSON.stringify(body.blackoutDates ?? []),
       70, 0, now, now
     )
@@ -155,14 +168,8 @@ router.post('/', authenticate, requireRole('owner', 'admin'), (req, res, next) =
 router.get('/:id', authenticate, (req, res, next) => {
   try {
     const db = getDb()
-    const user = db.prepare('SELECT status, role FROM users WHERE id = ?').get(req.user!.userId) as
-      | { status: string; role: string }
-      | undefined
+    const user = req.user!
 
-    if (!user) {
-      res.status(401).json({ error: 'Unauthorized' })
-      return
-    }
     if (user.role === 'member' && user.status !== 'active') {
       res.status(403).json({ error: 'Membership pending approval' })
       return
@@ -170,8 +177,12 @@ router.get('/:id', authenticate, (req, res, next) => {
 
     const row = db.prepare('SELECT * FROM properties WHERE id = ?').get(req.params.id) as Record<string, unknown> | undefined
     if (!row) { res.status(404).json({ error: 'Property not found' }); return }
-    // Members only see approved listings
+
     if (user.role === 'member' && row.status !== 'approved') {
+      res.status(404).json({ error: 'Property not found' }); return
+    }
+    // Owners may only see their own listings unless approved
+    if (user.role === 'owner' && row.owner_id !== user.userId && row.status !== 'approved') {
       res.status(404).json({ error: 'Property not found' }); return
     }
     res.json(rowToProp(row))
@@ -190,6 +201,22 @@ router.patch('/:id', authenticate, requireRole('owner', 'admin'), (req, res, nex
     }
 
     const body = req.body as Record<string, unknown>
+    if (body.title !== undefined) body.title = clampString(body.title, 120, 'title')
+    if (body.description !== undefined) body.description = clampString(body.description, 8000, 'description')
+    if (body.region !== undefined) body.region = clampString(body.region, 80, 'region')
+    if (body.country !== undefined) body.country = clampString(body.country, 80, 'country')
+    if (body.city !== undefined) body.city = clampString(body.city, 80, 'city')
+    if (body.address !== undefined) body.address = clampString(body.address, 200, 'address')
+    if (body.coverImage !== undefined && body.coverImage) {
+      assertAllowedImageUrls([String(body.coverImage)], 'coverImage')
+    }
+    if (body.images !== undefined) {
+      if (!Array.isArray(body.images)) {
+        res.status(400).json({ error: 'images must be an array' }); return
+      }
+      assertAllowedImageUrls(body.images as string[], 'images')
+    }
+
     const now = new Date().toISOString()
     const allowedFields: Record<string, string> = {
       title: 'title', slug: 'slug', description: 'description',
@@ -204,6 +231,17 @@ router.patch('/:id', authenticate, requireRole('owner', 'admin'), (req, res, nex
       images: 'images', blackoutDates: 'blackout_dates',
     }
 
+    const materialKeys = [
+      'title', 'description', 'region', 'country', 'city', 'address',
+      'latitude', 'longitude', 'sleeps', 'bedrooms', 'bathrooms',
+      'minStay', 'maxStay', 'tier', 'coverImage', 'amenities', 'houseRules', 'images',
+    ]
+    const materialChange = materialKeys.some((k) => body[k] !== undefined)
+    const needsReapproval =
+      req.user!.role === 'owner' &&
+      existing.status === 'approved' &&
+      materialChange
+
     const sets: string[] = ['updated_at = ?']
     const params: unknown[] = [now]
     for (const [key, col] of Object.entries(allowedFields)) {
@@ -211,6 +249,10 @@ router.patch('/:id', authenticate, requireRole('owner', 'admin'), (req, res, nex
     }
     for (const [key, col] of Object.entries(jsonFields)) {
       if (body[key] !== undefined) { sets.push(`${col} = ?`); params.push(JSON.stringify(body[key])) }
+    }
+    if (needsReapproval) {
+      sets.push('status = ?')
+      params.push('pending_approval')
     }
     params.push(id)
     db.prepare(`UPDATE properties SET ${sets.join(', ')} WHERE id = ?`).run(...params)
@@ -248,6 +290,12 @@ router.post(
         return
       }
       const toUpload = files.slice(0, remaining)
+      for (const file of toUpload) {
+        if (!isValidImageBuffer(file.buffer)) {
+          res.status(400).json({ error: 'One or more files are not valid images' })
+          return
+        }
+      }
 
       const uploaded = await Promise.all(
         toUpload.map((file) => uploadImageBuffer(file.buffer, `okte/properties/${id}`))
@@ -334,6 +382,15 @@ router.post('/:id/status', authenticate, requireRole('admin'), (req, res, next) 
         VALUES (?,?,?,?,?,?)
       `).run(generateId('review'), id, req.user!.userId, decisionMap[status], reason ?? null, now)
     }
+
+    notifyUser(row.owner_id as string, {
+      type: 'property_status',
+      title: `Listing ${status.replace('_', ' ')}`,
+      body: reason
+        ? `${row.title as string}: ${reason}`
+        : `Your listing "${row.title as string}" is now ${status.replace('_', ' ')}.`,
+      link: '/owner/properties',
+    })
 
     res.json(rowToProp(row))
   } catch (e) { next(e) }
