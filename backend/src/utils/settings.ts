@@ -2,7 +2,7 @@ import { getDb } from '../db/connection'
 
 const DEFAULTS = {
   platformName: 'One Key to Everywhere',
-  supportEmail: 'support@okte.com',
+  supportEmail: 'anna@onekeytoeverywhere.com',
   defaultTier: 'premium',
   maxKeys: 500,
   minKeys: 10,
