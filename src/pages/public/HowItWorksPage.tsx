@@ -22,8 +22,8 @@ const MEMBER_STEPS = [
   },
   {
     icon: <HomeModernIcon className="w-6 h-6" />,
-    title: 'Access any home in the Club',
-    desc: 'Your keys aren\'t tied to one property — they open every home in the Club. Pick a trullo this weekend, a masseria for a family reunion, a coastal villa in August: whatever fits what you need, each time. Every home has a fixed key rate, the same in winter as in summer.',
+    title: 'Move between any and all homes',
+    desc: 'Being part of the Club means access to every home, anywhere in the collection — not just one. One key to everywhere: that\'s where the name comes from.',
   },
   {
     icon: <SparklesIcon className="w-6 h-6" />,
@@ -34,20 +34,20 @@ const MEMBER_STEPS = [
 
 const FAQS = [
   {
-    q: 'Do I only get access to one home?',
-    a: 'No. Membership isn\'t tied to a single property. Every home in the Club is available to you, and you choose whichever one fits your plans each time you use your keys — a different home for a weekend away, a family gathering, or a longer stay.',
+    q: 'Do I only get access to one home, or all of them?',
+    a: 'All of them — that\'s the whole point of the Club. Membership isn\'t tied to a single property. Every home in the Club is open to you at once, and you can move between them freely: use one home this month and a completely different one next month, or even split a single trip across more than one home. Your keys work everywhere in the Club, not in one place.',
   },
   {
     q: 'What are the membership levels?',
-    a: 'Membership levels range from short-term — a lighter commitment with a smaller key bundle, ideal for trying the Club — to long-term memberships built for those who travel often and want a larger bundle of keys. Every level gives you the exact same access: all Club homes, at the same fixed key rate.',
+    a: 'Membership levels range from short-term — a lighter commitment with a smaller key bundle, ideal for trying the Club — to long-term memberships built for those who travel often and want a larger bundle of keys. Every level gives you the exact same access: all Club homes, at the same fixed number of keys per home.',
   },
   {
     q: 'Do keys expire?',
     a: 'No. The keys you receive with your membership are yours. There is no expiry date, no penalty for not travelling every month. You can wait for the right moment.',
   },
   {
-    q: 'How many keys does it cost to access a home?',
-    a: 'Each Club home has a fixed key rate — set by the owner in agreement with us. There are no seasonal price hikes: the value of a key is the same in high and low season.',
+    q: 'How many keys does each home require?',
+    a: 'Each Club home has a fixed key requirement — set by the owner in agreement with us. It never changes with the seasons: a key is worth exactly the same in high season as in low season.',
   },
   {
     q: 'Can I share my keys with family?',
@@ -62,8 +62,8 @@ const FAQS = [
     a: 'For now, yes — and we say that with pride. Before expanding, we want to do one thing as well as it can possibly be done. Ostuni is where the Club begins.',
   },
   {
-    q: 'Why don\'t key costs change between summer and winter?',
-    a: 'Because we believe Ostuni is beautiful all year round, and that owners deserve to welcome members in the off-season too. The key model removes the opportunistic incentive of dynamic pricing.',
+    q: 'Why doesn\'t the number of keys change between summer and winter?',
+    a: 'Because we believe Ostuni is beautiful all year round, and that owners deserve to welcome members in the off-season too. This isn\'t a rental — there\'s no dynamic pricing to game, no high season to exploit. Membership works the same way every month of the year.',
   },
   {
     q: 'I\'m a property owner. Do I have to be a Club member too?',
@@ -96,6 +96,9 @@ export function HowItWorksPage() {
         <div className="text-center mb-12">
           <span className="text-caption font-semibold uppercase tracking-widest" style={{ color: '#C4882F' }}>For members</span>
           <h2 className="font-display text-heading-xl font-bold mt-2" style={{ color: '#0A0A0A' }}>Access. Don't book.</h2>
+          <p className="text-body-md mt-3 max-w-lg mx-auto" style={{ color: '#6B6B6B' }}>
+            Membership gives you access to every home in the Club — not one. Move between them as you please.
+          </p>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
           {MEMBER_STEPS.map(({ icon, title, desc }, i) => (
@@ -119,12 +122,11 @@ export function HowItWorksPage() {
       <section style={{ background: '#F5F5F5', borderTop: '1px solid #E5E5E5', borderBottom: '1px solid #E5E5E5' }} className="py-16">
         <div className="max-w-3xl mx-auto px-6 text-center">
           <h2 className="font-display text-heading-xl font-bold mb-4" style={{ color: '#0A0A0A' }}>
-            All the homes. Not just one.
+            One key. Every home. Not just one.
           </h2>
           <p className="text-body-md" style={{ color: '#6B6B6B' }}>
-            A Club membership doesn't lock you into a single property. Your keys work across the entire Club collection —
-            every trullo, masseria, and coastal home is yours to choose from, every time. Book a different home for every
-            trip, depending on what the moment calls for: a quiet weekend, a family celebration, a long summer stay.
+            Being part of the Club means access to every home in the collection, anywhere — not one
+            assigned property. That's why we call it One Key to Everywhere.
           </p>
         </div>
       </section>
@@ -137,8 +139,8 @@ export function HowItWorksPage() {
         <div className="space-y-4">
           {[
             { n: '1', text: 'Choose a membership level — from short-term to long-term — and receive a bundle of keys with it. They are yours: they never expire.' },
-            { n: '2', text: 'Each Club home has a fixed key rate. The same in January as in August. No dynamic pricing, ever.' },
-            { n: '3', text: 'Every home in the Club is open to you, not just one. Choose whichever home fits what you need each time you use your keys.' },
+            { n: '2', text: 'Each Club home requires a fixed number of keys — the same in January as in August. This isn\'t a rental with a nightly rate; it\'s a membership entitlement that never moves with the season.' },
+            { n: '3', text: 'Every home in the Club is open to you at once — not just one. Move freely between them, staying wherever fits what you need, whenever you need it.' },
             { n: '4', text: 'The longer your visit, the more you save. The Club rewards those who take their time, not those who rush.' },
           ].map(({ n, text }) => (
             <div key={n} className="flex gap-4 p-5 rounded-card text-left" style={{ background: '#F5F5F5', border: '1px solid #E5E5E5' }}>

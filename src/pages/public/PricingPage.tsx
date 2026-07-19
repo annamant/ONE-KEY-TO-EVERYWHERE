@@ -44,7 +44,7 @@ const PLANS = [
       'Keys never expire',
       'Free cancellation up to 48h before',
       'Priority Club support',
-      'Extended access discount (7+ days)',
+      'Extended-stay key savings (7+ days)',
       'Early access to new homes',
     ],
   },
@@ -66,7 +66,7 @@ const PLANS = [
       'Keys never expire',
       'Free cancellation up to 48h before',
       'Dedicated Club concierge',
-      'Extended access discount (7+ days)',
+      'Extended-stay key savings (7+ days)',
       'Early access to new homes',
       'Permanent "Founder" badge',
       'A voice in how the Club grows',
@@ -152,21 +152,21 @@ export function PricingPage() {
         </div>
       </section>
 
-      {/* Homes cost table */}
+      {/* Keys required per home tier */}
       <section style={{ background: '#F5F5F5', borderTop: '1px solid #E5E5E5' }} className="py-16">
         <div className="max-w-3xl mx-auto px-6">
           <h2 className="font-display text-heading-xl font-bold text-center mb-3" style={{ color: '#0A0A0A' }}>
             How many keys per home?
           </h2>
           <p className="text-body-sm text-center mb-8" style={{ color: '#6B6B6B' }}>
-            Each home has a fixed key rate — the same all year round.
+            Each home has a fixed key requirement — the same all year round.
           </p>
           <div className="rounded-2xl overflow-hidden" style={{ border: '1px solid #E5E5E5' }}>
             <table className="w-full">
               <thead>
                 <tr style={{ background: '#EFEFEF', borderBottom: '1px solid #E5E5E5' }}>
                   <th className="text-left px-6 py-4 text-body-sm font-semibold" style={{ color: '#0A0A0A' }}>Tier</th>
-                  <th className="text-left px-6 py-4 text-body-sm font-semibold" style={{ color: '#0A0A0A' }}>Key rate</th>
+                  <th className="text-left px-6 py-4 text-body-sm font-semibold" style={{ color: '#0A0A0A' }}>Keys required</th>
                   <th className="text-left px-6 py-4 text-body-sm font-semibold" style={{ color: '#0A0A0A' }}>Examples</th>
                 </tr>
               </thead>
@@ -183,7 +183,7 @@ export function PricingPage() {
           </div>
           <div className="mt-4 p-4 rounded-xl" style={{ background: '#EFEFEF', border: '1px solid #E5E5E5' }}>
             <p className="text-body-sm" style={{ color: '#1A1A1A' }}>
-              <strong>Seasonality:</strong> Visits from November through February cost 20% fewer keys. Access of 7+ days receives an additional 10–15% discount. Never opportunistic dynamic pricing.
+              <strong>Consistency:</strong> A home's key requirement never changes with the season — the same number of keys in November as in July. Stay 7 nights or more and your household's keys stretch 10–15% further. This is membership, not a rental — there's no dynamic pricing, ever.
             </p>
           </div>
         </div>
