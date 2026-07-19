@@ -13,7 +13,7 @@ const MEMBER_STEPS = [
   {
     icon: <CalendarDaysIcon className="w-6 h-6" />,
     title: 'Choose your length and group size',
-    desc: 'Most members choose 1, 2, or 4 weeks, sized for their group. If you already know you\'ll return, you can reserve a 6- or 12-month season at a private rate. Every path opens the same doors.',
+    desc: 'Most members choose 1, 2, or 4 weeks, sized for their group. If you already know you\'ll return, reserve a 6- or 12-month season at a private rate — with pause built in, so nothing is wasted. Every path opens the same doors.',
   },
   {
     icon: <SparklesIcon className="w-6 h-6" />,
@@ -39,11 +39,15 @@ const FAQS = [
   },
   {
     q: 'What are the membership levels?',
-    a: 'Everyday memberships are 1, 2, or 4 weeks, sized for your group. Separately, you can reserve a season — 6 or 12 calendar months of Club access — at a deeper commitment rate. Every path gives you the same access: all Club homes, with no per-home rate.',
+    a: 'Everyday memberships are 1, 2, or 4 weeks, sized for your group. Separately, you can reserve a season — 6 or 12 calendar months — at a deeper commitment rate, with the ability to pause anytime so your remaining time freezes until you resume. Every path gives you the same access: all Club homes, with no per-home rate.',
   },
   {
     q: 'Does my membership expire?',
-    a: 'No. Once you have it, it\'s yours. There is no expiry date, no penalty for not travelling every month. Use some of it now and save the rest for later — you can wait for the right moment.',
+    a: 'Week memberships don\'t expire — use them whenever you like. Season packages (6 or 12 months) run on the calendar, but you can pause anytime: your remaining time freezes until you resume, so nothing is wasted.',
+  },
+  {
+    q: 'Can I pause a season package?',
+    a: 'Yes — that\'s the point of reserving a season. Pause whenever life gets in the way; the clock stops, and your remaining months wait for you. Resume when you\'re ready.',
   },
   {
     q: 'Do different homes cost different amounts?',
@@ -138,7 +142,7 @@ export function HowItWorksPage() {
         </h2>
         <div className="space-y-4">
           {[
-            { n: '1', text: 'Choose 1, 2, or 4 weeks and your group size — that\'s the everyday membership. Or reserve a 6- or 12-month season if you want to lock in a longer window at a private rate.' },
+            { n: '1', text: 'Choose 1, 2, or 4 weeks and your group size — that\'s the everyday membership. Or reserve a 6- or 12-month season at a private rate, with pause built in so nothing is wasted when life gets in the way.' },
             { n: '2', text: 'Every home in the Club is open to you the same way — in January as in August. There\'s no per-home rate and no seasonal pricing, because this isn\'t a rental.' },
             { n: '3', text: 'Move freely between homes, staying wherever fits what you need, whenever you need it.' },
             { n: '4', text: 'Use your membership however you like: a short stay now, a longer one later, all in one home or split across several. It doesn\'t expire — nothing forces you to use it all at once.' },

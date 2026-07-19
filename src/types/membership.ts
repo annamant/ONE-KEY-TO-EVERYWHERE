@@ -93,10 +93,11 @@ export const SEASON_PACKAGES: SeasonPackageInfo[] = [
   {
     months: 6,
     label: '6 months',
-    pitch: 'Lock in half a year with the Club — your dates, your rhythm.',
+    pitch: 'Lock in half a year — and pause whenever life gets in the way.',
     discount: 0.4,
     perks: [
       'Club access for 6 calendar months',
+      'Pause anytime — your remaining time freezes until you resume',
       'Every home open to you for the season',
       'Dedicated Club concierge',
       'Priority during peak season',
@@ -106,10 +107,11 @@ export const SEASON_PACKAGES: SeasonPackageInfo[] = [
   {
     months: 12,
     label: '12 months',
-    pitch: 'A full year in the Club — the deepest commitment rate we offer.',
+    pitch: 'A full year in the Club — with pause built in, so nothing is wasted.',
     discount: 0.55,
     perks: [
       'Club access for 12 calendar months',
+      'Pause anytime — your remaining time freezes until you resume',
       'Every home open to you all year',
       'Dedicated Club concierge',
       'Priority during peak season',

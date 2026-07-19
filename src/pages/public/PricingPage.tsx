@@ -149,8 +149,8 @@ export function PricingPage() {
               Reserve your season.
             </h2>
             <p className="text-body-md max-w-xl mx-auto" style={{ color: '#6B6B6B' }}>
-              Commit to 6 or 12 calendar months with the Club and lock in a private rate.
-              Your window starts when you're ready — not a night bank, a season of access.
+              Commit to 6 or 12 calendar months at a private rate. Life gets busy?
+              Pause whenever you need — your remaining time freezes until you come back.
             </p>
           </div>
 
@@ -241,7 +241,7 @@ export function PricingPage() {
           <div className="space-y-4">
             {[
               { n: '1', text: 'Most members choose 1, 2, or 4 weeks — sized for their group. That\'s the everyday path into the Club. No per-home rate, no seasonal markup.' },
-              { n: '2', text: 'If you already know you\'ll return, reserve a season: 6 or 12 calendar months of Club access at a private commitment rate. Your window runs on the calendar — not as a pile of nights to spend down.' },
+              { n: '2', text: 'If you already know you\'ll return, reserve a season: 6 or 12 calendar months at a private rate. And you can pause — when life intervenes, your remaining time freezes until you resume. Nothing is wasted.' },
               { n: '3', text: 'Your group size sets your starting price, not a hard limit on which homes you can pick. It\'s membership, not a rental — there\'s nothing to game.' },
             ].map(({ n, text }) => (
               <div key={n} className="flex gap-4 p-5 rounded-card text-left" style={{ background: '#F5F5F5', border: '1px solid #E5E5E5' }}>
