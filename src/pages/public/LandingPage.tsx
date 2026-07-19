@@ -44,8 +44,9 @@ export function LandingPage() {
           className="absolute inset-0"
           style={{
             background:
-              'linear-gradient(to right, rgba(0,0,0,0.50) 0%, rgba(0,0,0,0.28) 55%, rgba(0,0,0,0.08) 100%), ' +
-              'linear-gradient(to top, rgba(0,0,0,0.45) 0%, transparent 55%)',
+              'radial-gradient(ellipse 85% 70% at 12% 88%, rgba(0,0,0,0.78) 0%, rgba(0,0,0,0.45) 38%, transparent 72%), ' +
+              'linear-gradient(to right, rgba(0,0,0,0.68) 0%, rgba(0,0,0,0.38) 40%, rgba(0,0,0,0.12) 75%, rgba(0,0,0,0.08) 100%), ' +
+              'linear-gradient(to top, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.32) 42%, transparent 70%)',
           }}
         />
 
@@ -53,53 +54,50 @@ export function LandingPage() {
 
         <div className="relative mt-auto w-full">
           <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16 pb-10 sm:pb-14 flex flex-col sm:flex-row items-end justify-between gap-8">
-            <div className="max-w-lg">
-              <p className="text-caption font-semibold uppercase tracking-[0.22em] mb-4" style={{ color: 'rgba(255,255,255,0.6)' }}>
-                Private Members Club · Ostuni, Italy
+            <div
+              className="max-w-lg"
+              style={{ textShadow: '0 1px 2px rgba(0,0,0,0.45), 0 8px 28px rgba(0,0,0,0.35)' }}
+            >
+              <p className="text-caption font-semibold uppercase tracking-[0.22em] mb-4" style={{ color: 'rgba(255,255,255,0.88)' }}>
+                Private Members Club
               </p>
               <h1
                 className="font-display font-bold leading-none mb-5"
-                style={{ color: '#FFFFFF', fontSize: 'clamp(3rem, 7vw, 5.5rem)', lineHeight: 1.02 }}
+                style={{ color: '#FFFFFF', fontSize: 'clamp(3rem, 7vw, 5.5rem)', lineHeight: 1.05 }}
               >
                 Experience<br />
                 <em style={{ fontStyle: 'italic' }}>Ostuni.</em><br />
                 One key.
               </h1>
-              <p className="text-body-sm leading-relaxed mb-8 max-w-sm" style={{ color: 'rgba(255,255,255,0.7)' }}>
-                A private Club to experience Ostuni all year round.
+              <p className="text-body-md leading-relaxed mb-8 max-w-md" style={{ color: 'rgba(255,255,255,0.92)' }}>
+                Membership means year-round access to Club homes and facilities in Ostuni — for you, your friends, and your family. As if they were yours.
               </p>
-              <div className="flex items-center gap-5 flex-wrap">
+              <div className="flex items-center gap-5 flex-wrap" style={{ textShadow: 'none' }}>
                 <button
-                  onClick={() => navigate('/auth/signup')}
+                  onClick={() => navigate('/waitlist')}
                   className="text-caption font-bold uppercase tracking-wider px-6 py-3 transition-all"
                   style={{ border: 'none', color: '#0A0A0A', background: '#FFFFFF', cursor: 'pointer', letterSpacing: '0.12em' }}
                   onMouseEnter={(e) => { e.currentTarget.style.opacity = '0.92' }}
                   onMouseLeave={(e) => { e.currentTarget.style.opacity = '1' }}
                 >
-                  Create Account
-                </button>
-                <button
-                  onClick={() => navigate('/auth/login')}
-                  className="text-caption font-bold uppercase tracking-wider px-6 py-3 transition-all"
-                  style={{ border: '1.5px solid #FFFFFF', color: '#FFFFFF', background: 'transparent', cursor: 'pointer', letterSpacing: '0.12em' }}
-                  onMouseEnter={(e) => { e.currentTarget.style.background = '#FFFFFF'; e.currentTarget.style.color = '#0A0A0A' }}
-                  onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#FFFFFF' }}
-                >
-                  Sign In
+                  Become a Member
                 </button>
                 <button
                   onClick={() => navigate('/how-it-works')}
                   className="text-caption font-semibold uppercase tracking-wider transition-colors"
-                  style={{ color: 'rgba(255,255,255,0.65)', background: 'none', border: 'none', cursor: 'pointer', letterSpacing: '0.12em' }}
+                  style={{ color: 'rgba(255,255,255,0.9)', background: 'none', border: 'none', cursor: 'pointer', letterSpacing: '0.12em' }}
                   onMouseEnter={(e) => (e.currentTarget.style.color = '#FFFFFF')}
-                  onMouseLeave={(e) => (e.currentTarget.style.color = 'rgba(255,255,255,0.65)')}
+                  onMouseLeave={(e) => (e.currentTarget.style.color = 'rgba(255,255,255,0.9)')}
                 >
                   See How It Works →
                 </button>
               </div>
             </div>
 
-            <div className="flex gap-10 sm:gap-14 shrink-0">
+            <div
+              className="flex gap-10 sm:gap-14 shrink-0"
+              style={{ textShadow: '0 1px 2px rgba(0,0,0,0.4), 0 6px 20px rgba(0,0,0,0.3)' }}
+            >
               {[
                 { n: '5', label: 'Club Homes' },
                 { n: '1', label: 'Town, Done Right' },
@@ -109,7 +107,7 @@ export function LandingPage() {
                   <p className="font-display font-bold leading-none" style={{ color: '#FFFFFF', fontSize: 'clamp(1.8rem, 3.5vw, 2.8rem)' }}>
                     {n}
                   </p>
-                  <p className="text-caption uppercase tracking-widest mt-1" style={{ color: 'rgba(255,255,255,0.5)', letterSpacing: '0.14em' }}>
+                  <p className="text-caption uppercase tracking-widest mt-1" style={{ color: 'rgba(255,255,255,0.78)', letterSpacing: '0.14em' }}>
                     {label}
                   </p>
                 </div>
