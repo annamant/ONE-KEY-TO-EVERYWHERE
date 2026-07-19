@@ -62,4 +62,40 @@ router.post(
   }
 )
 
+/**
+ * POST /api/uploads/avatar
+ * multipart field: "avatar" (single image)
+ * Returns: { url: string }
+ */
+router.post(
+  '/avatar',
+  authenticate,
+  imageUpload.single('avatar'),
+  async (req, res, next) => {
+    try {
+      const file = req.file
+      if (!file) {
+        res.status(400).json({ error: 'An image file is required' })
+        return
+      }
+
+      if (!isValidImageBuffer(file.buffer)) {
+        res.status(400).json({ error: 'File is not a valid image' })
+        return
+      }
+
+      const uploaded = await uploadImageBuffer(
+        file.buffer,
+        `okte/avatars/${req.user!.userId}`,
+        'profile',
+        { overwrite: true },
+      )
+
+      res.status(201).json({ url: uploaded.url })
+    } catch (e) {
+      next(e)
+    }
+  }
+)
+
 export default router

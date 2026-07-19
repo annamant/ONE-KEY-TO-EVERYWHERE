@@ -1,15 +1,14 @@
 import { useState } from 'react'
-import { UserCircleIcon } from '@heroicons/react/24/outline'
 import { useAuth } from '@/contexts/AuthContext'
 import { useToast } from '@/contexts/ToastContext'
 import { mockUsers } from '@/services'
-import { Avatar } from '@/components/ui/Avatar'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
 import { Badge } from '@/components/ui/Badge'
 import { Card } from '@/components/ui/Card'
 import { FormField } from '@/components/forms/FormField'
 import { ChangePasswordCard } from '@/components/forms/ChangePasswordCard'
+import { ProfileAvatarField } from '@/components/forms/ProfileAvatarField'
 import { Divider } from '@/components/ui/Divider'
 import { formatDate } from '@/utils/format'
 
@@ -47,12 +46,13 @@ export function MemberProfilePage() {
         </Badge>
       </div>
 
-      {/* Avatar + email */}
-      <Card className="flex items-center gap-4 mb-6">
-        <Avatar
-          src={currentUser.avatarUrl}
+      <Card className="mb-6">
+        <ProfileAvatarField
+          userId={currentUser.id}
+          avatarUrl={currentUser.avatarUrl}
           name={`${currentUser.firstName} ${currentUser.lastName}`}
-          size="xl"
+          onAvatarChange={(url) => updateCurrentUser({ avatarUrl: url })}
+          className="mb-4"
         />
         <div>
           <p className="text-heading-md font-semibold text-text-primary">

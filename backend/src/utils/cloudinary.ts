@@ -25,7 +25,8 @@ export interface UploadedImage {
 export function uploadImageBuffer(
   buffer: Buffer,
   folder: string,
-  filename?: string
+  filename?: string,
+  options?: { overwrite?: boolean }
 ): Promise<UploadedImage> {
   ensureConfigured()
   return new Promise((resolve, reject) => {
@@ -34,7 +35,7 @@ export function uploadImageBuffer(
         folder,
         resource_type: 'image',
         public_id: filename,
-        overwrite: false,
+        overwrite: options?.overwrite ?? false,
       },
       (error, result) => {
         if (error || !result) {
