@@ -72,14 +72,19 @@ export async function sendEmail(payload: EmailPayload): Promise<void> {
   // 2) SMTP fallback (local / Pro plan with SMTP allowed)
   const transport = getTransporter()
   if (transport) {
-    await transport.sendMail({
-      from: process.env.SMTP_FROM ?? 'One Key to Everywhere <anna@onekeytoeverywhere.com>',
-      to,
-      subject,
-      text,
-      html,
-    })
-    return
+    try {
+      await transport.sendMail({
+        from: process.env.SMTP_FROM ?? 'One Key to Everywhere <anna@onekeytoeverywhere.com>',
+        to,
+        subject,
+        text,
+        html,
+      })
+      return
+    } catch (e) {
+      console.error('[email] SMTP failed:', e)
+      if (isProd) throw e
+    }
   }
 
   // 3) Dev console
