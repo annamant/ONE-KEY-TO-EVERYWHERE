@@ -10,8 +10,8 @@ const FINAL_CTA_IMG = '/images/landing/mathilde-ro-CWwYdFYKIw0-unsplash.jpg'
 const PILLARS = [
   {
     icon: <KeyIcon className="w-6 h-6" />,
-    title: 'One key. Five homes.',
-    desc: 'A private Club with one key to five homes in Ostuni. Experience the white city all year round — for you, your friends, and your family.',
+    title: 'One key. Every Club home.',
+    desc: 'A private Club with one key to every home in Ostuni. The white city, all year round — for you, your friends, and your family.',
   },
   {
     icon: <UsersIcon className="w-6 h-6" />,
@@ -99,7 +99,7 @@ export function LandingPage() {
               style={{ textShadow: '0 1px 2px rgba(0,0,0,0.4), 0 6px 20px rgba(0,0,0,0.3)' }}
             >
               {[
-                { n: '5', label: 'Club Homes' },
+                { n: '1', label: 'Key, Every Home' },
                 { n: '1', label: 'Town, Done Right' },
                 { n: '∞', label: 'Ways to Belong' },
               ].map(({ n, label }) => (
@@ -152,7 +152,7 @@ export function LandingPage() {
               className="font-display font-bold"
               style={{ color: '#FFFFFF', fontSize: 'clamp(1.6rem, 3vw, 2.4rem)', maxWidth: 420, lineHeight: 1.25 }}
             >
-              One town. Five homes. The Club begins here.
+              One town. The Club begins here.
             </p>
           </div>
         </div>
@@ -190,13 +190,13 @@ export function LandingPage() {
       <section style={{ background: '#F5F5F5', borderTop: '1px solid #E5E5E5' }}>
         <div className="max-w-3xl mx-auto px-6 py-20 text-center">
           <p className="text-caption font-semibold uppercase tracking-[0.18em] mb-3" style={{ color: '#C4882F' }}>
-            Five homes in Ostuni
+            Club homes in Ostuni
           </p>
           <h2 className="font-display text-heading-xl font-bold mb-4" style={{ color: '#0A0A0A' }}>
             The homes stay private.
           </h2>
           <p className="text-body-lg mb-8" style={{ color: '#6B6B6B' }}>
-            Club residences are shared only with accepted members. Apply, register, and once we approve you — the five Ostuni homes open up.
+            Club residences are shared only with accepted members. Apply, register, and once we approve you — the Ostuni homes open up.
           </p>
           <button
             onClick={() => navigate('/waitlist')}

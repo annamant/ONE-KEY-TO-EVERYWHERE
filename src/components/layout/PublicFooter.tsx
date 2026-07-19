@@ -13,7 +13,7 @@ export function PublicFooter() {
               <span className="font-bold" style={{ color: '#FFFFFF' }}>One Key to Everywhere</span>
             </div>
             <p className="text-body-sm leading-relaxed">
-              A private Club for five exceptional homes in Ostuni, Italy. Not a platform — a community built on trust.
+              A private Club for exceptional homes in Ostuni, Italy. Not a platform — a community built on trust.
             </p>
           </div>
           <div>
