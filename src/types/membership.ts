@@ -1,9 +1,10 @@
-// A membership is sold as (duration) × (group-size band).
-// Internally it grants a bank of stay-units equal to the membership length;
-// members never see a named currency — only soft "membership remaining".
+// Two product lines:
+// 1) Week memberships (1 / 2 / 4 weeks) — what members normally buy.
+// 2) Season packages (6 / 12 calendar months) — forward-sale commitment
+//    packages with deep discounts. Calendar-window access, not a night bank.
 //
-// Pricing: €56 per person per overnight, billed at the band's capacity.
-// Longer memberships (from 3 months) get a commitment discount.
+// Pricing base: €56 per person per overnight × band capacity.
+// Season packages apply a large commitment discount on that base.
 
 export type GroupBand = 'up_to_2' | 'three_to_four' | 'five_to_six' | 'seven_plus'
 
@@ -26,13 +27,12 @@ export const GROUP_BANDS: GroupBandInfo[] = [
   { band: 'seven_plus', label: '7+', guestRange: '7+ guests', billableGuests: 8, dailyRate: 8 * RATE_PER_PERSON_PER_NIGHT },
 ]
 
+/** Everyday membership lengths — weeks only. */
 export interface MembershipDurationInfo {
   weeks: number
   label: string
-  /** Internal stay-units granted (= weeks × 7). Not shown to members as a currency. */
+  /** Internal stay-units for week memberships. Not shown as a currency. */
   units: number
-  /** Commitment discount from 3 months upward (0–1). */
-  discount: number
   perks: string[]
 }
 
@@ -41,7 +41,6 @@ export const MEMBERSHIP_DURATIONS: MembershipDurationInfo[] = [
     weeks: 1,
     label: '1 week',
     units: 7,
-    discount: 0,
     perks: [
       'Access to every home in the Club',
       'Use your membership whenever you like',
@@ -53,7 +52,6 @@ export const MEMBERSHIP_DURATIONS: MembershipDurationInfo[] = [
     weeks: 2,
     label: '2 weeks',
     units: 14,
-    discount: 0,
     perks: [
       'Access to every home in the Club',
       'Use your membership whenever you like',
@@ -66,7 +64,6 @@ export const MEMBERSHIP_DURATIONS: MembershipDurationInfo[] = [
     weeks: 4,
     label: '4 weeks',
     units: 28,
-    discount: 0,
     perks: [
       'Access to every home in the Club',
       'Use your membership whenever you like',
@@ -76,48 +73,45 @@ export const MEMBERSHIP_DURATIONS: MembershipDurationInfo[] = [
       'Priority during peak season',
     ],
   },
+]
+
+/**
+ * Forward-sale season packages: calendar months of Club access,
+ * heavily discounted vs the week-rate base. Not sold as a night bank.
+ */
+export interface SeasonPackageInfo {
+  months: number
+  label: string
+  /** Short pitch shown on the card. */
+  pitch: string
+  /** Commitment discount (0–1) vs full calendar-period base. */
+  discount: number
+  perks: string[]
+}
+
+export const SEASON_PACKAGES: SeasonPackageInfo[] = [
   {
-    weeks: 12,
-    label: '3 months',
-    units: 84,
-    discount: 0.1,
-    perks: [
-      'Access to every home in the Club',
-      'Use your membership whenever you like',
-      'Free cancellation up to 48h before',
-      'Dedicated Club concierge',
-      'Early access to new homes',
-      'Priority during peak season',
-      'Invite two guests to the Club waitlist',
-    ],
-  },
-  {
-    weeks: 24,
+    months: 6,
     label: '6 months',
-    units: 168,
-    discount: 0.2,
+    pitch: 'Lock in half a year with the Club — your dates, your rhythm.',
+    discount: 0.4,
     perks: [
-      'Access to every home in the Club',
-      'Use your membership whenever you like',
-      'Free cancellation up to 48h before',
+      'Club access for 6 calendar months',
+      'Every home open to you for the season',
       'Dedicated Club concierge',
-      'Early access to new homes',
       'Priority during peak season',
       'Invite four guests to the Club waitlist',
-      'Annual Club gathering invitation',
     ],
   },
   {
-    weeks: 48,
+    months: 12,
     label: '12 months',
-    units: 336,
-    discount: 0.3,
+    pitch: 'A full year in the Club — the deepest commitment rate we offer.',
+    discount: 0.55,
     perks: [
-      'Access to every home in the Club',
-      'Use your membership whenever you like',
-      'Free cancellation up to 48h before',
+      'Club access for 12 calendar months',
+      'Every home open to you all year',
       'Dedicated Club concierge',
-      'Early access to new homes',
       'Priority during peak season',
       'Invite six guests to the Club waitlist',
       'Annual Club gathering invitation',
@@ -129,9 +123,14 @@ export const MEMBERSHIP_DURATIONS: MembershipDurationInfo[] = [
 export interface MembershipQuote {
   groupBand: GroupBandInfo
   duration: MembershipDurationInfo
-  /** Undiscounted total before commitment discount. */
+  price: number
+}
+
+export interface SeasonQuote {
+  groupBand: GroupBandInfo
+  package: SeasonPackageInfo
+  /** Undiscounted base for the calendar period (for strikethrough). */
   fullPrice: number
-  /** Payable total after discount. */
   price: number
   discountPercent: number
 }
@@ -139,13 +138,21 @@ export interface MembershipQuote {
 export function quoteMembership(groupBand: GroupBand, weeks: number): MembershipQuote {
   const band = GROUP_BANDS.find((b) => b.band === groupBand) ?? GROUP_BANDS[0]
   const duration = MEMBERSHIP_DURATIONS.find((d) => d.weeks === weeks) ?? MEMBERSHIP_DURATIONS[0]
-  const fullPrice = band.dailyRate * duration.units
-  const price = Math.round(fullPrice * (1 - duration.discount))
+  const price = band.dailyRate * duration.units
+  return { groupBand: band, duration, price }
+}
+
+/** Base for season packages: band daily rate × ~30 units per calendar month. */
+export function quoteSeasonPackage(groupBand: GroupBand, months: number): SeasonQuote {
+  const band = GROUP_BANDS.find((b) => b.band === groupBand) ?? GROUP_BANDS[0]
+  const pkg = SEASON_PACKAGES.find((p) => p.months === months) ?? SEASON_PACKAGES[0]
+  const fullPrice = band.dailyRate * pkg.months * 30
+  const price = Math.round(fullPrice * (1 - pkg.discount))
   return {
     groupBand: band,
-    duration,
+    package: pkg,
     fullPrice,
     price,
-    discountPercent: Math.round(duration.discount * 100),
+    discountPercent: Math.round(pkg.discount * 100),
   }
 }

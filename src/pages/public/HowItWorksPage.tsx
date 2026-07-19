@@ -13,7 +13,7 @@ const MEMBER_STEPS = [
   {
     icon: <CalendarDaysIcon className="w-6 h-6" />,
     title: 'Choose your length and group size',
-    desc: 'Membership is sold by length — from 1 week up to 12 months — and by group size. Longer plans from 3 months include a commitment discount. Every length opens the same doors.',
+    desc: 'Most members choose 1, 2, or 4 weeks, sized for their group. If you already know you\'ll return, you can reserve a 6- or 12-month season at a private rate. Every path opens the same doors.',
   },
   {
     icon: <SparklesIcon className="w-6 h-6" />,
@@ -39,7 +39,7 @@ const FAQS = [
   },
   {
     q: 'What are the membership levels?',
-    a: 'Membership is built from two choices: how long — from 1 week up to 12 months — and your group size, from up to 2 guests to 7+. Longer memberships from 3 months include a commitment discount. Every combination gives you the same access: all Club homes, with no per-home rate.',
+    a: 'Everyday memberships are 1, 2, or 4 weeks, sized for your group. Separately, you can reserve a season — 6 or 12 calendar months of Club access — at a deeper commitment rate. Every path gives you the same access: all Club homes, with no per-home rate.',
   },
   {
     q: 'Does my membership expire?',
@@ -138,7 +138,7 @@ export function HowItWorksPage() {
         </h2>
         <div className="space-y-4">
           {[
-            { n: '1', text: 'Choose your length — from 1 week up to 12 months — and your group size. That combination sets your one-time membership price. From 3 months upward, a commitment discount applies.' },
+            { n: '1', text: 'Choose 1, 2, or 4 weeks and your group size — that\'s the everyday membership. Or reserve a 6- or 12-month season if you want to lock in a longer window at a private rate.' },
             { n: '2', text: 'Every home in the Club is open to you the same way — in January as in August. There\'s no per-home rate and no seasonal pricing, because this isn\'t a rental.' },
             { n: '3', text: 'Move freely between homes, staying wherever fits what you need, whenever you need it.' },
             { n: '4', text: 'Use your membership however you like: a short stay now, a longer one later, all in one home or split across several. It doesn\'t expire — nothing forces you to use it all at once.' },

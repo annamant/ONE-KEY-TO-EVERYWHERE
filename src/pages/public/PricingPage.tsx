@@ -4,12 +4,20 @@ import { CheckIcon } from '@heroicons/react/24/solid'
 import { Button } from '@/components/ui/Button'
 import { PublicNav } from '@/components/layout/PublicNav'
 import { PublicFooter } from '@/components/layout/PublicFooter'
-import { GROUP_BANDS, MEMBERSHIP_DURATIONS, quoteMembership, type GroupBand } from '@/types/membership'
+import {
+  GROUP_BANDS,
+  MEMBERSHIP_DURATIONS,
+  SEASON_PACKAGES,
+  quoteMembership,
+  quoteSeasonPackage,
+  type GroupBand,
+} from '@/types/membership'
 
 export function PricingPage() {
   const navigate = useNavigate()
   const [groupBand, setGroupBand] = useState<GroupBand>('three_to_four')
   const [weeks, setWeeks] = useState(2)
+  const [seasonBand, setSeasonBand] = useState<GroupBand>('three_to_four')
 
   const quote = quoteMembership(groupBand, weeks)
 
@@ -27,6 +35,7 @@ export function PricingPage() {
         </div>
       </section>
 
+      {/* Week memberships — everyday buy */}
       <section className="max-w-4xl mx-auto px-6 py-20">
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
           <div className="lg:col-span-3 space-y-8">
@@ -60,7 +69,7 @@ export function PricingPage() {
               <p className="text-caption font-semibold uppercase tracking-widest mb-3" style={{ color: '#6B6B6B' }}>
                 2. Membership length
               </p>
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+              <div className="grid grid-cols-3 gap-3">
                 {MEMBERSHIP_DURATIONS.map((d) => (
                   <button
                     key={d.weeks}
@@ -74,11 +83,6 @@ export function PricingPage() {
                     <p className="text-body-md font-semibold" style={{ color: weeks === d.weeks ? '#FFFFFF' : '#0A0A0A' }}>
                       {d.label}
                     </p>
-                    {d.discount > 0 && (
-                      <p className="text-caption mt-0.5" style={{ color: weeks === d.weeks ? '#C4882F' : '#C4882F' }}>
-                        Save {Math.round(d.discount * 100)}%
-                      </p>
-                    )}
                   </button>
                 ))}
               </div>
@@ -101,20 +105,9 @@ export function PricingPage() {
               <p className="font-display text-display-lg font-bold mb-1" style={{ color: '#FFFFFF' }}>
                 €{quote.price.toLocaleString('en-EU')}
               </p>
-              {quote.discountPercent > 0 ? (
-                <p className="text-caption mb-6" style={{ color: '#CCCCCC' }}>
-                  <span style={{ textDecoration: 'line-through', opacity: 0.7 }}>
-                    €{quote.fullPrice.toLocaleString('en-EU')}
-                  </span>
-                  {' · '}
-                  <span style={{ color: '#C4882F' }}>Save {quote.discountPercent}%</span>
-                  {' · one-time membership'}
-                </p>
-              ) : (
-                <p className="text-caption mb-6" style={{ color: '#CCCCCC' }}>
-                  one-time membership
-                </p>
-              )}
+              <p className="text-caption mb-6" style={{ color: '#CCCCCC' }}>
+                one-time membership
+              </p>
 
               <div className="mb-6 p-3 rounded-lg" style={{ background: 'rgba(255,255,255,0.08)' }}>
                 <p className="text-body-sm" style={{ color: '#EFEFEF' }}>
@@ -145,18 +138,113 @@ export function PricingPage() {
         </div>
       </section>
 
-      <section style={{ background: '#F5F5F5', borderTop: '1px solid #E5E5E5' }} className="py-16">
+      {/* Season packages — forward sale */}
+      <section style={{ background: '#F5F5F5', borderTop: '1px solid #E5E5E5' }} className="py-20">
+        <div className="max-w-4xl mx-auto px-6">
+          <div className="text-center mb-10">
+            <p className="text-caption font-semibold uppercase tracking-widest mb-3" style={{ color: '#C4882F' }}>
+              For those who already know
+            </p>
+            <h2 className="font-display text-heading-xl font-bold mb-3" style={{ color: '#0A0A0A' }}>
+              Reserve your season.
+            </h2>
+            <p className="text-body-md max-w-xl mx-auto" style={{ color: '#6B6B6B' }}>
+              Commit to 6 or 12 calendar months with the Club and lock in a private rate.
+              Your window starts when you're ready — not a night bank, a season of access.
+            </p>
+          </div>
+
+          <div className="mb-8">
+            <p className="text-caption font-semibold uppercase tracking-widest mb-3 text-center" style={{ color: '#6B6B6B' }}>
+              Group size for your season
+            </p>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-2xl mx-auto">
+              {GROUP_BANDS.map((b) => (
+                <button
+                  key={b.band}
+                  onClick={() => setSeasonBand(b.band)}
+                  className="text-center px-3 py-2.5 rounded-xl border-2 transition-colors"
+                  style={{
+                    borderColor: seasonBand === b.band ? '#0A0A0A' : '#E5E5E5',
+                    background: seasonBand === b.band ? '#0A0A0A' : '#FFFFFF',
+                  }}
+                >
+                  <p className="text-body-sm font-semibold" style={{ color: seasonBand === b.band ? '#FFFFFF' : '#0A0A0A' }}>
+                    {b.label}
+                  </p>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {SEASON_PACKAGES.map((pkg) => {
+              const seasonQuote = quoteSeasonPackage(seasonBand, pkg.months)
+              return (
+                <div
+                  key={pkg.months}
+                  className="rounded-2xl p-6 flex flex-col"
+                  style={{ background: '#0A0A0A', border: pkg.months === 12 ? '2px solid #C4882F' : '1px solid #1A1A1A' }}
+                >
+                  <div className="flex items-start justify-between gap-3 mb-2">
+                    <p className="text-caption font-semibold uppercase tracking-widest" style={{ color: '#C4882F' }}>
+                      {pkg.label} in the Club
+                    </p>
+                    <span
+                      className="text-caption font-bold px-2 py-1 rounded-md"
+                      style={{ background: '#C4882F', color: '#0A0A0A' }}
+                    >
+                      Save {seasonQuote.discountPercent}%
+                    </span>
+                  </div>
+                  <p className="text-body-sm mb-5" style={{ color: '#CCCCCC' }}>
+                    {pkg.pitch}
+                  </p>
+                  <p className="font-display text-display-lg font-bold mb-1" style={{ color: '#FFFFFF' }}>
+                    €{seasonQuote.price.toLocaleString('en-EU')}
+                  </p>
+                  <p className="text-caption mb-5" style={{ color: '#CCCCCC' }}>
+                    <span style={{ textDecoration: 'line-through', opacity: 0.65 }}>
+                      €{seasonQuote.fullPrice.toLocaleString('en-EU')}
+                    </span>
+                    {' · '}
+                    {seasonQuote.groupBand.label} guests · one-time
+                  </p>
+                  <ul className="space-y-2.5 mb-6 flex-1">
+                    {pkg.perks.map((perk) => (
+                      <li key={perk} className="flex items-start gap-2">
+                        <CheckIcon className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: '#C4882F' }} />
+                        <span className="text-body-sm" style={{ color: '#EFEFEF' }}>{perk}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  <Button
+                    size="md"
+                    fullWidth
+                    onClick={() => navigate('/auth/signup')}
+                    style={{ background: '#C4882F', color: '#0A0A0A', border: 'none', fontWeight: 700 }}
+                  >
+                    Reserve {pkg.label.toLowerCase()}
+                  </Button>
+                </div>
+              )
+            })}
+          </div>
+        </div>
+      </section>
+
+      <section className="py-16" style={{ background: '#FFFFFF', borderTop: '1px solid #E5E5E5' }}>
         <div className="max-w-3xl mx-auto px-6">
           <h2 className="font-display text-heading-xl font-bold text-center mb-8" style={{ color: '#0A0A0A' }}>
             How membership works
           </h2>
           <div className="space-y-4">
             {[
-              { n: '1', text: 'You join for a set length — from 1 week up to 12 months — sized for your group. Longer memberships from 3 months include a commitment discount. There is no per-home rate and no seasonal markup.' },
-              { n: '2', text: 'Use it whenever you like, across as many stays and homes as you want. Nothing forces you to take it all at once, and it doesn\'t expire.' },
+              { n: '1', text: 'Most members choose 1, 2, or 4 weeks — sized for their group. That\'s the everyday path into the Club. No per-home rate, no seasonal markup.' },
+              { n: '2', text: 'If you already know you\'ll return, reserve a season: 6 or 12 calendar months of Club access at a private commitment rate. Your window runs on the calendar — not as a pile of nights to spend down.' },
               { n: '3', text: 'Your group size sets your starting price, not a hard limit on which homes you can pick. It\'s membership, not a rental — there\'s nothing to game.' },
             ].map(({ n, text }) => (
-              <div key={n} className="flex gap-4 p-5 rounded-card text-left" style={{ background: '#FFFFFF', border: '1px solid #E5E5E5' }}>
+              <div key={n} className="flex gap-4 p-5 rounded-card text-left" style={{ background: '#F5F5F5', border: '1px solid #E5E5E5' }}>
                 <span className="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-caption font-bold" style={{ background: '#0A0A0A', color: '#FFFFFF' }}>{n}</span>
                 <p className="text-body-sm" style={{ color: '#0A0A0A' }}>{text}</p>
               </div>
