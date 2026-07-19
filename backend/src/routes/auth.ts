@@ -53,7 +53,6 @@ async function sendVerificationEmailFor(userId: string): Promise<void> {
     await sendEmail({ ...mail, to: row.email })
   } catch (e) {
     console.error('[email] failed to send verification email:', e)
-    throw e
   }
 }
 

@@ -16,14 +16,25 @@ import uploadsRouter from './routes/uploads'
 import { errorHandler } from './middleware/errorHandler'
 
 const app = express()
-const PORT = Number(process.env.PORT ?? 3001)
+const PORT = Number(process.env.PORT ?? 3201)
+const isProd = process.env.NODE_ENV === 'production'
 
-const corsOrigins = (process.env.CORS_ORIGIN ?? 'http://localhost:5173')
+const corsOrigins = (process.env.CORS_ORIGIN ?? '')
   .split(',')
   .map((origin) => origin.trim())
   .filter(Boolean)
 
-app.use(cors({ origin: corsOrigins, credentials: true }))
+const localOriginRe = /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/
+
+app.use(cors({
+  origin(origin, callback) {
+    if (!origin) return callback(null, true)
+    if (!isProd && localOriginRe.test(origin)) return callback(null, true)
+    if (corsOrigins.includes(origin)) return callback(null, true)
+    callback(new Error('Not allowed by CORS'))
+  },
+  credentials: true,
+}))
 app.use(express.json())
 
 // Initialize DB on startup

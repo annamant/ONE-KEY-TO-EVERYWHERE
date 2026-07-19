@@ -58,10 +58,16 @@ async function sendViaResendApi(payload: EmailPayload): Promise<boolean> {
 /** Sends email via Resend HTTPS API (preferred), SMTP, or console in local dev. */
 export async function sendEmail(payload: EmailPayload): Promise<void> {
   const { to, subject, text, html } = payload
+  const isProd = process.env.NODE_ENV === 'production'
 
   // 1) Resend HTTPS — works on all Railway plans
-  const sentViaApi = await sendViaResendApi(payload)
-  if (sentViaApi) return
+  try {
+    const sentViaApi = await sendViaResendApi(payload)
+    if (sentViaApi) return
+  } catch (e) {
+    console.error('[email] Resend API failed:', e)
+    if (isProd) throw e
+  }
 
   // 2) SMTP fallback (local / Pro plan with SMTP allowed)
   const transport = getTransporter()
