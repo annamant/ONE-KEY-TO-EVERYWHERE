@@ -32,7 +32,7 @@ async function sendViaResendApi(payload: EmailPayload): Promise<boolean> {
   const apiKey = process.env.RESEND_API_KEY || process.env.SMTP_PASS
   if (!apiKey || !apiKey.startsWith('re_')) return false
 
-  const from = process.env.SMTP_FROM ?? 'noreply@pulkra.com'
+  const from = process.env.SMTP_FROM ?? 'One Key to Everywhere <anna@onekeytoeverywhere.com>'
   const res = await fetch('https://api.resend.com/emails', {
     method: 'POST',
     headers: {
@@ -67,7 +67,7 @@ export async function sendEmail(payload: EmailPayload): Promise<void> {
   const transport = getTransporter()
   if (transport) {
     await transport.sendMail({
-      from: process.env.SMTP_FROM ?? `no-reply@${process.env.SMTP_HOST}`,
+      from: process.env.SMTP_FROM ?? 'One Key to Everywhere <anna@onekeytoeverywhere.com>',
       to,
       subject,
       text,
