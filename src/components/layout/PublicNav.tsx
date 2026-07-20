@@ -148,7 +148,7 @@ export function PublicNav({ transparent = false }: PublicNavProps) {
                   Sign In
                 </Link>
                 <div className="flex flex-col items-center gap-1">
-                  <Link to="/waitlist" className={memberCtaClass}>
+                  <Link to="/auth/signup" className={memberCtaClass}>
                     Become a Member
                   </Link>
                   <Link
@@ -241,7 +241,7 @@ export function PublicNav({ transparent = false }: PublicNavProps) {
                 </Link>
                 <div className="space-y-1.5">
                   <Link
-                    to="/waitlist"
+                    to="/auth/signup"
                     className={cn(
                       'flex w-full items-center justify-center text-caption font-semibold uppercase tracking-[0.1em] px-4 py-2.5 rounded text-center',
                       transparent ? 'bg-white text-primary' : 'bg-primary text-white',

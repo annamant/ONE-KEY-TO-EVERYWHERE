@@ -21,7 +21,7 @@ export type MemberWaitlistEntry = {
   id: string
   firstName: string
   email: string
-  status: 'pending' | 'contacted' | 'invited' | 'rejected'
+  status: 'pending' | 'contacted' | 'invited' | 'rejected' | 'subscribed'
   adminNotes: string | null
   createdAt: string
   updatedAt: string

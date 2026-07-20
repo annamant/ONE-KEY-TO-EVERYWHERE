@@ -137,16 +137,16 @@ export function ownerWaitlistAckEmail(firstName: string): EmailPayload {
   }
 }
 
-export function memberWaitlistAckEmail(firstName: string): EmailPayload {
+export function memberNewsletterWelcomeEmail(firstName: string): EmailPayload {
   return {
     to: '',
-    subject: "You're on the Club waitlist",
+    subject: 'Welcome to the One Key community',
     text: [
       `Hi ${firstName},`,
       '',
-      "Thank you for your interest in One Key to Everywhere.",
+      "You're subscribed to the One Key community newsletter.",
       '',
-      "Club memberships are limited and selective. We'll reach out when it's your moment.",
+      'Expect occasional updates on the Club, Ostuni, and membership — nothing spammy, ever.',
       '',
       '— One Key to Everywhere',
     ].join('\n'),

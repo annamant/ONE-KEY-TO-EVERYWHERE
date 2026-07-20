@@ -74,7 +74,7 @@ export function LandingPage() {
               </p>
               <div className="flex items-center gap-5 flex-wrap" style={{ textShadow: 'none' }}>
                 <button
-                  onClick={() => navigate('/waitlist')}
+                  onClick={() => navigate('/auth/signup')}
                   className="text-caption font-bold uppercase tracking-wider px-6 py-3 transition-all"
                   style={{ border: 'none', color: '#0A0A0A', background: '#FFFFFF', cursor: 'pointer', letterSpacing: '0.12em' }}
                   onMouseEnter={(e) => { e.currentTarget.style.opacity = '0.92' }}
@@ -199,7 +199,7 @@ export function LandingPage() {
             Club residences are shared only with accepted members. Apply, register, and once we approve you — the Ostuni homes open up.
           </p>
           <button
-            onClick={() => navigate('/waitlist')}
+            onClick={() => navigate('/auth/signup')}
             className="text-caption font-semibold uppercase tracking-wider px-6 py-3"
             style={{ border: '1.5px solid #0A0A0A', color: '#0A0A0A', background: 'transparent', cursor: 'pointer', letterSpacing: '0.1em' }}
             onMouseEnter={(e) => { e.currentTarget.style.background = '#0A0A0A'; e.currentTarget.style.color = '#FFFFFF' }}
@@ -261,13 +261,13 @@ export function LandingPage() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <button
-              onClick={() => navigate('/waitlist')}
+              onClick={() => navigate('/newsletter')}
               className="text-caption font-bold uppercase tracking-wider px-8 py-4 transition-all"
               style={{ background: '#C4882F', color: '#0A0A0A', border: 'none', cursor: 'pointer', letterSpacing: '0.12em' }}
               onMouseEnter={(e) => (e.currentTarget.style.background = '#D4983F')}
               onMouseLeave={(e) => (e.currentTarget.style.background = '#C4882F')}
             >
-              Join the Waitlist
+              Join our community newsletter
             </button>
             <button
               onClick={() => navigate('/how-it-works')}

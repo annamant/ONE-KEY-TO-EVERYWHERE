@@ -2,7 +2,7 @@ import { Router } from 'express'
 import { getDb } from '../db/connection'
 import { generateId } from '../utils/generateId'
 import { notifyAdmins } from '../utils/notifyAdmins'
-import { sendEmail, ownerWaitlistAckEmail, memberWaitlistAckEmail } from '../utils/email'
+import { sendEmail, ownerWaitlistAckEmail, memberNewsletterWelcomeEmail } from '../utils/email'
 import { clampString, optionalClampString } from '../utils/validate'
 
 const router = Router()
@@ -91,7 +91,7 @@ router.post('/owner', async (req, res, next) => {
   } catch (e) { next(e) }
 })
 
-// POST /api/waitlist/member — member interest (founding waitlist)
+// POST /api/waitlist/member — community newsletter signup (instant subscription)
 router.post('/member', async (req, res, next) => {
   try {
     const firstName = clampString(req.body?.firstName, 80, 'firstName')
@@ -106,37 +106,36 @@ router.post('/member', async (req, res, next) => {
     }
 
     const db = getDb()
-    const existing = db.prepare('SELECT id FROM member_waitlist WHERE lower(email) = lower(?)').get(email)
+    const now = new Date().toISOString()
+    const existing = db.prepare('SELECT * FROM member_waitlist WHERE lower(email) = lower(?)').get(email) as Record<string, unknown> | undefined
+
     if (existing) {
-      res.status(409).json({ error: 'This email is already on the waitlist' })
+      if (existing.status === 'rejected') {
+        db.prepare(`
+          UPDATE member_waitlist
+          SET first_name = ?, status = 'subscribed', updated_at = ?
+          WHERE id = ?
+        `).run(firstName, now, existing.id)
+        const welcome = memberNewsletterWelcomeEmail(firstName)
+        await sendEmail({ ...welcome, to: email })
+        res.json(rowToMemberEntry(
+          db.prepare('SELECT * FROM member_waitlist WHERE id = ?').get(existing.id) as Record<string, unknown>
+        ))
+        return
+      }
+
+      res.json(rowToMemberEntry(existing))
       return
     }
 
-    const now = new Date().toISOString()
     const id = generateId('mw')
-    try {
-      db.prepare(`
-        INSERT INTO member_waitlist (id, first_name, email, status, created_at, updated_at)
-        VALUES (?,?,?, 'pending', ?, ?)
-      `).run(id, firstName, email, now, now)
-    } catch (err) {
-      const msg = err instanceof Error ? err.message : ''
-      if (msg.includes('UNIQUE')) {
-        res.status(409).json({ error: 'This email is already on the waitlist' })
-        return
-      }
-      throw err
-    }
+    db.prepare(`
+      INSERT INTO member_waitlist (id, first_name, email, status, created_at, updated_at)
+      VALUES (?,?,?, 'subscribed', ?, ?)
+    `).run(id, firstName, email, now, now)
 
-    notifyAdmins({
-      type: 'admin_alert',
-      title: 'New member waitlist signup',
-      body: `${firstName} (${email})`,
-      link: '/admin/requests?tab=waitlist',
-    })
-
-    const ack = memberWaitlistAckEmail(firstName)
-    await sendEmail({ ...ack, to: email })
+    const welcome = memberNewsletterWelcomeEmail(firstName)
+    await sendEmail({ ...welcome, to: email })
 
     res.status(201).json(rowToMemberEntry(
       db.prepare('SELECT * FROM member_waitlist WHERE id = ?').get(id) as Record<string, unknown>

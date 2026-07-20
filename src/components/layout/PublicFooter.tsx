@@ -21,13 +21,13 @@ export function PublicFooter() {
             <ul className="space-y-2 text-body-sm">
               <li><Link to="/how-it-works" className="transition-colors hover:text-white">How It Works</Link></li>
               <li><Link to="/pricing" className="transition-colors hover:text-white">Pricing</Link></li>
-              <li><Link to="/waitlist" className="transition-colors hover:text-white">Become a Member</Link></li>
+              <li><Link to="/auth/signup" className="transition-colors hover:text-white">Become a Member</Link></li>
+              <li><Link to="/newsletter" className="transition-colors hover:text-white">Community Newsletter</Link></li>
             </ul>
           </div>
           <div>
             <h4 className="font-semibold text-body-sm mb-4" style={{ color: '#FFFFFF' }}>Members</h4>
             <ul className="space-y-2 text-body-sm">
-              <li><Link to="/auth/signup" className="transition-colors hover:text-white">Create Account</Link></li>
               <li><Link to="/auth/login" className="transition-colors hover:text-white">Sign In</Link></li>
             </ul>
           </div>

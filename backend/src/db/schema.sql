@@ -141,12 +141,12 @@ CREATE TABLE IF NOT EXISTS owner_waitlist (
   updated_at    TEXT NOT NULL
 );
 
--- Member interest waitlist (pre-signup expression of interest)
+-- Community newsletter subscribers
 CREATE TABLE IF NOT EXISTS member_waitlist (
   id          TEXT PRIMARY KEY,
   first_name  TEXT NOT NULL,
   email       TEXT NOT NULL UNIQUE,
-  status      TEXT NOT NULL DEFAULT 'pending' CHECK(status IN ('pending','contacted','invited','rejected')),
+  status      TEXT NOT NULL DEFAULT 'subscribed' CHECK(status IN ('pending','contacted','invited','rejected','subscribed')),
   admin_notes TEXT,
   created_at  TEXT NOT NULL,
   updated_at  TEXT NOT NULL

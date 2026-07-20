@@ -21,7 +21,7 @@ export const waitlistLimiter = rateLimit({
   max: 10,
   standardHeaders: true,
   legacyHeaders: false,
-  message: { error: 'Too many waitlist submissions, please try again later' },
+  message: { error: 'Too many newsletter signups, please try again later' },
 })
 
 export const uploadLimiter = rateLimit({

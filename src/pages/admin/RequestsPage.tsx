@@ -19,13 +19,14 @@ import {
 import { formatDate } from '@/utils/format'
 import type { BadgeColor } from '@/components/ui/Badge'
 
-type Tab = 'membership' | 'packages' | 'owners' | 'waitlist'
+type Tab = 'membership' | 'packages' | 'owners' | 'newsletter'
 
 const waitlistStatusColor: Record<string, BadgeColor> = {
   pending: 'amber',
   contacted: 'blue',
   approved: 'green',
   invited: 'green',
+  subscribed: 'green',
   rejected: 'red',
 }
 
@@ -35,7 +36,11 @@ export function AdminRequestsPage() {
   const { toast } = useToast()
   const [acting, setActing] = useState<string | null>(null)
 
-  const tab = (searchParams.get('tab') as Tab) || 'membership'
+  const tabParam = searchParams.get('tab')
+  const tab: Tab =
+    tabParam === 'waitlist'
+      ? 'newsletter'
+      : ((tabParam as Tab) || 'membership')
   const setTab = (t: Tab) => setSearchParams({ tab: t })
 
   const { data, loading, refetch } = useMockApi(() => adminRequestsService.list(), [])
@@ -70,7 +75,7 @@ export function AdminRequestsPage() {
     setActing(id)
     try {
       await adminRequestsService.updateMemberWaitlist(id, { status })
-      toast(`Waitlist entry marked as ${status}`, 'success')
+      toast(status === 'rejected' ? 'Subscriber unsubscribed' : `Subscriber marked as ${status}`, 'success')
       refetch()
     } catch {
       toast('Update failed', 'error')
@@ -119,7 +124,7 @@ export function AdminRequestsPage() {
     { id: 'membership', label: 'Membership applications', count: counts.pendingMembers, icon: KeyIcon },
     { id: 'packages', label: 'Package purchases', count: counts.packageRequests, icon: ShoppingBagIcon },
     { id: 'owners', label: 'Owner waitlist', count: counts.ownerWaitlist, icon: HomeModernIcon },
-    { id: 'waitlist', label: 'Member interest', count: counts.memberWaitlist, icon: UsersIcon },
+    { id: 'newsletter', label: 'Newsletter subscribers', count: counts.memberWaitlist, icon: UsersIcon },
   ]
 
   return (
@@ -344,14 +349,14 @@ export function AdminRequestsPage() {
         </>
       )}
 
-      {/* Member interest waitlist */}
-      {tab === 'waitlist' && (
+      {/* Community newsletter subscribers */}
+      {tab === 'newsletter' && (
         <>
           {(data?.memberWaitlist ?? []).length === 0 ? (
             <EmptyState
               icon={<InboxStackIcon className="w-7 h-7" />}
-              heading="No member interest submissions"
-              subtext="Early interest from the founding members waitlist appears here."
+              heading="No newsletter subscribers yet"
+              subtext="Community newsletter signups appear here once people subscribe."
             />
           ) : (
             <Card padding="none">
@@ -364,43 +369,24 @@ export function AdminRequestsPage() {
                     <div>
                       <div className="flex items-center gap-2 mb-0.5">
                         <p className="text-body-sm font-medium text-text-primary">{entry.firstName}</p>
-                        <Badge color="blue" size="sm">Member interest</Badge>
+                        <Badge color="green" size="sm">Subscribed</Badge>
                         <Badge color={waitlistStatusColor[entry.status] ?? 'gray'} size="sm" dot>
                           {entry.status}
                         </Badge>
                       </div>
                       <p className="text-caption text-text-muted">{entry.email}</p>
-                      <p className="text-caption text-text-muted">Submitted {formatDate(entry.createdAt)}</p>
+                      <p className="text-caption text-text-muted">Subscribed {formatDate(entry.createdAt)}</p>
                     </div>
                     <div className="flex items-center gap-2 flex-shrink-0">
-                      {entry.status === 'pending' && (
+                      {entry.status === 'subscribed' && (
                         <Button
-                          variant="outline"
+                          variant="ghost"
                           size="sm"
                           loading={acting === entry.id}
-                          onClick={() => updateMemberWaitlist(entry.id, 'contacted')}
+                          onClick={() => updateMemberWaitlist(entry.id, 'rejected')}
                         >
-                          Mark contacted
+                          Unsubscribe
                         </Button>
-                      )}
-                      {entry.status !== 'invited' && entry.status !== 'rejected' && (
-                        <>
-                          <Button
-                            size="sm"
-                            loading={acting === entry.id}
-                            onClick={() => updateMemberWaitlist(entry.id, 'invited')}
-                          >
-                            Invite to apply
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            loading={acting === entry.id}
-                            onClick={() => updateMemberWaitlist(entry.id, 'rejected')}
-                          >
-                            Reject
-                          </Button>
-                        </>
                       )}
                     </div>
                   </li>

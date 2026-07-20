@@ -75,7 +75,7 @@ router.get('/requests', authenticate, requireRole('admin'), (req, res, next) => 
 
     const memberWaitlist = (db.prepare(`
       SELECT * FROM member_waitlist
-      WHERE status = 'pending' OR status = 'contacted'
+      WHERE status = 'subscribed'
       ORDER BY created_at DESC
     `).all() as Record<string, unknown>[]).map(rowToMemberEntry)
 
@@ -155,7 +155,7 @@ router.patch('/member-waitlist/:id', authenticate, requireRole('admin'), (req, r
   try {
     const { id } = req.params
     const { status, adminNotes } = req.body as { status?: string; adminNotes?: string }
-    const valid = ['pending', 'contacted', 'invited', 'rejected']
+    const valid = ['pending', 'contacted', 'invited', 'rejected', 'subscribed']
     if (status && !valid.includes(status)) {
       res.status(400).json({ error: 'Invalid status' })
       return

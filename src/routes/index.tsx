@@ -73,7 +73,8 @@ export const router = createBrowserRouter([
   { path: '/', element: <L><LandingPage /></L> },
   { path: '/how-it-works', element: <L><HowItWorksPage /></L> },
   { path: '/pricing', element: <L><PricingPage /></L> },
-  { path: '/waitlist', element: <L><WaitlistPage /></L> },
+  { path: '/newsletter', element: <L><WaitlistPage /></L> },
+  { path: '/waitlist', element: <Navigate to="/newsletter" replace /> },
   { path: '/open-doors', element: <L><OpenDoorsPage /></L> },
   {
     path: '/auth',

@@ -127,14 +127,14 @@ export function AdminDashboardPage() {
               {(requests?.memberWaitlist ?? []).slice(0, 1).map((e) => (
                 <li
                   key={e.id}
-                  onClick={() => navigate('/admin/requests?tab=waitlist')}
+                  onClick={() => navigate('/admin/requests?tab=newsletter')}
                   className="flex items-center justify-between px-5 py-3 border-b border-border last:border-0 hover:bg-okte-slate-50 cursor-pointer transition-colors"
                 >
                   <div>
                     <p className="text-body-sm font-medium text-text-primary">{e.firstName}</p>
-                    <p className="text-caption text-text-muted">Member interest</p>
+                    <p className="text-caption text-text-muted">Newsletter subscriber</p>
                   </div>
-                  <Badge color="blue" size="sm">Interest</Badge>
+                  <Badge color="green" size="sm">Newsletter</Badge>
                 </li>
               ))}
             </ul>
@@ -195,7 +195,7 @@ export function AdminDashboardPage() {
             {requests?.counts.total ?? 0} open requests
           </h2>
           <p className="text-body-sm text-text-muted mb-4">
-            Membership applications, owner waitlist, and member interest
+            Membership applications, owner waitlist, and newsletter subscribers
           </p>
           <Button onClick={() => navigate('/admin/requests')}>Review requests</Button>
         </Card>
