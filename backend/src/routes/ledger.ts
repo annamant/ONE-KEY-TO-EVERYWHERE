@@ -15,9 +15,9 @@ const SEASON_OPTIONS = new Set([6, 12])
 const RATE_PER_PERSON_PER_NIGHT = 56
 const BILLABLE: Record<string, number> = {
   up_to_2: 2,
-  three_to_four: 4,
-  five_to_six: 6,
-  seven_plus: 8,
+  three_to_four: 3,
+  five_to_six: 5,
+  seven_plus: 7,
 }
 const WEEK_UNITS: Record<number, number> = { 1: 7, 2: 14, 4: 28 }
 const SEASON_DISCOUNT: Record<number, number> = { 6: 0.4, 12: 0.55 }

@@ -3,8 +3,9 @@
 // 2) Season packages (6 / 12 calendar months) — forward-sale commitment
 //    packages with deep discounts. Calendar-window access, not a night bank.
 //
-// Pricing base: €56 per person per overnight × band capacity (top of each range).
-// "Up to 2" bills for 2 guests. Solo travellers — contact the Club directly.
+// Pricing: €56 per person per overnight × billable guests for the band.
+// Up to 2 → 2 guests. Other bands → lower bound of the range (3, 5, 7).
+// Solo travellers in the 1–2 band — contact the Club directly.
 
 export type GroupBand = 'up_to_2' | 'three_to_four' | 'five_to_six' | 'seven_plus'
 
@@ -15,16 +16,16 @@ export interface GroupBandInfo {
   band: GroupBand
   label: string
   guestRange: string
-  /** Guests billed for this band (top of the range; 8 for open-ended 7+). */
+  /** Guests billed for this band. */
   billableGuests: number
   dailyRate: number
 }
 
 export const GROUP_BANDS: GroupBandInfo[] = [
   { band: 'up_to_2', label: 'Up to 2', guestRange: '1–2 guests', billableGuests: 2, dailyRate: 2 * RATE_PER_PERSON_PER_NIGHT },
-  { band: 'three_to_four', label: '3–4', guestRange: '3–4 guests', billableGuests: 4, dailyRate: 4 * RATE_PER_PERSON_PER_NIGHT },
-  { band: 'five_to_six', label: '5–6', guestRange: '5–6 guests', billableGuests: 6, dailyRate: 6 * RATE_PER_PERSON_PER_NIGHT },
-  { band: 'seven_plus', label: '7+', guestRange: '7+ guests', billableGuests: 8, dailyRate: 8 * RATE_PER_PERSON_PER_NIGHT },
+  { band: 'three_to_four', label: '3–4', guestRange: '3–4 guests', billableGuests: 3, dailyRate: 3 * RATE_PER_PERSON_PER_NIGHT },
+  { band: 'five_to_six', label: '5–6', guestRange: '5–6 guests', billableGuests: 5, dailyRate: 5 * RATE_PER_PERSON_PER_NIGHT },
+  { band: 'seven_plus', label: '7+', guestRange: '7+ guests', billableGuests: 7, dailyRate: 7 * RATE_PER_PERSON_PER_NIGHT },
 ]
 
 /** Everyday membership lengths — weeks only. */

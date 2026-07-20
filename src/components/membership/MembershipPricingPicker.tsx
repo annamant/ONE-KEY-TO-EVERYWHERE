@@ -67,22 +67,20 @@ export function MembershipPricingPicker({
                     <p className="text-caption" style={{ color: groupBand === b.band ? '#CCCCCC' : '#6B6B6B' }}>
                       {b.guestRange}
                     </p>
-                    {b.band === 'up_to_2' && (
-                      <p className="text-caption mt-1.5" style={{ color: groupBand === b.band ? '#CCCCCC' : '#6B6B6B' }}>
-                        Solo traveller?{' '}
-                        <a
-                          href={`mailto:${CLUB_CONTACT_EMAIL}?subject=${encodeURIComponent('Solo membership enquiry')}`}
-                          className="underline underline-offset-2"
-                          style={{ color: groupBand === b.band ? '#FFFFFF' : '#0A0A0A' }}
-                          onClick={(e) => e.stopPropagation()}
-                        >
-                          Get in touch
-                        </a>
-                      </p>
-                    )}
                   </button>
                 ))}
               </div>
+              <p className="text-body-sm mt-3" style={{ color: '#6B6B6B' }}>
+                Solo traveller?{' '}
+                <a
+                  href={`mailto:${CLUB_CONTACT_EMAIL}?subject=${encodeURIComponent('Solo membership enquiry')}`}
+                  className="font-medium underline underline-offset-2 transition-colors hover:text-text-primary"
+                  style={{ color: '#0A0A0A' }}
+                >
+                  Get in touch with us
+                </a>
+                .
+              </p>
             </div>
 
             <div>
