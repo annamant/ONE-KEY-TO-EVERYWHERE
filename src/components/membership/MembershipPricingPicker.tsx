@@ -4,7 +4,6 @@ import { Button } from '@/components/ui/Button'
 import {
   GROUP_BANDS,
   MEMBERSHIP_DURATIONS,
-  RATE_PER_PERSON_PER_NIGHT,
   SEASON_PACKAGES,
   quoteMembership,
   quoteSeasonPackage,
@@ -68,21 +67,22 @@ export function MembershipPricingPicker({
                     <p className="text-caption" style={{ color: groupBand === b.band ? '#CCCCCC' : '#6B6B6B' }}>
                       {b.guestRange}
                     </p>
+                    {b.band === 'up_to_2' && (
+                      <p className="text-caption mt-1.5" style={{ color: groupBand === b.band ? '#CCCCCC' : '#6B6B6B' }}>
+                        Solo traveller?{' '}
+                        <a
+                          href={`mailto:${CLUB_CONTACT_EMAIL}?subject=${encodeURIComponent('Solo membership enquiry')}`}
+                          className="underline underline-offset-2"
+                          style={{ color: groupBand === b.band ? '#FFFFFF' : '#0A0A0A' }}
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          Get in touch
+                        </a>
+                      </p>
+                    )}
                   </button>
                 ))}
               </div>
-              <p className="text-body-sm mt-3" style={{ color: '#6B6B6B' }}>
-                &ldquo;Up to 2&rdquo; is priced for two guests (€{RATE_PER_PERSON_PER_NIGHT}/person × 2).
-                Solo traveller?{' '}
-                <a
-                  href={`mailto:${CLUB_CONTACT_EMAIL}?subject=${encodeURIComponent('Solo membership enquiry')}`}
-                  className="font-medium underline underline-offset-2 transition-colors hover:text-text-primary"
-                  style={{ color: '#0A0A0A' }}
-                >
-                  Get in touch with us
-                </a>
-                .
-              </p>
             </div>
 
             <div>
@@ -126,12 +126,8 @@ export function MembershipPricingPicker({
               <p className="font-display text-display-lg font-bold mb-1" style={{ color: '#FFFFFF' }}>
                 €{quote.price.toLocaleString('en-EU')}
               </p>
-              <p className="text-caption mb-2" style={{ color: '#CCCCCC' }}>
+              <p className="text-caption mb-6" style={{ color: '#CCCCCC' }}>
                 one-time membership
-              </p>
-              <p className="text-caption mb-6" style={{ color: '#999999' }}>
-                €{RATE_PER_PERSON_PER_NIGHT}/person × {quote.billableGuests} guest
-                {quote.billableGuests === 1 ? '' : 's'} × {quote.nights} nights
               </p>
 
               <div className="mb-6 p-3 rounded-lg" style={{ background: 'rgba(255,255,255,0.08)' }}>
@@ -201,17 +197,7 @@ export function MembershipPricingPicker({
                 </button>
               ))}
             </div>
-            <p className="text-body-sm mt-4 text-center max-w-md mx-auto" style={{ color: '#6B6B6B' }}>
-              Solo traveller?{' '}
-              <a
-                href={`mailto:${CLUB_CONTACT_EMAIL}?subject=${encodeURIComponent('Solo season membership enquiry')}`}
-                className="font-medium underline underline-offset-2 transition-colors hover:text-text-primary"
-                style={{ color: '#0A0A0A' }}
-              >
-                Get in touch with us
-              </a>
-              .
-            </p>
+            </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

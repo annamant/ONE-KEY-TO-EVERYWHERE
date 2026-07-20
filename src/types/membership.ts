@@ -8,7 +8,7 @@
 
 export type GroupBand = 'up_to_2' | 'three_to_four' | 'five_to_six' | 'seven_plus'
 
-/** Internal yield target — not shown on public pricing. */
+/** Member-facing rate per person per overnight. */
 export const RATE_PER_PERSON_PER_NIGHT = 56
 
 export interface GroupBandInfo {
@@ -126,10 +126,6 @@ export interface MembershipQuote {
   groupBand: GroupBandInfo
   duration: MembershipDurationInfo
   price: number
-  /** €56 × billable guests — total per night for this band. */
-  bandNightlyTotal: number
-  billableGuests: number
-  nights: number
 }
 
 export interface SeasonQuote {
@@ -144,16 +140,8 @@ export interface SeasonQuote {
 export function quoteMembership(groupBand: GroupBand, weeks: number): MembershipQuote {
   const band = GROUP_BANDS.find((b) => b.band === groupBand) ?? GROUP_BANDS[0]
   const duration = MEMBERSHIP_DURATIONS.find((d) => d.weeks === weeks) ?? MEMBERSHIP_DURATIONS[0]
-  const nights = duration.units
-  const price = RATE_PER_PERSON_PER_NIGHT * band.billableGuests * nights
-  return {
-    groupBand: band,
-    duration,
-    price,
-    bandNightlyTotal: RATE_PER_PERSON_PER_NIGHT * band.billableGuests,
-    billableGuests: band.billableGuests,
-    nights,
-  }
+  const price = RATE_PER_PERSON_PER_NIGHT * band.billableGuests * duration.units
+  return { groupBand: band, duration, price }
 }
 
 /** Base for season packages: band daily rate × ~30 units per calendar month. */
