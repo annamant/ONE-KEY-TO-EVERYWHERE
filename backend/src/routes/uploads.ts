@@ -2,7 +2,7 @@ import { Router } from 'express'
 import { getDb } from '../db/connection'
 import { authenticate } from '../middleware/auth'
 import { requireRole } from '../middleware/requireRole'
-import { imageUpload, isValidImageBuffer } from '../middleware/upload'
+import { imageUpload, avatarUpload, isValidImageBuffer } from '../middleware/upload'
 import { uploadImageBuffer } from '../utils/cloudinary'
 
 const router = Router()
@@ -70,7 +70,7 @@ router.post(
 router.post(
   '/avatar',
   authenticate,
-  imageUpload.single('avatar'),
+  avatarUpload.single('avatar'),
   async (req, res, next) => {
     try {
       const file = req.file
@@ -79,11 +79,7 @@ router.post(
         return
       }
 
-      if (!isValidImageBuffer(file.buffer)) {
-        res.status(400).json({ error: 'File is not a valid image' })
-        return
-      }
-
+      // Cloudinary accepts HEIC and other phone/Google Photos formats; it validates on upload.
       const uploaded = await uploadImageBuffer(
         file.buffer,
         `okte/avatars/${req.user!.userId}`,

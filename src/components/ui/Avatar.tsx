@@ -31,6 +31,7 @@ export function Avatar({ src, name, size = 'md', className }: AvatarProps) {
   if (src) {
     return (
       <img
+        key={src}
         src={src}
         alt={name ?? 'Avatar'}
         className={cn('rounded-full object-cover bg-okte-slate-100', sizeClasses[size], className)}
