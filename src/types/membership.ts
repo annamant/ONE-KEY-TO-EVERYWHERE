@@ -3,8 +3,8 @@
 // 2) Season packages (6 / 12 calendar months) — forward-sale commitment
 //    packages with deep discounts. Calendar-window access, not a night bank.
 //
-// Pricing base: €56 per person per overnight × band capacity.
-// Season packages apply a large commitment discount on that base.
+// Pricing base: €56 per person per overnight × band capacity (top of each range).
+// "Up to 2" bills for 2 guests. Solo travellers — contact the Club directly.
 
 export type GroupBand = 'up_to_2' | 'three_to_four' | 'five_to_six' | 'seven_plus'
 
@@ -126,6 +126,10 @@ export interface MembershipQuote {
   groupBand: GroupBandInfo
   duration: MembershipDurationInfo
   price: number
+  /** €56 × billable guests — total per night for this band. */
+  bandNightlyTotal: number
+  billableGuests: number
+  nights: number
 }
 
 export interface SeasonQuote {
@@ -140,8 +144,16 @@ export interface SeasonQuote {
 export function quoteMembership(groupBand: GroupBand, weeks: number): MembershipQuote {
   const band = GROUP_BANDS.find((b) => b.band === groupBand) ?? GROUP_BANDS[0]
   const duration = MEMBERSHIP_DURATIONS.find((d) => d.weeks === weeks) ?? MEMBERSHIP_DURATIONS[0]
-  const price = band.dailyRate * duration.units
-  return { groupBand: band, duration, price }
+  const nights = duration.units
+  const price = RATE_PER_PERSON_PER_NIGHT * band.billableGuests * nights
+  return {
+    groupBand: band,
+    duration,
+    price,
+    bandNightlyTotal: RATE_PER_PERSON_PER_NIGHT * band.billableGuests,
+    billableGuests: band.billableGuests,
+    nights,
+  }
 }
 
 /** Base for season packages: band daily rate × ~30 units per calendar month. */
